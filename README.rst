@@ -8,3 +8,8 @@ It-s-Official/ba-p/325465>`_ (formerly `Jive-x <https://www.prnewswire.com/news-
 completes-acquisition-of-external-online-community-business-from-jive-300531058.html>`_) and 
 `Jive-n <https://www.jivesoftware.com/>`_ online community platforms.
 
+
+Documentation
+=============
+
+The documentation is located here: `https://khorosjx.readthedocs.io/en/latest/ <https://khorosjx.readthedocs.io/en/latest/>`_
