@@ -1,7 +1,7 @@
 ==================
-Auxilliary Modules
+Supporting Modules
 ==================
-This section provides details around the auxilliary modules used in the **khorosjx** package,
+This section provides details around the supporting modules used in the **khorosjx** package,
 which are listed below.
 
 * `Core Utilities Module (khorosjx.utils.core_utils)`_
