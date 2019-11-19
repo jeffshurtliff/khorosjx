@@ -6,8 +6,7 @@
 :Example:        khorosjx.core.connect(base_url, credentials)
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  16 Nov 2019
-:Version:        1.0.0
+:Modified Date:  19 Nov 2019
 """
 
 # Define all modules that will be imported with the "import *" method
