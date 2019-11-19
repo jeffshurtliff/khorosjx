@@ -6,9 +6,10 @@
 :Example:        Coming Soon
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  17 Nov 2019
-:Version:        1.0.0
+:Modified Date:  19 Nov 2019
 """
+
+from . import core
 
 
 # Define function to verify the connection in the core module
