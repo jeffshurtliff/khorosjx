@@ -163,3 +163,4 @@ Indices and tables
 
    primary-modules
    auxilliary-modules
+   changelog
