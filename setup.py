@@ -2,7 +2,7 @@
 
 import setuptools
 
-with open("README.rst", "r") as fh:
+with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
@@ -12,7 +12,7 @@ setuptools.setup(
     author_email="jeff.shurtliff@rsa.com",
     description="Useful tools and utilities to assist in managing a Khoros JX (formerly Jive-x) or Jive-n community.",
     long_description=long_description,
-    long_description_content_type="text/x-rst",
+    long_description_content_type="text/markdown",
     url="https://github.com/jeffshurtliff/khorosjx",
     packages=setuptools.find_packages(),
     classifiers=[
