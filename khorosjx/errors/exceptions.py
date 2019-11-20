@@ -9,16 +9,13 @@
 """
 
 
-"""
-Khoros JX Exceptions
-====================
-"""
+#######################
+# Khoros JX Exceptions
+#######################
 
-"""
-Base Exception
----------------
-"""
-
+# --------------
+# Base Exception
+# --------------
 
 # Define base exception classes
 class KhorosJXError(Exception):
@@ -26,11 +23,9 @@ class KhorosJXError(Exception):
     pass
 
 
-"""
-Module Import Exceptions
-------------------------
-"""
-
+# ------------------------
+# Module Import Exceptions
+# ------------------------
 
 # Define module import exception classes
 class InvalidKhorosJXModuleError(KhorosJXError, ModuleNotFoundError):
@@ -39,11 +34,9 @@ class InvalidKhorosJXModuleError(KhorosJXError, ModuleNotFoundError):
         self.message = message
 
 
-"""
-Authentication Exceptions
--------------------------
-"""
-
+# -------------------------
+# Authentication Exceptions
+# -------------------------
 
 # Define authentication exception classes
 class NoCredentialsError(KhorosJXError, NameError):
@@ -70,11 +63,36 @@ class WrongCredentialTypeError(KhorosJXError, TypeError):
         self.message = message
 
 
-"""
-User Exceptions
----------------
-"""
+# ------------------
+# Content Exceptions
+# ------------------
 
+# Define content exception classes
+class ContentPublishError(KhorosJXError):
+    """This exception is used when content is unable to publish successfully."""
+    def __init__(self, message):
+        self.message = message
+
+
+# ----------------------
+# Generic API Exceptions
+# ----------------------
+
+# Define generic REST API exception classes
+class GETRequestError(KhorosJXError):
+    """This exception is used for generic GET request errors when there isn't a more specific exception."""
+    def __init__(self, message):
+        self.message = message
+
+
+class PUTRequestError(KhorosJXError):
+    """This exception is used for generic PUT request errors when there isn't a more specific exception."""
+    def __init__(self, message):
+        self.message = message
+
+# ---------------
+# User Exceptions
+# ---------------
 
 # Define user exception classes
 class UserQueryError(KhorosJXError, ValueError):

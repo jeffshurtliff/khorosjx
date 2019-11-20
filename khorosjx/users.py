@@ -270,3 +270,25 @@ def get_people_followed(user_id, ignore_exceptions=False, return_type=list, star
     elif return_type == tuple:
         people_followed = tuple(people_followed)
     return people_followed
+
+
+# Define function to get the recent logins
+def get_recent_logins(count=100, start_index=0):
+    """This function returns the most recent logins that have occurred in the environment.
+
+    :param count: The maximum number of results to return in the given GET request (Default: ``100``)
+    :param start_index: The ``startIndex`` value in the GET request (Default: ``0``)
+    :returns: The login data in JSON format
+    :raises: UserQueryError
+    """
+    query_url = f"{base_url}/people?sort=lastLoggedIn&" + \
+                f"fields=jive,emails,name&count={count}&startIndex={start_index}"
+    response = core.get_request_with_retries(query_url)
+    if response.status_code != 200:
+        error_msg = f"The query to get recent logins returned the status code {response.status_code}" + \
+                    f" with the following message: {response.text}"
+        raise errors.exceptions.UserQueryError(error_msg)
+    else:
+        response_json = response.json()
+        login_data = response_json['list']
+    return login_data

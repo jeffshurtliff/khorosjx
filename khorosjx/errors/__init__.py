@@ -6,14 +6,15 @@
 :Example:        ``khorosjx.errors.raise_exception('missing_username_or_password')``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  15 Nov 2019
-:Version:        1.0.0
+:Modified Date:  20 Nov 2019
 """
 # Define all modules that will be imported with the "import *" method
-__all__ = ['exceptions']
+__all__ = ['exceptions', 'handlers']
 
-# Always import the exceptions module
-from . import exceptions
+# Always import the warnings package and the exceptions module
+import warnings
+
+from . import exceptions, handlers
 
 
 # Define function to raise a Khoros JX exception
@@ -25,13 +26,11 @@ def raise_exception(exception_name):
     :returns: None
     :raises: KhorosJXError
     """
-    for category_list in exceptions.ExceptionGrouping.exception_group_mapping.keys():
-        if exception_name in category_list:
-            category_exceptions = exceptions.ExceptionGrouping.exception_group_mapping.get(category_list)
-            exception_to_raise, error_msg = category_exceptions.get(exception_name)
-            raise exception_to_raise(error_msg)
-        else:
-            print(f"The exception name '{exception_name}' was not recognized and therefore a generic exception " +
-                  "will be raised instead.")
-            raise exceptions.KhorosJXError("An exception was raised for the current operation.")
+    # Trigger the deprecation warning for this function
+    warning_msg = "The exception_to_raise() function has been moved into the khorosjx.errors.handlers module and " + \
+                  "will be removed from the __init__ module within khorosjx.errors in a future release."
+    warnings.warn(warning_msg, DeprecationWarning)
+
+    # Call the function from the khorosjx.errors.handlers module
+    handlers.raise_exception(exception_name)
     return

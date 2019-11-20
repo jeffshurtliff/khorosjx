@@ -15,6 +15,7 @@ import json
 import requests
 
 from . import core
+from . import errors
 from .utils.classes import Content
 
 
@@ -91,3 +92,55 @@ def get_content_id(url, content_type="document"):
     content_data = response.json()
     content_id = content_data['list'][0]['contentID']
     return content_id
+
+
+# Define function to overwrite the body of a document
+def overwrite_doc_body(url, body_html, minor_edit=True, ignore_exceptions=False):
+    # TODO: Add docstrings
+    # Define function to perform the overwrite operation
+    def __perform_overwrite_operation(_url, _body_html, _minor_edit, _ignore_exceptions):
+        # TODO: Add docstrings
+        # Define the script name, Content ID and URI
+        _content_id = get_content_id(_url)
+        _content_url = f"{base_url}/contents/{_content_id}"
+
+        # Perform a GET request for the document to obtain its JSON
+        _response = core.get_data('contents', _content_id)
+
+        # Construct the payload from the new body HTML
+        _doc_body_payload = {'text': _body_html}
+
+        # Update the document JSON with the new body HTML
+        _doc_json = _response.json()
+        _doc_json['content'] = _doc_body_payload
+
+        # Flag the update as a "Minor Edit" to suppress email notifications if specified
+        if _minor_edit:
+            _doc_json['minor'] = 'true'
+
+        # Perform the PUT request with retry handling for timeouts
+        _put_response = core.put_request_with_retries(_content_url, _doc_json)
+        if _put_response.status_code != 200:
+            _error_msg = f"The attempt to update the document {_url} failed with " + \
+                        f"a {_put_response.status_code} status code."
+            if _ignore_exceptions:
+                print(_error_msg)
+            else:
+                raise errors.exceptions.ContentPublishError(_error_msg)
+        return _put_response
+
+    # Verify that the core connection has been established
+    verify_core_connection()
+
+    # Perform the overwrite operation
+    put_response = __perform_overwrite_operation(url, body_html, minor_edit, ignore_exceptions)
+
+    # Check for any 502 errors and try the function one more time if found
+    if put_response.status_code == 502:
+        retry_msg = "Performing the overwrite operation again in an attempt to overcome the 502 " + \
+                    "Bad Gateway / Service Temporarily Unavailable issue that was encountered."
+        print(retry_msg)
+        put_response = __perform_overwrite_operation(url, body_html, minor_edit, ignore_exceptions)
+
+    # Return the response from the PUT query
+    return put_response

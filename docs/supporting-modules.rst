@@ -48,3 +48,11 @@ the library.
 
 .. automodule:: khorosjx.errors.exceptions
     :members:
+
+Handlers Module (khorosjx.errors.handlers)
+----------------------------------------------
+This module contains various error handling functions that are leveraged throughout
+the library.
+
+.. automodule:: khorosjx.errors.handlers
+    :members:

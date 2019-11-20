@@ -233,7 +233,7 @@ def get_request_with_retries(query_url):
 
 
 # Define function to perform a general GET request
-def get_data(endpoint, lookup_value, identifier='id', return_json=False):
+def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_exceptions=False):
     """This function returns data for a specific API endpoint.
 
     :param endpoint: The API endpoint against which to request data (e.g. ``people``, ``contents``, etc.)
@@ -244,9 +244,14 @@ def get_data(endpoint, lookup_value, identifier='id', return_json=False):
     :type identifier: str
     :param return_json: Determines if the data should be returned in default or JSON format (Default: ``False``)
     :type return_json: bool
-    :returns: The API response either as a requests response or in JSON format depending on the return_json value
-    :raises: ValueError
+    :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
+    :type ignore_exceptions: bool
+    :returns: The API response either as a requests response or in JSON format depending on the ``return_json`` value
+    :raises: GETRequestError
     """
+    # Verify that the connection has been established
+    verify_connection()
+
     # Define the endpoint if an appropriate one is supplied
     available_endpoints = ['abuseReports', 'acclaim', 'actions', 'activities', 'addOns', 'announcements', 'attachments',
                            'calendar', 'checkpoints', 'collaborations', 'comments', 'contents', 'deletedObjects', 'dms',
@@ -287,11 +292,42 @@ def get_data(endpoint, lookup_value, identifier='id', return_json=False):
     if response.status_code != 200:
         error_msg = f"The query failed with a {response.status_code} status code and the following error: " + \
                     f"{response.text}"
-        raise ValueError(error_msg)
-        # TODO: Change to a custom exception
+        if ignore_exceptions:
+            print(error_msg)
+        else:
+            raise errors.exceptions.GETRequestError(error_msg)
     if return_json:
         response = response.json()
     return response
 
 
+# Define function to perform a PUT request with supplied JSON data
+def put_request_with_retries(url, json_payload):
+    """This function performs a GET request with a total of 5 retries in case of timeouts or connection issues.
 
+        :param url: The URI to be queried
+        :type url: str
+        :param json_payload: The payload for the PUT request in JSON format
+        :type json_payload: json
+        :returns: The API response from the GET request
+        :raises: ValueError, ConnectionError
+        """
+    retries = 0
+    while retries <= 5:
+        try:
+            response = requests.put(url, data=json.dumps(json_payload, default=str), auth=api_credentials,
+                                    headers={"Content-Type": "application/json", "Accept": "application/json"})
+            break
+        except Exception as put_exception:
+            current_attempt = f"(Attempt {retries} of 5)"
+            error_msg = f"The PUT request has failed with the following exception: {put_exception} {current_attempt}"
+            print(error_msg)
+            retries += 1
+            pass
+    if retries == 6:
+        failure_msg = "The script was unable to complete successfully after five consecutive API timeouts. " + \
+                      "Please run the script again or contact Khoros or Aurea Support for further assistance."
+        print(failure_msg)
+        
+        raise ConnectionError(f"{failure_msg}")
+    return response
