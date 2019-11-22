@@ -11,6 +11,10 @@ Deprecated
 ==========
 * The ``raise_exceptions()`` function is no longer necessary as the exception classes now have default messages.
 
+Developer Changes
+=================
+* Updated the build workflow (``pythonpackage.yml``) to also test Python 3.8 for compatibility.
+
 |
 
 ******
