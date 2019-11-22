@@ -13,9 +13,9 @@ Deprecated
 
 |
 
-*********
-v1.1.0.b0
-*********
+******
+v1.1.0
+******
 **Release Date: 2019-11-22**
 
 Enhancements
