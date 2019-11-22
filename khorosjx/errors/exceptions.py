@@ -68,10 +68,10 @@ class WrongCredentialTypeError(KhorosJXError, TypeError):
 
 class BadCredentialsError(KhorosJXError):
     """This exception is used when the supplied API credentials are incorrect."""
-    def __init__(self, message):
-        self.message = message
-        if self.message == "":
-            self.message = "The API username and password combination is incorrect."
+    def __init__(self, *args, **kwargs):
+        default_msg = "The API username and password combination is incorrect."
+        if not (args or kwargs): args = (default_msg,)
+        super().__init__(*args, **kwargs)
 
 
 # ------------------
