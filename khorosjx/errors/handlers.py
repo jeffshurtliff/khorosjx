@@ -22,6 +22,12 @@ def raise_exception(exception_name):
     :returns: None
     :raises: KhorosJXError
     """
+    # Trigger the deprecation warning for this function
+    warning_msg = "The raise_exception() function will soon be deprecated in a future release once the " + \
+                  "custom exception classes are all updated to have default messages."
+    warnings.warn(warning_msg, PendingDeprecationWarning)
+
+    # Perform the tasks within the function
     for category_list in exceptions.ExceptionGrouping.exception_group_mapping.keys():
         if exception_name in category_list:
             category_exceptions = exceptions.ExceptionGrouping.exception_group_mapping.get(category_list)

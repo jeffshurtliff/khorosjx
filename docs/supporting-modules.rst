@@ -8,6 +8,7 @@ which are listed below.
 * `Classes Module (khorosjx.utils.classes)`_
 * `Exceptions Module (khorosjx.errors.exceptions)`_
 * `Handlers Module (khorosjx.errors.handlers)`_
+* `Tests Module (khorosjx.utils.tests)`_
 
 |
 
@@ -23,6 +24,15 @@ This module includes various utilities to assist in converting dictionaries to J
 formatting timestamps, etc.
 
 .. automodule:: khorosjx.utils.core_utils
+    :members:
+
+Tests Module (khorosjx.utils.tests)
+-------------------------------------------------
+This module includes unit tests for the package that are performed using pytest.
+
+**Test Module Import (khorosjx.utils.tests.test_init_module)**
+
+.. automodule:: khorosjx.utils.tests.test_init_module
     :members:
 
 |
