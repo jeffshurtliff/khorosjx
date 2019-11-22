@@ -5,7 +5,7 @@
 :Usage:          import khorosjx.errors.handlers
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  20 Nov 2019
+:Modified Date:  22 Nov 2019
 """
 
 import warnings
@@ -61,6 +61,8 @@ def check_api_response(response, request_type='get', ignore_exceptions=False):
         if ignore_exceptions:
             warnings.warn(error_msg)
         else:
+            if status_code == 401:
+                raise exceptions.BadCredentialsError
             if request_type.lower() == "get":
                 raise exceptions.GETRequestError(error_msg)
             else:

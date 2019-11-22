@@ -2,6 +2,23 @@
 Change Log
 ==========
 
+v1.1.0.dev2
+===========
+**Release Date: 2019-11-22*
+
+Enhancements
+~~~~~~~~~~~~
+* Added the ``BadCredentialsError`` class to the :ref:`Classes Module (khorosjx.utils.classes)`.
+* Updated the ``check_api_response()`` function in the :ref:`Handlers Module (khorosjx.errors.handlers)` to
+  leverage the ``BadCredentialsError`` exception class.
+* Added the ``convert_dict_list_to_dataframe()`` function to the
+  :ref:`Core Utilities Module (khorosjx.utils.core_utils)`.
+
+Documentation Changes
+~~~~~~~~~~~~~~~~~~~~~
+* Updated the *Supporting Modules* page to reference the new :ref:`Handlers Module (khorosjx.errors.handlers)`.
+
+
 v1.1.0.dev1
 ===========
 **Release Date: 2019-11-22**

@@ -6,12 +6,13 @@
 :Example:        Coming Soon
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  20 Nov 2019
+:Modified Date:  22 Nov 2019
 """
 
 import re
 
 from . import core, users, errors
+from .utils import core_utils
 
 
 # Define function to verify the connection in the core module
@@ -78,11 +79,13 @@ def get_group_info(group_id, return_fields=[], ignore_exceptions=False):
 
 
 # Define function to get information on all security groups
-def get_all_groups(return_fields=[], ignore_exceptions=False):
+def get_all_groups(return_fields=[], return_type='list', ignore_exceptions=False):
     """This function returns information on all security groups found within the environment.
 
     :param return_fields: Specific fields to return if not all of the default fields are needed (Optional)
     :type return_fields: list
+    :param return_type: Determines if the data should be returned in a list or a pandas dataframe (Default: ``list``)
+    :type return_type: str
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A list of dictionaries containing information for each group
@@ -147,7 +150,9 @@ def get_all_groups(return_fields=[], ignore_exceptions=False):
         groups = __get_paginated_groups(return_fields, ignore_exceptions, start_index)
         all_groups = add_to_master_list(groups, all_groups)
 
-    # Return the master list of group dictionaries
+    # Return the data as a master list of group dictionaries or a pandas dataframe
+    if return_type == "dataframe":
+        all_groups = core_utils.convert_dict_list_to_dataframe(all_groups)
     return all_groups
 
 

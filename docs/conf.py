@@ -26,7 +26,7 @@ author = 'Jeff Shurtliff'
 # The short X.Y version
 version = '1.1'
 # The full version, including alpha/beta/rc tags
-release = '1.1.0.dev1'
+release = '1.1.0.dev2'
 
 
 # -- General configuration ---------------------------------------------------

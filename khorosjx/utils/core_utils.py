@@ -6,12 +6,13 @@
 :Example:       ``timestamp = get_timestamp(time_format="delimited")``
 :Created By:    Jeff Shurtliff
 :Last Modified: Jeff Shurtliff
-:Modified Date: 19 Nov 2019
+:Modified Date: 22 Nov 2019
 """
 
 import json
 from datetime import datetime
 
+import pandas as pd
 from dateutil import tz
 
 from .classes import TimeUtils
@@ -99,3 +100,23 @@ def convert_dict_to_json(data):
     data = json.dumps(data)
     data = json.loads(data)
     return data
+
+
+# Define function to convert a list of dictionaries to a pandas dataframe
+def convert_dict_list_to_dataframe(dict_list):
+    # Identify the dataframe column names
+    column_names = []
+    for field_name in dict_list[0].keys():
+        column_names.append(field_name)
+
+    # Identify the data for each column
+    df_data = []
+    for idx in range(0, len(dict_list)):
+        row_data = []
+        for field_value in dict_list[idx].values():
+            row_data.append(field_value)
+        df_data.append(row_data)
+
+    # Create and return the dataframe
+    dataframe = pd.DataFrame(df_data, columns=column_names)
+    return dataframe

@@ -7,6 +7,7 @@ which are listed below.
 * `Core Utilities Module (khorosjx.utils.core_utils)`_
 * `Classes Module (khorosjx.utils.classes)`_
 * `Exceptions Module (khorosjx.errors.exceptions)`_
+* `Handlers Module (khorosjx.errors.handlers)`_
 
 |
 

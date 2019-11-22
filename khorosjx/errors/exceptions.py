@@ -5,7 +5,7 @@
 :Usage:          import khorosjx.errors.exceptions
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  19 Nov 2019
+:Modified Date:  22 Nov 2019
 """
 
 
@@ -64,6 +64,14 @@ class WrongCredentialTypeError(KhorosJXError, TypeError):
     """This exception is used when a username or password is not in string format."""
     def __init__(self, message):
         self.message = message
+
+
+class BadCredentialsError(KhorosJXError):
+    """This exception is used when the supplied API credentials are incorrect."""
+    def __init__(self, message):
+        self.message = message
+        if self.message == "":
+            self.message = "The API username and password combination is incorrect."
 
 
 # ------------------
