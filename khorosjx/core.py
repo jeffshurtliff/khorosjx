@@ -11,11 +11,12 @@
 
 import re
 import json
+import warnings
 
 import requests
 
 from . import errors
-from .utils.classes import Platform
+from .utils.classes import FieldLists, Platform
 
 
 # Define function to get the base API URL
@@ -331,3 +332,30 @@ def put_request_with_retries(url, json_payload):
         
         raise ConnectionError(f"{failure_msg}")
     return response
+
+
+# Define function to get fields from API responses
+def get_fields_from_api_response(json_data, dataset, return_fields=[]):
+    # Define the empty dictionary for data to return
+    fields_data = {}
+
+    # Map the datasets to their respective field lists
+    datasets = {
+        'security_group': FieldLists.security_group_fields
+    }
+
+    # Define the fields that should be returned for the data
+    if len(return_fields) > 0:
+        fields_to_return = return_fields
+    else:
+        # Get the default return fields for the dataset
+        if dataset not in datasets:
+            error_msg = f"The supplied value '{dataset}' is not a valid dataset."
+            raise errors.exceptions.InvalidDatasetError(error_msg)
+        fields_to_return = datasets.get(dataset)
+
+    # Get and return the fields and corresponding values
+    for field in fields_to_return:
+        if field in json_data:
+            fields_data[field] = json_data[field]
+    return fields_data

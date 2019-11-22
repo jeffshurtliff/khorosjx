@@ -54,7 +54,7 @@ def get_group_info(group_id, return_fields=[], ignore_exceptions=False):
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A dictionary with the group information
-    :raises: GETRequestError
+    :raises: GETRequestError, InvalidDatasetError
     """
     # Verify that the core connection has been established
     verify_core_connection()
@@ -66,21 +66,89 @@ def get_group_info(group_id, return_fields=[], ignore_exceptions=False):
     query_uri = f"{base_url}/securityGroups/{group_id}?fields=@all"
     response = core.get_request_with_retries(query_uri)
 
-    # Check that the query was successful
+    # Verify that the query was successful
     successful_response = errors.handlers.check_api_response(response, ignore_exceptions=ignore_exceptions)
 
     # Parse the data if the response was successful
     if successful_response:
         # Determine which fields to return
-        fields_to_return = ['id', 'published', 'updated', 'administratorCount', 'memberCount', 'name',
-                            'description', 'federated']
-        if len(return_fields) > 0:
-            fields_to_return = return_fields
         group_json = response.json()
-        for field in fields_to_return:
-            if field in group_json:
-                group_info[field] = group_json[field]
+        group_info = core.get_fields_from_api_response(group_json, 'security_group', return_fields)
     return group_info
+
+
+# Define function to get information on all security groups
+def get_all_groups(return_fields=[], ignore_exceptions=False):
+    """This function returns information on all security groups found within the environment.
+
+    :param return_fields: Specific fields to return if not all of the default fields are needed (Optional)
+    :type return_fields: list
+    :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
+    :type ignore_exceptions: bool
+    :returns: A list of dictionaries containing information for each group
+    :raises: InvalidDatasetError
+    """
+    def __get_paginated_groups(_return_fields, _ignore_exceptions, _start_index):
+        """This function returns paginated group information. (Up to 100 records at a time)
+
+        :param _return_fields: Specific fields to return if not all of the default fields are needed (Optional)
+        :type _return_fields: list
+        :param _ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
+        :type _ignore_exceptions: bool
+        :param _start_index: The startIndex API value
+        :type _start_index: int, str
+        :returns: A list of dictionaries containing information for each group in the paginated query
+        """
+        # Initialize the empty list for the group information
+        _groups = []
+
+        # Perform the API query to retrieve the group information
+        _query_uri = f"{base_url}/securityGroups?fields=@all&count=100&startIndex={_start_index}"
+        _response = core.get_request_with_retries(_query_uri)
+
+        # Verify that the query was successful
+        successful_response = errors.handlers.check_api_response(_response, ignore_exceptions=_ignore_exceptions)
+
+        if successful_response:
+            # Get the response data in JSON format
+            _paginated_group_data = _response.json()
+            for _group_data in _paginated_group_data['list']:
+                _parsed_data = core.get_fields_from_api_response(_group_data, 'security_group', _return_fields)
+                _groups.append(_parsed_data)
+        return _groups
+
+    def add_to_master_list(_groups, _all_groups):
+        """This function appends all group dictionaries from the paginated query to the master list.
+
+        :param _groups: List of dictionaries from the paginated query
+        :type _groups: list
+        :param _all_groups: Master list of dictionaries containing group information
+        :type _all_groups: list
+        :returns: The master list with the appended data
+        """
+        for _group in _groups:
+            _all_groups.append(_group)
+        return _all_groups
+
+    # Verify that the core connection has been established
+    verify_core_connection()
+
+    # Initialize the empty list for the group information
+    all_groups = []
+
+    # Perform the first query to get up to the first 100 groups
+    start_index = 0
+    groups = __get_paginated_groups(return_fields, ignore_exceptions, start_index)
+    all_groups = add_to_master_list(groups, all_groups)
+
+    # Continue querying for groups until none are returned
+    while len(groups) > 0:
+        start_index += 100
+        groups = __get_paginated_groups(return_fields, ignore_exceptions, start_index)
+        all_groups = add_to_master_list(groups, all_groups)
+
+    # Return the master list of group dictionaries
+    return all_groups
 
 
 # Define function to obtain and return a list of the security group memberships for a user

@@ -17,6 +17,7 @@
 # Base Exception
 # --------------
 
+
 # Define base exception classes
 class KhorosJXError(Exception):
     """This is the base class for Khoros JX exceptions."""
@@ -26,6 +27,7 @@ class KhorosJXError(Exception):
 # ------------------------
 # Module Import Exceptions
 # ------------------------
+
 
 # Define module import exception classes
 class InvalidKhorosJXModuleError(KhorosJXError, ModuleNotFoundError):
@@ -37,6 +39,7 @@ class InvalidKhorosJXModuleError(KhorosJXError, ModuleNotFoundError):
 # -------------------------
 # Authentication Exceptions
 # -------------------------
+
 
 # Define authentication exception classes
 class NoCredentialsError(KhorosJXError, NameError):
@@ -67,6 +70,7 @@ class WrongCredentialTypeError(KhorosJXError, TypeError):
 # Content Exceptions
 # ------------------
 
+
 # Define content exception classes
 class ContentPublishError(KhorosJXError):
     """This exception is used when content is unable to publish successfully."""
@@ -77,6 +81,7 @@ class ContentPublishError(KhorosJXError):
 # ----------------------
 # Generic API Exceptions
 # ----------------------
+
 
 # Define generic REST API exception classes
 class GETRequestError(KhorosJXError):
@@ -90,9 +95,22 @@ class PUTRequestError(KhorosJXError):
     def __init__(self, message):
         self.message = message
 
+
+# --------------------------
+# Generic Non-API Exceptions
+# --------------------------
+
+
+class InvalidDatasetError(KhorosJXError, ValueError):
+    """This exception is used when a supplied dataset is invalid and cannot be found."""
+    def __init__(self, message):
+        self.message = message
+
+
 # ---------------
 # User Exceptions
 # ---------------
+
 
 # Define user exception classes
 class UserQueryError(KhorosJXError, ValueError):

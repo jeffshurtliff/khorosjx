@@ -2,6 +2,16 @@
 Change Log
 ==========
 
+v1.1.0.dev1
+===========
+**Release Date: 2019-11-22**
+
+Enhancements
+~~~~~~~~~~~~
+* Added the ``get_fields_from_api_response()`` function to the :ref:`primary-modules:Core Module (khorosjx.core)`.
+* Updated the ``groups.get_group_info()`` function to leverage the ``core.get_fields_from_api_response()`` function.
+* Added the ``get_all_groups()`` function to the :ref:`primary-modules:Groups Module (khorosjx.groups)`.
+
 v1.1.0.dev0
 ===========
 **Release Date: 2019-11-20**

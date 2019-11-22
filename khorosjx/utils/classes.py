@@ -38,6 +38,13 @@ class Content:
     }
 
 
+# Define a class for lists of JSON fields for various API data sets
+class FieldLists:
+    """This class provides lists of JSON fields for various API data sets."""
+    security_group_fields = ['id', 'published', 'updated', 'administratorCount', 'memberCount', 'name',
+                             'description', 'federated']
+
+
 # Define a class for platform-related lists, dictionaries and other utilities
 class Platform:
     """This class provides various mappings to Jive-related information such as environments, URLs, etc."""
