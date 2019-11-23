@@ -6,7 +6,7 @@
 :Example:       ``timestamp = get_timestamp(time_format="delimited")``
 :Created By:    Jeff Shurtliff
 :Last Modified: Jeff Shurtliff
-:Modified Date: 22 Nov 2019
+:Modified Date: 23 Nov 2019
 """
 
 import sys
