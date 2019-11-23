@@ -2,18 +2,33 @@
 Change Log
 ##########
 
-*****
-vNext
-*****
-**Release Date: TBD**
+******
+v1.1.1
+******
+**Release Date: 2019-11-23**
 
-Deprecated
-==========
-* The ``raise_exceptions()`` function is no longer necessary as the exception classes now have default messages.
+Added
+=====
+* Added default messages to all of the exception classes
+  in the :ref:`supporting-modules:Exceptions Module (khorosjx.errors.exceptions)`.
+* Added docstrings to the ``overwrite_doc_body()`` function
+  in the :ref:`primary-modules:Content Module (khorosjx.content)`.
 
-Developer Changes
-=================
+Changed
+=======
 * Updated the build workflow (``pythonpackage.yml``) to also test Python 3.8 for compatibility.
+* Changed the structure of the change log to match the best practices from
+  `keepachangelog.com <https://keepachangelog.com>`_.
+* Made minor `PEP8 <https://www.python.org/dev/peps/pep-0008/>`_ compliance edits to
+  the :ref:`supporting-modules:Classes Module (khorosjx.utils.classes)`.
+
+Removed
+=======
+* The ``raise_exceptions()`` function is no longer necessary as the exception classes now have
+  default messages and has been removed from the ``khorosjx.errors.__init__`` module and the
+  :ref:`supporting-modules:Handlers Module (khorosjx.errors.handlers)`.
+* Removed the ``ExceptionMapping`` and ``ExceptionGrouping`` classes from the
+  :ref:`supporting-modules:Exceptions Module (khorosjx.errors.exceptions)` as they are no longer used.
 
 |
 
@@ -22,13 +37,13 @@ v1.1.0
 ******
 **Release Date: 2019-11-22**
 
-Enhancements
-============
-Enhancements that are available in this release.
+Added
+=====
+Additions that are available in this release.
 
 Primary Modules
 ---------------
-Enhancements to the `primary modules <primary-modules>`_.
+Additions to the `primary modules <primary-modules>`_.
 
 Core Module
 ^^^^^^^^^^^
@@ -55,7 +70,7 @@ Users Module
 
 Supporting Modules
 ------------------
-Enhancements to the `supporting modules <supporting-modules>`_.
+Additions to the `supporting modules <supporting-modules>`_.
 
 Core Utilities Module
 ^^^^^^^^^^^^^^^^^^^^^
@@ -69,30 +84,31 @@ Exceptions Module
 
 Handlers Module
 ^^^^^^^^^^^^^^^
-* Added the new `supporting-modules:Handlers Module (khorosjx.errors.handlers)` which includes a new
+* Added the new :ref:`supporting-modules:Handlers Module (khorosjx.errors.handlers)` which includes a new
   ``check_api_response()`` function.
 
 Tests Module
 ^^^^^^^^^^^^
-* Created the new `supporting-modules:`Tests Module (khorosjx.utils.tests)` for unit tests to leverage with *pytest*.
+* Created the new :ref:`supporting-modules:Tests Module (khorosjx.utils.tests)` for unit tests to leverage
+  with *pytest*.
 
-Fixed Bugs
-==========
-* Added the ``verify_connection()`` function call to the ``get_data()`` function in the
-  :ref:`primary-modules:Core Module (khorosjx.core)`.
+Changed
+=======
+* Updated the *Supporting Modules* documentation page to reference the new modules.
+* Reformatted the *Change Log* documentation page to follow the
+  `Sphinx Style Guide <https://documentation-style-guide-sphinx.readthedocs.io/en/latest/style-guide.html>`_.
 
 Deprecated
 ==========
 * The ``raise_exception()`` function in the ``khorosjx.errors`` module now displays a DeprecationWarning as it has
   been moved into the new `supporting-modules:Handlers Module (khorosjx.errors.handlers)`.
 * Added a ``PendingDeprecationWarning`` warning on the ``khorosjx.errors.handlers.raise_exception()`` function as it
-  will be deprecated in a future release.  (See `vNext`_)
+  will be deprecated in a future release.  (See `v1.1.1`_)
 
-Documentation Changes
-=====================
-* Updated the *Supporting Modules* page to reference the new modules.
-* Reformatted the *Change Log* page to follow the
-  `Sphinx Style Guide <https://documentation-style-guide-sphinx.readthedocs.io/en/latest/style-guide.html>`_.
+Fixed
+=====
+* Added the ``verify_connection()`` function call to the ``get_data()`` function in the
+  :ref:`primary-modules:Core Module (khorosjx.core)`.
 
 |
 
@@ -101,8 +117,8 @@ v1.0.1.post1
 ************
 **Release Date: 2019-11-19**
 
-Documentation Changes
-=====================
+Changed
+=======
 * Created a new :doc:`introduction <introduction>` page with the existing home page content and added
   a :ref:`index:Navigation` to the home page.
 * Changed all :doc:`auxilliary modules <supporting-modules>` references to be
@@ -117,12 +133,11 @@ v1.0.1
 ******
 **Release Date: 2019-11-19**
 
-Developer Changes
-=================
+Changed
+=======
 * Removed the version from the individual module header blocks as all will adhere to the primary versioning.
 
 
-Fixed Bugs
-==========
+Fixed
+=====
 * Added missing ``from . import core`` in the ``admin``, ``groups`` and ``spaces`` modules.
-
