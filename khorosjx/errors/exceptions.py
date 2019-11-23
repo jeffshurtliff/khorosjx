@@ -122,10 +122,29 @@ class GETRequestError(KhorosJXError):
         super().__init__(*args, **kwargs)
 
 
+class POSTRequestError(KhorosJXError):
+    """This exception is used for generic POST request errors when there isn't a more specific exception."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The POST request did not return a successful response."
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args, **kwargs)
+
+
 class PUTRequestError(KhorosJXError):
     """This exception is used for generic PUT request errors when there isn't a more specific exception."""
     def __init__(self, *args, **kwargs):
         default_msg = "The PUT request did not return a successful response."
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args, **kwargs)
+
+
+class InvalidLookupTypeError(KhorosJXError):
+    """This exception is used when an invalid API lookup type is provided."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The supplied lookup type for the API is not recognized. (Examples of valid " + \
+                      "lookup types include 'id' and 'email')"
         if not (args or kwargs):
             args = (default_msg,)
         super().__init__(*args, **kwargs)
@@ -140,6 +159,15 @@ class InvalidDatasetError(KhorosJXError, ValueError):
     """This exception is used when a supplied dataset is invalid and cannot be found."""
     def __init__(self, *args, **kwargs):
         default_msg = "The supplied value is not a valid dataset."
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args, **kwargs)
+
+
+class InvalidScopeError(KhorosJXError, ValueError):
+    """This exception is used when a supplied scope is invalid and cannot be found."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The supplied value is not a valid scope."
         if not (args or kwargs):
             args = (default_msg,)
         super().__init__(*args, **kwargs)
