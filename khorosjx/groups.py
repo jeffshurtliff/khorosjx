@@ -3,16 +3,19 @@
 :Module:         khorosjx.groups
 :Synopsis:       Collection of functions relating to security groups
 :Usage:          ``from khorosjx import groups``
-:Example:        Coming Soon
+:Example:        ``group_info = groups.get_group_info(1051)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  22 Nov 2019
+:Modified Date:  23 Nov 2019
 """
 
 import re
 
+import requests
+
 from . import core, users, errors
 from .utils import core_utils
+from .utils.core_utils import eprint
 
 
 # Define function to verify the connection in the core module
@@ -216,3 +219,134 @@ def get_user_memberships(user_lookup, return_values='name', ignore_exceptions=Fa
 
     # Return the memberships list whether populated or empty
     return memberships
+
+
+def check_user_membership(user_memberships, groups_to_check, scope='any', ignore_exceptions=False):
+    """This function checks if a user belongs to one or more security groups.
+
+    :param user_memberships: A list of security groups to which the user belongs
+    :type user_memberships: list, tuple
+    :param groups_to_check: One or more groups (name or ID) against which to compare the user's memberships
+    :type groups_to_check: list, tuple, str
+    :param scope: Determines the result returned for the comparison (Options: ``any``, ``all`` or ``each``)
+    :type scope: str
+    :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
+    :type ignore_exceptions: bool
+    :returns: Returns a Boolean value for ``any`` and ``all`` scopes, or a list of Boolean values for ``each``
+    :raises: InvalidScopeError
+    """
+    # Convert the groups_to_check argument to a tuple if a string was provided
+    if type(groups_to_check) == str:
+        # Check for a comma-separated string
+        if ',' in groups_to_check:
+            if ', ' in groups_to_check:
+                groups_to_check = ', '.join(groups_to_check)
+            else:
+                groups_to_check = ','.join(groups_to_check)
+            tuple(groups_to_check)
+        else:
+            groups_to_check = (groups_to_check, )
+
+    # Check to ensure that a valid scope is defined
+    scope_types = ['any', 'all', 'each']
+    if scope not in scope_types:
+        if ignore_exceptions:
+            error_msg = f"The supplied scope '{scope}' is not recognized and the default scope of 'any' will be used."
+            eprint(error_msg)
+        else:
+            raise errors.exceptions.InvalidScopeError
+
+    # Check the groups supplied against the list of memberships
+    groups_found = []
+    all_results = []
+    for group in groups_to_check:
+        if group in user_memberships:
+            groups_found.append(group)
+            all_results.append(True)
+        else:
+            all_results.append(False)
+
+    # Define and return the Boolean response based on the scope
+    result = False
+    if scope == "any":
+        if len(groups_found) > 0:
+            result = True
+    elif scope == "all":
+        if len(groups_found) == len(groups_to_check):
+            result = True
+    elif scope == "each":
+        result = all_results
+    return result
+
+
+# Define function to add a user to a security group
+def add_user_to_group(group_id, user_value, lookup_type="id", return_mode="none",
+                      print_results=True, ignore_exceptions=True):
+    """This function adds a user to a security group.
+
+    :param group_id: The Group ID of the security group to which the user should be added
+    :type group_id: int, str
+    :param user_value: The value with which to look up the user (e.g. User ID, email address)
+    :type user_value: int, str
+    :param lookup_type: Defines whether the user value is a User ID or an email address (Default: ``id``)
+    :type lookup_type: str
+    :param return_mode: Determines what - if anything- should be returned by the function (Default: ``none``)
+    :type return_mode: str
+    :param print_results: Determines whether or not all results (including success messages) should be printed onscreen
+    :type print_results: bool
+    :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``True``)
+    :type ignore_exceptions: bool
+    :returns: The resulting status code, a Boolean value indicating the success of the operation, or nothing
+    :raises: POSTRequestError
+    """
+    # Verify that the core connection has been established
+    verify_core_connection()
+
+    # Define the default Boolean return value
+    added_to_group = False
+
+    # Obtain the Jive ID if an email address is provided for the user information
+    valid_lookup_types = ('id', 'email')
+    if lookup_type not in valid_lookup_types:
+        if ignore_exceptions:
+            error_msg = "The supplied lookup type for the API is not recognized. (Examples of valid " + \
+                        "lookup types include 'id' and 'email')"
+            eprint(error_msg)
+        else:
+            raise errors.exceptions.InvalidLookupTypeError
+    if lookup_type == "email":
+        user_value = users.get_user_id(user_value)
+
+    # Define the query parameters
+    query_uri = f"{base_url}/securityGroups/{group_id}/members"
+    user_uri = f'["{base_url}/people/{user_value}"]'
+
+    # Add the user to the group
+    response = requests.post(query_uri, data=user_uri, auth=api_credentials,
+                             headers={"Content-Type": "application/json", "Accept": "application/json"})
+    added_to_group = errors.handlers.check_api_response(response, 'post', ignore_exceptions=ignore_exceptions)
+
+    # The remainder of the function assumes exceptions are being ignored
+    if added_to_group:      # True if status code == 204
+        if print_results:
+            success_msg = f"The user (User ID {user_value}) has been added successfully to Group ID {group_id}."
+            print(success_msg)
+    else:
+        fail_msg = f"The user (User ID {user_value}) failed to be added to Group ID " + \
+                   f"{group_id} with a {response.status_code}" + \
+                   f" status code and the following message: {response.text}"
+        eprint(fail_msg)
+
+    # Define what is returned at the end of the function
+    if return_mode.lower() == "status":
+        try:
+            return response.status_code
+        except UnboundLocalError:
+            return 500
+    elif return_mode.lower() == "bool":
+        try:
+            return added_to_group
+        except UnboundLocalError:
+            return False
+    else:
+        return
