@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="khorosjx",
-    version="1.1.1",
+    version="1.2.0.dev0",
     author="Jeff Shurtliff",
     author_email="jeff.shurtliff@rsa.com",
     description="Useful tools and utilities to assist in managing a Khoros JX (formerly Jive-x) or Jive-n community.",
@@ -23,7 +23,9 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Topic :: Communications",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content :: Content Management System",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content :: Message Boards",
