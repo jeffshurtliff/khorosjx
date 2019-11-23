@@ -2,42 +2,16 @@
 """
 :Module:         khorosjx.errors.handlers
 :Synopsis:       Collection of error handler functions relating to the khorosjx library
-:Usage:          import khorosjx.errors.handlers
+:Usage:          ``from khorosjx.errors import handlers``
+:Example:        ``successful_response = check_api_response(response)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  22 Nov 2019
+:Modified Date:  23 Nov 2019
 """
 
 import warnings
 
 from . import exceptions
-
-
-# Define function to raise a Khoros JX exception
-def raise_exception(exception_name):
-    """This function raises a custom exception with a specific error message.
-
-    :param exception_name: A nickname for the exception to be raised
-    :type exception_name: str
-    :returns: None
-    :raises: KhorosJXError
-    """
-    # Trigger the deprecation warning for this function
-    warning_msg = "The raise_exception() function will soon be deprecated in a future release once the " + \
-                  "custom exception classes are all updated to have default messages."
-    warnings.warn(warning_msg, PendingDeprecationWarning)
-
-    # Perform the tasks within the function
-    for category_list in exceptions.ExceptionGrouping.exception_group_mapping.keys():
-        if exception_name in category_list:
-            category_exceptions = exceptions.ExceptionGrouping.exception_group_mapping.get(category_list)
-            exception_to_raise, error_msg = category_exceptions.get(exception_name)
-            raise exception_to_raise(error_msg)
-        else:
-            print(f"The exception name '{exception_name}' was not recognized and therefore a generic exception " +
-                  "will be raised instead.")
-            raise exceptions.KhorosJXError("An exception was raised for the current operation.")
-    return
 
 
 # Define function to check an API response status code for an error
