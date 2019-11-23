@@ -2,11 +2,10 @@
 """
 Module:         khorosjx.utils.classes
 Synopsis:       Collection of classes relating to the khorosjx library
-Usage:          from khorosjx.utils.classes import Users
+Usage:          ``from khorosjx.utils.classes import Users``
 Created By:     Jeff Shurtliff
 Last Modified:  Jeff Shurtliff
-Modified Date:  11 Nov 2019
-Version:        1.0.0
+Modified Date:  23 Nov 2019
 """
 
 
