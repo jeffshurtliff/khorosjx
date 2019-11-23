@@ -2,6 +2,46 @@
 Change Log
 ##########
 
+***********
+v1.2.0.dev0
+***********
+**Release Date: TBD**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the `primary modules <primary-modules>`_.
+
+Groups Module
+^^^^^^^^^^^^^
+* Added the ``add_user_to_group()`` function to the :ref:`primary-modules:Groups Module (khorosjx.groups)`.
+* Added the ``check_user_membership()`` function to the :ref:`primary-modules:Groups Module (khorosjx.groups)`.
+
+-----
+
+Supporting Modules
+------------------
+Additions to the `supporting modules <supporting-modules>`_.
+
+Core Utilities Module
+^^^^^^^^^^^^^^^^^^^^^
+* Added the ``eprint()`` function to the :ref:`primary-modules:Core Module (khorosjx.core)` to print error messages.
+
+Exceptions Module
+^^^^^^^^^^^^^^^^^
+* Added the ``POSTRequestError``, ``InvalidScopeError`` and ``InvalidLookupTypeError`` exception classes to the
+  :ref:`supporting-modules:Exceptions Module (khorosjx.errors.exceptions)`.
+
+Changed
+=======
+* Updated the classifiers in ``setup.py`` to specifically reference Python 3.6, 3.7 and 3.8.
+* Expanded the functionality of the ``check_api_response()`` function in the
+  :ref:`supporting-modules:Handlers Module (khorosjx.errors.handlers)`.
+
+|
+
 ******
 v1.1.1
 ******
