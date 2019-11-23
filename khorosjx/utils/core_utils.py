@@ -18,6 +18,13 @@ from dateutil import tz
 from .classes import TimeUtils
 
 
+# Print an error message to stderr instead of stdout
+def eprint(*args, **kwargs):
+    """This function behaves the same as the ``print()`` function but is leveraged to print errors to ``sys.stderr``."""
+    print(*args, file=sys.stderr, **kwargs)
+    return
+
+
 # Define function to get the current timestamp
 def get_timestamp(time_format="split"):
     """This function obtains the current timestamp in the local timezone.
