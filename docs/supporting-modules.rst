@@ -27,7 +27,7 @@ formatting timestamps, etc.
     :members:
 
 Tests Module (khorosjx.utils.tests)
--------------------------------------------------
+-----------------------------------
 This module includes unit tests for the package that are performed using pytest.
 
 **Test Module Import (khorosjx.utils.tests.test_init_module)**
@@ -61,7 +61,7 @@ the library.
     :members:
 
 Handlers Module (khorosjx.errors.handlers)
-----------------------------------------------
+------------------------------------------
 This module contains various error handling functions that are leveraged throughout
 the library.
 
