@@ -6,7 +6,7 @@
 :Example:        khorosjx.core.connect(base_url, credentials)
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  19 Nov 2019
+:Modified Date:  23 Nov 2019
 """
 
 # Define all modules that will be imported with the "import *" method
@@ -54,5 +54,5 @@ def init_module(*args):
         elif mod_entry == "users":
             from . import users
         else:
-            errors.raise_exception('invalid_module')
+            raise errors.exceptions.InvalidKhorosJXModuleError
     return

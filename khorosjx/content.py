@@ -6,7 +6,7 @@
 :Example:        ``content_id = content.get_content_id(url, 'discussion')``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  19 Nov 2019
+:Modified Date:  23 Nov 2019
 """
 
 import re
@@ -96,10 +96,33 @@ def get_content_id(url, content_type="document"):
 
 # Define function to overwrite the body of a document
 def overwrite_doc_body(url, body_html, minor_edit=True, ignore_exceptions=False):
-    # TODO: Add docstrings
+    """This function overwrites the body of a document with new HTML content.
+
+    :param url: THe URL of the document to be updated
+    :type url: str
+    :param body_html: The new HTML body to replace the existing document body
+    :param minor_edit: Determines whether the *Minor Edit* flag should be set (Default: ``True``)
+    :type minor_edit: bool
+    :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
+    :type ignore_exceptions: bool
+    :returns: The response of the PUT request used to update the document
+    :raises: ContentPublishError
+    """
+    # TODO: Verify and add the data type for the body_html argument in the docstring above and below
     # Define function to perform the overwrite operation
     def __perform_overwrite_operation(_url, _body_html, _minor_edit, _ignore_exceptions):
-        # TODO: Add docstrings
+        """This function performs the actual overwrite operation on the document.
+
+        :param _url: The URI for the API request
+        :type _url: str
+        :param _body_html: The new HTML body to replace the existing document body
+        :param _minor_edit: Determines whether the *Minor Edit* flag should be set (Default: ``True``)
+        :type _minor_edit: bool
+        :param _ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
+        :type _ignore_exceptions: bool
+        :returns: The response of the PUT request used to update the document
+        :raises: ContentPublishError
+        """
         # Define the script name, Content ID and URI
         _content_id = get_content_id(_url)
         _content_url = f"{base_url}/contents/{_content_id}"

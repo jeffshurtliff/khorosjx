@@ -6,7 +6,7 @@
 :Example:        ``user_info = khorosjx.users.get_people_followed(user_id)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  19 Nov 2019
+:Modified Date:  23 Nov 2019
 """
 
 import json
@@ -242,9 +242,9 @@ def get_people_followed(user_id, ignore_exceptions=False, return_type=list, star
                 _following_data = core_utils.convert_dict_to_json(_empty_response)
             else:
                 if _response.status_code == 404:
-                    errors.raise_exception('user_not_found')
+                    raise errors.exceptions.UserNotFoundError
                 else:
-                    errors.raise_exception('user_query_error')
+                    raise errors.exceptions.UserQueryError
         return _following_data
 
     # Verify that the core connection has been established

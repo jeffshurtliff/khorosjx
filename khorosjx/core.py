@@ -6,7 +6,7 @@
 :Example:        ``user_info = khorosjx.core.get_data('people', 'john.doe@example.com', 'email')``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  19 Nov 2019
+:Modified Date:  22 Nov 2019
 """
 
 import re
@@ -69,11 +69,11 @@ def set_credentials(credentials):
     # Ensure the supplied data can be leveraged and then define the global variable
     if len(credentials) != 2:
         if len(credentials) == 1:
-            errors.raise_exception('missing_username_or_password')
+            raise errors.exceptions.IncompleteCredentialsError
         else:
-            errors.raise_exception('credentials_unpacking_error')
+            raise errors.exceptions.CredentialsUnpackingError
     elif (type(credentials[0]) != str) or (type(credentials[1]) != str):
-        errors.raise_exception('credential_type_error')
+        raise errors.exceptions.WrongCredentialTypeError
     api_credentials = credentials
     return
 
@@ -104,7 +104,7 @@ def verify_connection():
         base_url
         api_credentials
     except NameError:
-        errors.raise_exception('no_credentials')
+        raise errors.exceptions.NoCredentialsError
     return
 
 
