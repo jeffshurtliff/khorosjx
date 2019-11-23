@@ -12,6 +12,7 @@
 import warnings
 
 from . import exceptions
+from ..utils.core_utils import eprint
 
 
 # Define function to check an API response status code for an error
@@ -25,27 +26,34 @@ def check_api_response(response, request_type='get', ignore_exceptions=False):
     :param ignore_exceptions: Determines whether or not exceptions should be ignored and not raised (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A Boolean value indicating whether or not the API request was deemed successful
-    :raises: GETRequestError
+    :raises: GETRequestError, POSTRequestError, PUTRequestError, BadCredentialsError
     """
+    def __raise_exception_for_status_code(_status_code, _request_type, _result_msg=""):
+        if _status_code == 401:
+            raise exceptions.BadCredentialsError
+        if _request_type.lower() == "put":
+            raise exceptions.PUTRequestError(_result_msg)
+        elif _request_type.lower() == "post":
+            raise exceptions.POSTRequestError(_result_msg)
+        else:
+            raise exceptions.GETRequestError(_result_msg)
+
     # Define the default return status
     successful_response = True
 
     # Define the status code and response message from the API response
     status_code = response.status_code
     message = response.text
+    result_msg = f"The API request returned a {status_code} status code with the following message: {message}"
 
     # Check if the API response was successful
-    # TODO: Add support for other request types (e.g. PUT)
-    if request_type.lower() == "get" and status_code != 200:
-        error_msg = f"The API request returned a {status_code} status code with the following message: {message}"
+    if (request_type.lower() == "get" and status_code != 200) or \
+       (request_type.lower() == "post" and status_code != 204):
+        # TODO: Add conditional above for PUT requests
+        # Print an error or raise an exception depending on the ignore_exceptions value
         if ignore_exceptions:
-            warnings.warn(error_msg)
+            eprint(result_msg)
         else:
-            if status_code == 401:
-                raise exceptions.BadCredentialsError
-            if request_type.lower() == "get":
-                raise exceptions.GETRequestError(error_msg)
-            else:
-                raise exceptions.PUTRequestError(error_msg)
+            __raise_exception_for_status_code(status_code, request_type, result_msg)
         successful_response = False
     return successful_response
