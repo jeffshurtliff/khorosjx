@@ -316,6 +316,49 @@ def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_
     return response
 
 
+# Define internal function to perform API requests (PUT or POST) with JSON payload
+def __api_request_with_payload(_url, _json_payload, _request_type):
+    _retries = 0
+    while _retries <= 5:
+        try:
+            if _request_type.lower() == "put":
+                _response = requests.put(_url, data=json.dumps(_json_payload, default=str), auth=api_credentials,
+                                         headers={"Content-Type": "application/json", "Accept": "application/json"})
+            elif _request_type.lower() == "post":
+                _response = requests.post(_url, data=json.dumps(_json_payload, default=str), auth=api_credentials,
+                                          headers={"Content-Type": "application/json", "Accept": "application/json"})
+            else:
+                raise errors.exceptions.InvalidRequestTypeError
+            break
+        except Exception as _api_exception:
+            _current_attempt = f"(Attempt {_retries} of 5)"
+            _error_msg = f"The {_request_type.upper()} request has failed with the following exception: " + \
+                         f"{_api_exception} {_current_attempt}"
+            print(_error_msg)
+            _retries += 1
+            pass
+    if _retries == 6:
+        _failure_msg = "The script was unable to complete successfully after five consecutive API timeouts. " + \
+                       "Please run the script again or contact Khoros or Aurea Support for further assistance."
+        raise errors.exceptions.APIConnectionError(_failure_msg)
+    return _response
+
+
+# Define function to perform a POST request with supplied JSON data
+def post_request_with_retries(url, json_payload):
+    """This function performs a POST request with a total of 5 retries in case of timeouts or connection issues.
+
+        :param url: The URI to be queried
+        :type url: str
+        :param json_payload: The payload for the POST request in JSON format
+        :type json_payload: json
+        :returns: The API response from the POST request
+        :raises: ValueError, APIConnectionError
+        """
+    response = __api_request_with_payload(url, json_payload, 'post')
+    return response
+
+
 # Define function to perform a PUT request with supplied JSON data
 def put_request_with_retries(url, json_payload):
     """This function performs a GET request with a total of 5 retries in case of timeouts or connection issues.
@@ -324,27 +367,10 @@ def put_request_with_retries(url, json_payload):
         :type url: str
         :param json_payload: The payload for the PUT request in JSON format
         :type json_payload: json
-        :returns: The API response from the GET request
-        :raises: ValueError, ConnectionError
+        :returns: The API response from the PUT request
+        :raises: ValueError, APIConnectionError
         """
-    retries = 0
-    while retries <= 5:
-        try:
-            response = requests.put(url, data=json.dumps(json_payload, default=str), auth=api_credentials,
-                                    headers={"Content-Type": "application/json", "Accept": "application/json"})
-            break
-        except Exception as put_exception:
-            current_attempt = f"(Attempt {retries} of 5)"
-            error_msg = f"The PUT request has failed with the following exception: {put_exception} {current_attempt}"
-            print(error_msg)
-            retries += 1
-            pass
-    if retries == 6:
-        failure_msg = "The script was unable to complete successfully after five consecutive API timeouts. " + \
-                      "Please run the script again or contact Khoros or Aurea Support for further assistance."
-        print(failure_msg)
-        
-        raise ConnectionError(f"{failure_msg}")
+    response = __api_request_with_payload(url, json_payload, 'put')
     return response
 
 
