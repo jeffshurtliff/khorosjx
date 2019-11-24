@@ -140,6 +140,16 @@ class PUTRequestError(KhorosJXError):
         super().__init__(*args, **kwargs)
 
 
+class InvalidRequestTypeError(KhorosJXError):
+    """This exception is used when an invalid API request type is provided."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The supplied request type for the API is not recognized. (Examples of valid " + \
+                      "request types include 'POST' and 'PUT')"
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args, **kwargs)
+
+
 class InvalidLookupTypeError(KhorosJXError):
     """This exception is used when an invalid API lookup type is provided."""
     def __init__(self, *args, **kwargs):
