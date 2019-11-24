@@ -2,30 +2,9 @@
 Change Log
 ##########
 
-***********
-v1.2.0.dev1
-***********
-**Release Date: TBD**
-
-Added
-=====
-* Added the ``InvalidEndpointError`` and ``APIConnectionError`` exception classes to the
-  :ref:`supporting-modules:Exceptions Module (khorosjx.errors.exceptions)`.
-
-Changed
-=======
-* Updated the ``get_data()`` function in the :ref:`primary-modules:Core Module (khorosjx.core)` to accept ``username``
-  as an identifier for the ``people`` endpoint.
-* Updated the ``get_request_with_retries()`` function in the :ref:`primary-modules:Core Module (khorosjx.core)`
-  to include the ``return_json`` optional argument. (Disabled by default)
-* Updated the ``get_user_id()`` function in the :ref:`primary-modules:Users Module (khorosjx.users)` to accept a
-  username as well as an email address.
-
-|
-
-***********
-v1.2.0.dev0
-***********
+******
+v1.2.0
+******
 **Release Date: 2019-11-24**
 
 Added
@@ -48,18 +27,67 @@ Additions to the `supporting modules <supporting-modules>`_.
 
 Core Utilities Module
 ^^^^^^^^^^^^^^^^^^^^^
-* Added the ``eprint()`` function to the :ref:`primary-modules:Core Module (khorosjx.core)` to print error messages.
+* Added the ``eprint()`` function to the :ref:`supporting-modules:Core Utilities Module (khorosjx.utils.core_utils)`
+  to print error messages to stderr and onscreen.
 
 Exceptions Module
 ^^^^^^^^^^^^^^^^^
-* Added the ``POSTRequestError``, ``InvalidScopeError`` and ``InvalidLookupTypeError`` exception classes to the
+* Added the ``POSTRequestError``, ``InvalidScopeError``, ``InvalidLookupTypeError``, ``InvalidEndpointError`` and
+  ``APIConnectionError`` exception classes to the
   :ref:`supporting-modules:Exceptions Module (khorosjx.errors.exceptions)`.
+
+-----
+
+Documentation
+-------------
+* Added the :doc:`Core Functionality <core-functionality>` page with instructions on leveraging the core
+  functionality of the library. (Page is still a work in progress)
+* Added the :doc:`Managing Users <managing-users>` page with instructions on managing users by leveraging
+  the library. (Page is still a work in progress)
+* Added the :doc:`Basic Usage <basic-usage>` page with the intent of inserting it into more than one page.
 
 Changed
 =======
+
+General
+-------
 * Updated the classifiers in ``setup.py`` to specifically reference Python 3.6, 3.7 and 3.8.
+
+-----
+
+Primary Modules
+---------------
+Changes to existing functions in the `primary modules <primary-modules>`_.
+
+Core Module
+^^^^^^^^^^^
+* Updated the ``get_data()`` function in the :ref:`primary-modules:Core Module (khorosjx.core)` to accept ``username``
+  as an identifier for the ``people`` endpoint.
+* Updated the ``get_request_with_retries()`` function in the :ref:`primary-modules:Core Module (khorosjx.core)`
+  to include the ``return_json`` optional argument. (Disabled by default)
+
+Users Module
+^^^^^^^^^^^^
+* Updated the ``get_user_id()`` function in the :ref:`primary-modules:Users Module (khorosjx.users)` to accept a
+  username as well as an email address.
+
+-----
+
+Supporting Modules
+------------------
+Changes to existing functions in the `supporting modules <supporting-modules>`_.
+
+Handlers Module
+^^^^^^^^^^^^^^^
 * Expanded the functionality of the ``check_api_response()`` function in the
   :ref:`supporting-modules:Handlers Module (khorosjx.errors.handlers)`.
+
+-----
+
+Documentation
+-------------
+* Updated the :doc:`Introduction <introduction>` page to insert the :ref:`introduction:Basic Usage` content.
+* Added the :doc:`Basic Usage <basic-usage>` page with the intent of inserting it into more than one page.
 
 |
 
