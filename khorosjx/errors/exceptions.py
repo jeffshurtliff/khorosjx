@@ -150,6 +150,25 @@ class InvalidLookupTypeError(KhorosJXError):
         super().__init__(*args, **kwargs)
 
 
+class InvalidEndpointError(KhorosJXError):
+    """This exception is used when an invalid API endpoint / service is provided."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The supplied endpoint for the API is not recognized. (Examples of valid " + \
+                      "lookup types include 'people' and 'contents')"
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args, **kwargs)
+
+
+class APIConnectionError(KhorosJXError):
+    """This exception is used when the API query could not be completed due to connection aborts and/or timeouts."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The API query could not be completed due to connection aborts and/or timeouts."
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args, **kwargs)
+
+
 # --------------------------
 # Generic Non-API Exceptions
 # --------------------------

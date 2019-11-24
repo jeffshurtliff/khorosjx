@@ -8,10 +8,12 @@ Table of Contents
 
 .. toctree::
 
-   introduction
-   primary-modules
-   supporting-modules
-   changelog
+    introduction
+    core-functionality
+    managing-users
+    primary-modules
+    supporting-modules
+    changelog
 
 Indices and tables
 ==================

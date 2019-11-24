@@ -3,9 +3,30 @@ Change Log
 ##########
 
 ***********
-v1.2.0.dev0
+v1.2.0.dev1
 ***********
 **Release Date: TBD**
+
+Added
+=====
+* Added the ``InvalidEndpointError`` and ``APIConnectionError`` exception classes to the
+  :ref:`supporting-modules:Exceptions Module (khorosjx.errors.exceptions)`.
+
+Changed
+=======
+* Updated the ``get_data()`` function in the :ref:`primary-modules:Core Module (khorosjx.core)` to accept ``username``
+  as an identifier for the ``people`` endpoint.
+* Updated the ``get_request_with_retries()`` function in the :ref:`primary-modules:Core Module (khorosjx.core)`
+  to include the ``return_json`` optional argument. (Disabled by default)
+* Updated the ``get_user_id()`` function in the :ref:`primary-modules:Users Module (khorosjx.users)` to accept a
+  username as well as an email address.
+
+|
+
+***********
+v1.2.0.dev0
+***********
+**Release Date: 2019-11-24**
 
 Added
 =====

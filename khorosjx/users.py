@@ -6,7 +6,7 @@
 :Example:        ``user_info = khorosjx.users.get_people_followed(user_id)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  23 Nov 2019
+:Modified Date:  24 Nov 2019
 """
 
 import json
@@ -108,15 +108,21 @@ def parse_user_fields(json_data):
     return user_info
 
 
-# Define function to get someone's User ID when provided with their email address
-def get_user_id(email):
-    """This function obtains the User ID for a user by querying the API against the user's email address.
+# Define function to get someone's User ID when provided with their email address or username
+def get_user_id(lookup_value, lookup_type='email'):
+    """This function obtains the User ID for a user by querying the API against the user's email address or username.
 
-    :param email: Email address of the user
-    :type email: str
+    :param lookup_value: Email address or username of the user
+    :type lookup_value: str
+    :param lookup_type: Determines if the lookup value is an ``email`` or ``username`` (Default: ``email``)
+    :type lookup_type: str
     :returns: User ID for the user
+    :raises: InvalidLookupTypeError, GETRequestError
     """
-    user_data = core.get_data('people', email, 'email', return_json=True)
+    accepted_lookup_types = ('email', 'username')
+    if lookup_type not in accepted_lookup_types:
+        raise errors.exceptions.InvalidLookupTypeError
+    user_data = core.get_data('people', lookup_value, lookup_type, return_json=True)
     user_id = user_data['id']
     return user_id
 

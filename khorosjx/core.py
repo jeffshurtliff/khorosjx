@@ -6,7 +6,7 @@
 :Example:        ``user_info = khorosjx.core.get_data('people', 'john.doe@example.com', 'email')``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  22 Nov 2019
+:Modified Date:  24 Nov 2019
 """
 
 import re
@@ -16,6 +16,7 @@ import warnings
 import requests
 
 from . import errors
+from .utils.core_utils import eprint, convert_dict_to_json
 from .utils.classes import FieldLists, Platform
 
 
@@ -203,12 +204,14 @@ def get_platform_version():
 
 
 # Define function to perform a GET request with retries
-def get_request_with_retries(query_url):
+def get_request_with_retries(query_url, return_json=False):
     """This function performs a GET request with a total of 5 retries in case of timeouts or connection issues.
 
     :param query_url: The URI to be queried
     :type query_url: str
-    :returns: The API response from the GET request
+    :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``False``)
+    :type return_json: bool
+    :returns: The API response from the GET request (optionally in JSON format)
     :raises: ValueError, TypeError, ConnectionError
     """
     # Verify that the connection has been established
@@ -230,6 +233,10 @@ def get_request_with_retries(query_url):
         failure_msg = "The API call was unable to complete successfully after five consecutive API timeouts " + \
                       "and/or failures. Please call the function again or contact Khoros Support."
         raise ConnectionError(failure_msg)
+
+    # Convert to JSON if specified
+    if return_json:
+        response = response.json()
     return response
 
 
@@ -267,23 +274,27 @@ def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_
     if endpoint in available_endpoints:
         endpoint_url = f"{base_url}/{endpoint}"
     else:
-        error_msg = f"The endpoint '{endpoint}' is unrecognized. The function cannot be performed."
-        raise ValueError(error_msg)
+        raise errors.exceptions.InvalidEndpointError
 
     # Define the identifier type for the lookup value
     if identifier == "id":
         query_url = f"{endpoint_url}/{lookup_value}"
-    elif identifier == "email":
-        if endpoint == "people":
-            query_url = f"{endpoint_url}/email/{lookup_value}"
+    elif identifier == "email" or identifier == "username":
+        invalid_endpoint_msg = f"The identifier '{identifier}' is only accepted with the people endpoint."
+        if endpoint != "people":
+            raise errors.exceptions.InvalidLookupTypeError(invalid_endpoint_msg)
         else:
-            error_msg = f"The identifier '{identifier}' is only accepted with the people endpoint."
-            raise ValueError(error_msg)
+            if identifier == "email":
+                query_url = f"{endpoint_url}/email/{lookup_value}"
+            elif identifier == "username":
+                query_url = f"{endpoint_url}/username/{lookup_value}"
     else:
-        error_msg = f"The identifier '{identifier}' is unrecognized. " + \
-                    "The function will attempt to use the default 'id' identifier."
-        print(error_msg)
-        identifier = "id"
+        unrecognized_endpoint_msg = f"The identifier '{identifier}' is unrecognized."
+        if not ignore_exceptions:
+            raise errors.exceptions.InvalidLookupTypeError(unrecognized_endpoint_msg)
+        unrecognized_endpoint_retry_msg = f"{unrecognized_endpoint_msg} " + \
+                                          "The function will attempt to use the default 'id' identifier."
+        eprint(unrecognized_endpoint_retry_msg)
         query_url = f"{endpoint_url}/{lookup_value}"
 
     # Perform the GET request with retries to account for any timeouts
@@ -295,6 +306,9 @@ def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_
                     f"{response.text}"
         if ignore_exceptions:
             print(error_msg)
+            if return_json:
+                empty_json = {}
+                response = convert_dict_to_json(empty_json)
         else:
             raise errors.exceptions.GETRequestError(error_msg)
     if return_json:
