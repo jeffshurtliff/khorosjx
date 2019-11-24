@@ -14,6 +14,11 @@ Primary Modules
 ---------------
 Additions to the `primary modules <primary-modules>`_.
 
+Core Module
+^^^^^^^^^^^
+* Added the internal ``__api_request_with_payload()`` function to leverage for both POST and PUT requests.
+* Added the ``post_request_with_requests()`` function for POST requests, which leverages the internal function above.
+
 Groups Module
 ^^^^^^^^^^^^^
 * Added the ``add_user_to_group()`` function to the :ref:`primary-modules:Groups Module (khorosjx.groups)`.
@@ -32,8 +37,8 @@ Core Utilities Module
 
 Exceptions Module
 ^^^^^^^^^^^^^^^^^
-* Added the ``POSTRequestError``, ``InvalidScopeError``, ``InvalidLookupTypeError``, ``InvalidEndpointError`` and
-  ``APIConnectionError`` exception classes to the
+* Added the ``POSTRequestError``, ``InvalidScopeError``, ``InvalidLookupTypeError``, ``InvalidEndpointError``,
+  ``InvalidRequestTypeError`` and ``APIConnectionError`` exception classes to the
   :ref:`supporting-modules:Exceptions Module (khorosjx.errors.exceptions)`.
 
 -----
@@ -65,6 +70,8 @@ Core Module
   as an identifier for the ``people`` endpoint.
 * Updated the ``get_request_with_retries()`` function in the :ref:`primary-modules:Core Module (khorosjx.core)`
   to include the ``return_json`` optional argument. (Disabled by default)
+* Refactored the ``put_request_with_retries()`` function to leverage the internal ``__api_request_with_payload()``
+  function.
 
 Users Module
 ^^^^^^^^^^^^
