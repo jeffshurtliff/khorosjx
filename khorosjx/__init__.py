@@ -56,3 +56,23 @@ def init_module(*args):
         else:
             raise errors.exceptions.InvalidKhorosJXModuleError
     return
+
+
+# Define function to initialize a helper file
+def init_helper(file_path, file_type='yaml'):
+    # Import the helper module
+    from .utils import helper
+
+    # Obtain the helper configuration settings
+    if file_type == 'yaml':
+        helper_cfg = helper.import_yaml_file(file_path)
+    helper.parse_helper_cfg(helper_cfg)
+    helper_settings = helper.retrieve_helper_settings()
+
+    # Establish the API connection
+    core.connect(helper_settings['base_url'], helper_settings['api_credentials'])
+
+    # Define global variable for the console colors setting
+    global use_console_colors
+    use_console_colors = helper_settings['use_console_colors']
+    return

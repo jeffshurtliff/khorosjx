@@ -1,0 +1,30 @@
+# Helper configuration file for the khorosjx package
+
+# Define how to obtain the connection information
+connection:
+    base_url: https://community.example.com
+    credentials:
+        # Uncomment the lines below to provide plaintext credentials
+        #
+        use_script: no
+        username: exampleuser
+        password: examplePWD123!
+
+        # Uncomment the lines below to provide the script and function information 
+        # for a standalone script
+        #
+        # use_script: yes
+        # standalone_script: yes
+        # script_path: /path/to/file/jxhelper.py
+        # function_call: get_credentials()
+
+        # Uncomment the lines below to provide the script and function information
+        # for a module and function
+        #
+        # use_script: yes
+        # standalone_script: no
+        # module_function_path: jxhelper.get_credentials()
+
+# Define whether or not to color-code the function output
+styling:
+    use_console_colors: no
