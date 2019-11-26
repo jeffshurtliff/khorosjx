@@ -10,7 +10,7 @@
 """
 
 # Define all modules that will be imported with the "import *" method
-__all__ = ['core', 'admin', 'content', 'groups', 'spaces', 'users']
+__all__ = ['core', 'admin', 'content', 'groups', 'spaces', 'users', 'helper']
 
 # Always import the core module and the errors package
 from . import core
@@ -62,6 +62,9 @@ def init_module(*args):
 def init_helper(file_path, file_type='yaml'):
     # Import the helper module
     from .utils import helper
+
+    # Initialize the global variable for the helper configuration data
+    global helper_settings
 
     # Obtain the helper configuration settings
     if file_type == 'yaml':

@@ -26,7 +26,7 @@ def import_yaml_file(file_path):
     :returns: The parsed configuration data
     """
     with open(file_path, 'r') as yml_file:
-        helper_cfg = yaml.load(yml_file)
+        helper_cfg = yaml.load(yml_file, Loader=yaml.BaseLoader)
     return helper_cfg
 
 
@@ -81,6 +81,8 @@ def retrieve_helper_settings():
 class HelperParsing:
     # Define dictionary to map YAML Boolean to Python Boolean
     yaml_boolean_values = {
+        True: True,
+        False: False,
         'yes': True,
         'no': False
     }
