@@ -108,3 +108,6 @@ venv.bak/
 
 # Deploy directory
 deploy/
+
+# Local Tests directory
+khorosjx/utils/tests/local/
