@@ -26,6 +26,15 @@ formatting timestamps, etc.
 .. automodule:: khorosjx.utils.core_utils
     :members:
 
+Helper Module (khorosjx.utils.helper)
+-------------------------------------
+This module includes allows a "helper" configuration file to be imported and parsed to
+facilitate the use of the library (e.g. defining the base URL and API credentials) and
+defining additional settings.
+
+.. automodule:: khorosjx.utils.helper
+    :members:
+
 Tests Module (khorosjx.utils.tests)
 -----------------------------------
 This module includes unit tests for the package that are performed using pytest.

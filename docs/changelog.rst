@@ -2,6 +2,49 @@
 Change Log
 ##########
 
+*********
+v1.3.0.b0
+*********
+**Release Date: 2019-11-27**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the `primary modules <primary-modules>`_.
+
+Init Module
+^^^^^^^^^^^
+* Added the ``init_helper()`` function to the *khorosjx/__init__.py* file to initialize a helper configuration file.
+
+-----
+
+Supporting Modules
+------------------
+Additions to the `supporting modules <supporting-modules>`_.
+
+Helper Module
+^^^^^^^^^^^^^
+* Added the new :ref:`supporting-modules:Helper Module (khorosjx.utils.helper)` which allows a "helper"
+  configuration file to be imported and parsed to facilitate the use of the library (e.g. defining the base URL and
+  API credentials) and defining additional settings.
+
+Exceptions Module
+^^^^^^^^^^^^^^^^^
+* Added the new ``InvalidHelperArgumentsError`` and ``HelperFunctionNotFoundError`` exception classes to the
+  :ref:`supporting-modules:Exceptions Module (khorosjx.errors.exceptions)`.
+
+-----
+
+Examples
+--------
+* Added a new ``examples`` directory containing the
+  `khorosjx_helper.yml <https://github.com/jeffshurtliff/khorosjx/blob/master/examples/khorosjx_helper.yml>`_ file
+  which demonstrates how the helper configuration file should be formatted.
+
+|
+
 ******
 v1.2.0
 ******
