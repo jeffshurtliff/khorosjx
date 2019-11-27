@@ -202,6 +202,29 @@ class InvalidScopeError(KhorosJXError, ValueError):
         super().__init__(*args, **kwargs)
 
 
+# -----------------
+# Helper Exceptions
+# -----------------
+
+
+class InvalidHelperArgumentsError(KhorosJXError, ValueError):
+    """THis exception is used when the helper function was supplied arguments instead of keyword arguments."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The helper configuration file only accepts basic keyword arguments. (e.g. arg_name='arg_value')"
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args, **kwargs)
+
+
+class HelperFunctionNotFoundError(KhorosJXError, FileNotFoundError):
+    """This exception is used when a function referenced in the helper config file does not exist."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The function referenced in the helper configuration file could not be found."
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args, **kwargs)
+
+
 # ---------------
 # User Exceptions
 # ---------------

@@ -60,6 +60,14 @@ def init_module(*args):
 
 # Define function to initialize a helper file
 def init_helper(file_path, file_type='yaml'):
+    """This function initializes a helper configuration file to define package settings including the API connection.
+
+    :param file_path: Path to the helper configuration file
+    :type file_path: str
+    :param file_type: The type of file utilized as the configuration file (Default: ``yaml``)
+    :returns: None (Defines global variables and establishes API connection)
+    :raises: FileNotFoundError, CredentialsUnpackingError, InvalidHelperArgumentsError, HelperFunctionNotFoundError
+    """
     # Import the helper module
     from .utils import helper
 

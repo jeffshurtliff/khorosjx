@@ -10,20 +10,13 @@ connection:
         username: exampleuser
         password: examplePWD123!
 
-        # Uncomment the lines below to provide the script and function information 
-        # for a standalone script
-        #
-        # use_script: yes
-        # standalone_script: yes
-        # script_path: /path/to/file/jxhelper.py
-        # function_call: get_credentials()
-
-        # Uncomment the lines below to provide the script and function information
+        # Uncomment the lines below to provide the credentials via module
         # for a module and function
         #
         # use_script: yes
-        # standalone_script: no
-        # module_function_path: jxhelper.get_credentials()
+        # module_name: jxhelper
+        # function_name: get_credentials
+        # function_kwargs: username='adminuser'
 
 # Define whether or not to color-code the function output
 styling:
