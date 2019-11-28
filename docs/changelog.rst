@@ -2,9 +2,9 @@
 Change Log
 ##########
 
-*********
-v1.3.0.b0
-*********
+******
+v1.3.0
+******
 **Release Date: 2019-11-27**
 
 Added
@@ -42,6 +42,15 @@ Examples
 * Added a new ``examples`` directory containing the
   `khorosjx_helper.yml <https://github.com/jeffshurtliff/khorosjx/blob/master/examples/khorosjx_helper.yml>`_ file
   which demonstrates how the helper configuration file should be formatted.
+
+-----
+
+Documentation
+-------------
+* Added the :ref:`using-helper:Using the Helper Utility` page to address the new Helper Utility that was introduced.
+* Added the :ref:`supporting-modules:Helper Module (khorosjx.utils.helper)` to the
+  :doc:`Supporting Modules<supporting-modules>` page.
+* Added a "See Also" section mentioning the Helper Utility on the :doc:`Core Functionality <core-functionality>` page.
 
 |
 

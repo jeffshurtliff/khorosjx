@@ -10,6 +10,7 @@ Table of Contents
 
     introduction
     core-functionality
+    using-helper
     managing-users
     primary-modules
     supporting-modules

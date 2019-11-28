@@ -31,6 +31,10 @@ The topics in this section are necessary to leverage the khorosjx library.
 
 .. include:: basic-usage.rst
 
+.. seealso::
+
+    To facilitate the getting started process, you may want to consider :ref:`using-helper:using the Helper Utility`.
+
 |
 
 ***********************
