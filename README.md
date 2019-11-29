@@ -1,6 +1,58 @@
 # KhorosJX Python Library
 The  **khorosjx**  library acts as a Python software development kit (SDK) to administer and manage  [Khoros JX](https://community.khoros.com/t5/Atlas-Insights-Blog/Lithium-and-Jive-x-It-s-Official/ba-p/325465)  (formerly  [Jive-x](https://www.prnewswire.com/news-releases/lithium-technologies-completes-acquisition-of-external-online-community-business-from-jive-300531058.html)) and  [Jive-n](https://www.jivesoftware.com/)  online community platforms.
 
+<table>
+    <tr>
+        <td>Latest Release</td>
+        <td>
+            <a href='https://pypi.org/project/khorosjx/'>
+                <img alt="PyPI" src="https://img.shields.io/pypi/v/khorosjx">
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>Build Status</td>
+        <td>
+            <img alt="GitHub Workflow Status" 
+            src="https://img.shields.io/github/workflow/status/jeffshurtliff/khorosjx/Python package">
+        </td>
+    </tr>
+    <tr>
+        <td>Supported Versions</td>
+        <td>
+            <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/khorosjx">
+        </td>
+    </tr>
+    <tr>
+        <td>Documentation</td>
+        <td>
+            <a href='https://khorosjx.readthedocs.io/en/latest/?badge=latest'>
+                <img src='https://readthedocs.org/projects/khorosjx/badge/?version=latest' alt='Documentation Status' />
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>License</td>
+        <td>
+            <img alt="License (GitHub)" src="https://img.shields.io/github/license/jeffshurtliff/khorosjx">
+        </td>
+    </tr>
+    <tr>
+        <td style="vertical-align: top;">Issues</td>
+        <td>
+            <img style="margin-bottom:5px;" alt="GitHub open issues" src="https://img.shields.io/github/issues-raw/jeffshurtliff/khorosjx"><br />
+            <img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed-raw/jeffshurtliff/khorosjx">
+        </td>
+    </tr>
+    <tr>
+        <td style="vertical-align: top;">Pull Requests</td>
+        <td>
+            <img style="margin-bottom:5px;" alt="GitHub pull open requests" src="https://img.shields.io/github/issues-pr-raw/jeffshurtliff/khorosjx"><br />
+            <img alt="GitHub closed pull requests" src="https://img.shields.io/github/issues-pr-closed-raw/jeffshurtliff/khorosjx">
+        </td>
+    </tr>
+</table>
+
 ## Installation
 The package can be installed via pip using the syntax below.
 
