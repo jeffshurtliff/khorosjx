@@ -1,5 +1,8 @@
 # KhorosJX Python Library
-The  **khorosjx**  library acts as a Python software development kit (SDK) to administer and manage  [Khoros JX](https://community.khoros.com/t5/Atlas-Insights-Blog/Lithium-and-Jive-x-It-s-Official/ba-p/325465)  (formerly  [Jive-x](https://www.prnewswire.com/news-releases/lithium-technologies-completes-acquisition-of-external-online-community-business-from-jive-300531058.html)) and  [Jive-n](https://www.jivesoftware.com/)  online community platforms.
+The  **khorosjx**  library acts as a Python software development kit (SDK) to administer and manage 
+[Khoros JX](https://community.khoros.com/t5/Atlas-Insights-Blog/Lithium-and-Jive-x-It-s-Official/ba-p/325465) 
+(formerly  [Jive-x](https://www.prnewswire.com/news-releases/lithium-technologies-completes-acquisition-of-external-online-community-business-from-jive-300531058.html)) 
+and  [Jive-n](https://www.jivesoftware.com/)  online community platforms.
 
 <table>
     <tr>
@@ -13,14 +16,18 @@ The  **khorosjx**  library acts as a Python software development kit (SDK) to ad
     <tr>
         <td>Build Status</td>
         <td>
-            <img alt="GitHub Workflow Status" 
-            src="https://img.shields.io/github/workflow/status/jeffshurtliff/khorosjx/Python package">
+            <a href="https://github.com/jeffshurtliff/khorosjx/blob/master/.github/workflows/pythonpackage.yml">
+                <img alt="GitHub Workflow Status" 
+                src="https://img.shields.io/github/workflow/status/jeffshurtliff/khorosjx/Python package">
+            </a>
         </td>
     </tr>
     <tr>
         <td>Supported Versions</td>
         <td>
-            <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/khorosjx">
+            <a href='https://pypi.org/project/khorosjx/'>
+                <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/khorosjx">
+            </a>
         </td>
     </tr>
     <tr>
@@ -34,21 +41,31 @@ The  **khorosjx**  library acts as a Python software development kit (SDK) to ad
     <tr>
         <td>License</td>
         <td>
-            <img alt="License (GitHub)" src="https://img.shields.io/github/license/jeffshurtliff/khorosjx">
+            <a href="https://github.com/jeffshurtliff/khorosjx/blob/master/LICENSE">
+                <img alt="License (GitHub)" src="https://img.shields.io/github/license/jeffshurtliff/khorosjx">
+            </a>
         </td>
     </tr>
     <tr>
         <td style="vertical-align: top;">Issues</td>
         <td>
-            <img style="margin-bottom:5px;" alt="GitHub open issues" src="https://img.shields.io/github/issues-raw/jeffshurtliff/khorosjx"><br />
-            <img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed-raw/jeffshurtliff/khorosjx">
+            <a href="https://github.com/jeffshurtliff/khorosjx/issues">
+                <img style="margin-bottom:5px;" alt="GitHub open issues" src="https://img.shields.io/github/issues-raw/jeffshurtliff/khorosjx"><br />
+            </a>
+            <a href="https://github.com/jeffshurtliff/khorosjx/issues">
+                <img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed-raw/jeffshurtliff/khorosjx">
+            </a>
         </td>
     </tr>
     <tr>
         <td style="vertical-align: top;">Pull Requests</td>
         <td>
-            <img style="margin-bottom:5px;" alt="GitHub pull open requests" src="https://img.shields.io/github/issues-pr-raw/jeffshurtliff/khorosjx"><br />
-            <img alt="GitHub closed pull requests" src="https://img.shields.io/github/issues-pr-closed-raw/jeffshurtliff/khorosjx">
+            <a href="https://github.com/jeffshurtliff/khorosjx/pulls">
+                <img style="margin-bottom:5px;" alt="GitHub pull open requests" src="https://img.shields.io/github/issues-pr-raw/jeffshurtliff/khorosjx"><br />
+            </a>
+            <a href="https://github.com/jeffshurtliff/khorosjx/pulls">
+                <img alt="GitHub closed pull requests" src="https://img.shields.io/github/issues-pr-closed-raw/jeffshurtliff/khorosjx">
+            </a>
         </td>
     </tr>
 </table>
