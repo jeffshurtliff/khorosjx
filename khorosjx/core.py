@@ -6,7 +6,7 @@
 :Example:        ``user_info = khorosjx.core.get_data('people', 'john.doe@example.com', 'email')``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  24 Nov 2019
+:Modified Date:  30 Nov 2019
 """
 
 import re
@@ -376,11 +376,25 @@ def put_request_with_retries(url, json_payload):
 
 # Define function to get fields from API responses
 def get_fields_from_api_response(json_data, dataset, return_fields=[]):
+    """This functionb parses and retrieves fields from an API response from a specific dataset.
+
+    :param json_data: The JSON data from an API response
+    :type json_data: dict
+    :param dataset: The nickname of a dataset from which fields should be retrieved (e.g. ``people``, ``group_admins``)
+    :type dataset: str
+    :param return_fields: The fields that should be returned from the API response (Default: all fields in dataset)
+    :type return_fields: list
+    :returns: A dictionary with the field names and corresponding values
+    :raises: InvalidDatasetError
+    """
     # Define the empty dictionary for data to return
     fields_data = {}
 
     # Map the datasets to their respective field lists
     datasets = {
+        'people': FieldLists.people_fields,
+        'group_admins': FieldLists.people_fields,
+        'group_members': FieldLists.people_fields,
         'security_group': FieldLists.security_group_fields
     }
 
@@ -397,5 +411,66 @@ def get_fields_from_api_response(json_data, dataset, return_fields=[]):
     # Get and return the fields and corresponding values
     for field in fields_to_return:
         if field in json_data:
-            fields_data[field] = json_data[field]
+            if field == "emails.value":
+                fields_data[field] = json_data['emails'][0]['value']
+            elif field == "name.formatted":
+                fields_data[field] = json_data['name']['formatted']
+            elif field == "jive.lastAuthenticated":
+                fields_data[field] = json_data['jive']['lastAuthenticated']
+            elif field == "jive.externalIdentities.identityType":
+                fields_data[field] = json_data['jive']['externalIdentities'][0]['identityType']
+            elif field == "jive.externalIdentities.identity":
+                fields_data[field] = json_data['jive']['externalIdentities'][0]['identity']
+            elif field == "jive.username":
+                fields_data[field] = json_data['jive']['username']
+            elif field == "jive.status":
+                fields_data[field] = json_data['jive']['status']
+            else:
+                fields_data[field] = json_data[field]
     return fields_data
+
+
+def get_paginated_results(query, response_data_type, start_index=0,
+                          query_all=True, return_fields=[], ignore_exceptions=False):
+    """This function performs a GET request for a single paginated response up to 100 records.
+
+    :param query: The API query without the query string
+    :type query: str
+    :param response_data_type: The dataset of fields that will be in the API response (e.g. ``group_members``)
+    :type response_data_type: str
+    :param start_index: The startIndex value in the API query string
+    :type start_index: int, str
+    :param query_all: Determines if ``fields=@all`` filter should be included in the query string (Default: ``True``)
+    :type query_all: bool
+    :param return_fields: The fields that should be returned from the API response (Default: all fields in dataset)
+    :type return_fields: list
+    :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
+    :type ignore_exceptions: bool
+    :returns: The queried data as a list comprised of dictionaries
+    :raises: GETRequestError
+    """
+    # Initialize the empty list for the aggregate data
+    aggregate_data = []
+
+    # Construct the full API query
+    fields_filter = ""
+    if query_all:
+        fields_filter = "fields=@all&"
+    if '?' in query:
+        # Strip out the query string if present to prevent interference with the query string to be added
+        query = query.split("?")[0]
+    full_query = f"{query}?{fields_filter}count=100&startIndex={start_index}"
+
+    # Perform the API query to retrieve the information
+    response = get_request_with_retries(full_query)
+
+    # Verify that the query was successful
+    successful_response = errors.handlers.check_api_response(response, ignore_exceptions=ignore_exceptions)
+    if successful_response:
+        # Get the response data in JSON format
+        paginated_data = response.json()
+        for data in paginated_data['list']:
+            # Parse and append the data
+            parsed_data = get_fields_from_api_response(data, response_data_type, return_fields)
+            aggregate_data.append(parsed_data)
+    return aggregate_data

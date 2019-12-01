@@ -5,7 +5,7 @@ Synopsis:       Collection of classes relating to the khorosjx library
 Usage:          ``from khorosjx.utils.classes import Users``
 Created By:     Jeff Shurtliff
 Last Modified:  Jeff Shurtliff
-Modified Date:  23 Nov 2019
+Modified Date:  30 Nov 2019
 """
 
 
@@ -42,6 +42,26 @@ class FieldLists:
     """This class provides lists of JSON fields for various API data sets."""
     security_group_fields = ['id', 'published', 'updated', 'administratorCount', 'memberCount', 'name',
                              'description', 'federated']
+    people_fields = ['id', 'followerCount', 'published', 'updated', 'displayName', 'mentionName',
+                     'name.formatted', 'email.value', 'followingCount', 'directReportCount',
+                     'initialLogin', 'jive.lastAuthenticated', 'jive.externalIdentities.identityType',
+                     'jive.externalIdentities.identity', 'jive.username', 'jive.status']
+
+
+# Define a class for group-related lists, dictionaries and other utilities
+class Groups:
+    """This class provides various mappings to security group-related information."""
+    # Map the membership types to the appropriate API endpoint
+    membership_types = {
+        'admin': 'administrators',
+        'member': 'members'
+    }
+
+    # Map the user types to the response data types
+    user_type_mapping = {
+        'admin': 'group_admins',
+        'member': 'group_members'
+    }
 
 
 # Define a class for platform-related lists, dictionaries and other utilities

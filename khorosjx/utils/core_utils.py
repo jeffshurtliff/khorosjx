@@ -6,7 +6,7 @@
 :Example:       ``timestamp = get_timestamp(time_format="delimited")``
 :Created By:    Jeff Shurtliff
 :Last Modified: Jeff Shurtliff
-:Modified Date: 23 Nov 2019
+:Modified Date: 30 Nov 2019
 """
 
 import sys
@@ -20,6 +20,7 @@ from .classes import TimeUtils
 
 
 # Print an error message to stderr instead of stdout
+# TODO: Move this function to the khorosjx.errors.handlers module
 def eprint(*args, **kwargs):
     """This function behaves the same as the ``print()`` function but is leveraged to print errors to ``sys.stderr``."""
     print(*args, file=sys.stderr, **kwargs)
@@ -112,6 +113,12 @@ def convert_dict_to_json(data):
 
 # Define function to convert a list of dictionaries to a pandas dataframe
 def convert_dict_list_to_dataframe(dict_list):
+    """This function converts a list of dictinoaries into a pandas dataframe.
+
+    :param dict_list: List of dictionaries
+    :type dict_list: list
+    :returns: A pandas dataframe of the data
+    """
     # Identify the dataframe column names
     column_names = []
     for field_name in dict_list[0].keys():
@@ -128,3 +135,32 @@ def convert_dict_list_to_dataframe(dict_list):
     # Create and return the dataframe
     dataframe = pd.DataFrame(df_data, columns=column_names)
     return dataframe
+
+
+# Define function to convert a single-pair dictionary list to a normal list
+def convert_single_pair_dict_list(dict_list):
+    """This function converts a list of single-pair dictionaries into a normal list.
+
+    :param dict_list: A list of single-pair dictionaries
+    :type dict_list: list
+    :returns: A normal list with the value from each dictionary
+    """
+    new_list = []
+    for dict_pair in dict_list:
+        for dict_val in dict_pair.values():
+            new_list.append(dict_val)
+    return new_list
+
+
+def add_to_master_list(single_list, master_list):
+    """This function appends items in a list to the master list.
+
+    :param single_list: List of dictionaries from the paginated query
+    :type single_list: list
+    :param master_list: Master list of dictionaries containing group information
+    :type master_list: list
+    :returns: The master list with the appended data
+    """
+    for list_item in single_list:
+        master_list.append(list_item)
+    return master_list

@@ -6,7 +6,7 @@
 :Example:        ``group_info = groups.get_group_info(1051)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  23 Nov 2019
+:Modified Date:  30 Nov 2019
 """
 
 import re
@@ -15,6 +15,7 @@ import requests
 
 from . import core, users, errors
 from .utils import core_utils
+from .utils.classes import Groups
 from .utils.core_utils import eprint
 
 
@@ -123,19 +124,6 @@ def get_all_groups(return_fields=[], return_type='list', ignore_exceptions=False
                 _groups.append(_parsed_data)
         return _groups
 
-    def add_to_master_list(_groups, _all_groups):
-        """This function appends all group dictionaries from the paginated query to the master list.
-
-        :param _groups: List of dictionaries from the paginated query
-        :type _groups: list
-        :param _all_groups: Master list of dictionaries containing group information
-        :type _all_groups: list
-        :returns: The master list with the appended data
-        """
-        for _group in _groups:
-            _all_groups.append(_group)
-        return _all_groups
-
     # Verify that the core connection has been established
     verify_core_connection()
 
@@ -145,13 +133,13 @@ def get_all_groups(return_fields=[], return_type='list', ignore_exceptions=False
     # Perform the first query to get up to the first 100 groups
     start_index = 0
     groups = __get_paginated_groups(return_fields, ignore_exceptions, start_index)
-    all_groups = add_to_master_list(groups, all_groups)
+    all_groups = core_utils.add_to_master_list(groups, all_groups)
 
     # Continue querying for groups until none are returned
     while len(groups) > 0:
         start_index += 100
         groups = __get_paginated_groups(return_fields, ignore_exceptions, start_index)
-        all_groups = add_to_master_list(groups, all_groups)
+        all_groups = core_utils.add_to_master_list(groups, all_groups)
 
     # Return the data as a master list of group dictionaries or a pandas dataframe
     if return_type == "dataframe":
@@ -350,3 +338,68 @@ def add_user_to_group(group_id, user_value, lookup_type="id", return_mode="none"
             return False
     else:
         return
+
+
+# Define function to get the members (or admins) of a security group
+def get_group_memberships(group_id, user_type="member", only_id=True, return_type="list", ignore_exceptions=False):
+    """This function gets the memberships (including administrator membership) for a specific security group.
+
+    :param group_id: The Group ID for the security group
+    :type group_id: int, str
+    :param user_type: Determines if the function should return ``admin`` or ``member`` users (Default: ``member``)
+    :type user_type: str
+    :param only_id: Determines if only the User ID for the members should be returned or full data (Default: ``True``)
+    :type only_id: bool
+    :param return_type: Determines if a ``list`` or ``dataframe`` should be returned (Default: ``list``)
+    :type return_type: str
+    :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``True``)
+    :type ignore_exceptions: bool
+    :returns: A list or dataframe of security group memberships
+    :raises: ValueError
+    """
+    # Define internal function to query for a paginated list of users and then add them to the master list
+    def __add_paginated_members(_base_query_uri, _response_data_type, _start_index,
+                                _ignore_exceptions, _return_fields, _all_users):
+        _paginated_users = core.get_paginated_results(_base_query_uri, _response_data_type, _start_index,
+                                                      ignore_exceptions=_ignore_exceptions,
+                                                      return_fields=_return_fields)
+        _all_users = core_utils.add_to_master_list(_paginated_users, _all_users)
+        return _all_users, len(_paginated_users)
+
+    # Verify that the core connection has been established
+    verify_core_connection()
+
+    # Initiate an empty list for the user data
+    all_users = []
+    return_fields = []
+
+    # Define the base query URI
+    if user_type in Groups.membership_types:
+        base_query_uri = f"{base_url}/securityGroups/{group_id}/{Groups.membership_types.get(user_type)}"
+    else:
+        raise ValueError(f"The '{user_type}' value is not a valid user type.")
+
+    # Determine if only the User IDs should be returned
+    if only_id:
+        return_fields.append('id')
+
+    # Get the response data type
+    response_data_type = Groups.user_type_mapping.get(user_type)
+
+    # Perform the first query to get up to the first 100 members or admins
+    start_index = 0
+    all_users, users_returned = __add_paginated_members(base_query_uri, response_data_type, start_index,
+                                                        ignore_exceptions, return_fields, all_users)
+
+    # Continue querying for groups until none are returned
+    while users_returned > 0:
+        start_index += 100
+        all_users, users_returned = __add_paginated_members(base_query_uri, response_data_type, start_index,
+                                                            ignore_exceptions, return_fields, all_users)
+
+    # Return the data as a master list of group dictionaries or a pandas dataframe
+    if return_type == "dataframe":
+        all_users = core_utils.convert_dict_list_to_dataframe(all_users)
+    elif return_type == "list" and only_id is True:
+        all_users = core_utils.convert_single_pair_dict_list(all_users)
+    return all_users

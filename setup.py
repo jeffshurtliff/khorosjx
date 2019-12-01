@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="khorosjx",
-    version="1.3.0",
+    version="1.4.0",
     author="Jeff Shurtliff",
     author_email="jeff.shurtliff@rsa.com",
     description="Useful tools and utilities to assist in managing a Khoros JX (formerly Jive-x) or Jive-n community.",
@@ -16,7 +16,7 @@ setuptools.setup(
     url="https://github.com/jeffshurtliff/khorosjx",
     packages=setuptools.find_packages(),
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Environment :: Web Environment",
         "Intended Audience :: Information Technology",
         "Intended Audience :: System Administrators",
