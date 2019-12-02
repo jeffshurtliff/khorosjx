@@ -22,7 +22,7 @@ def init_module(*args):
     """This function imports select modules from the library.
 
     :param args: One or more module names to import
-    :type args: str
+    :type args: str, tuple
     :returns: None
     :raises: ModuleNotFoundError, KhorosJXError, InvalidKhorosJXModuleError
     """
