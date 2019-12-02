@@ -49,6 +49,11 @@ This is demonstrated in the example below.
     However, it is strongly recommended that you **never** include API credentials in plaintext within
     scripts or other locations that can potentially be accessed by unauthorized parties.
 
+.. seealso::
+
+    To simplify the initialization process, you should consider leveraging the 
+    :ref:`supporting-modules:Helper Module (khorosjx.utils.helper)`.
+
 **************************
 Obtaining User Information
 **************************
@@ -76,6 +81,66 @@ function can be used to retrieve the needed User ID, as shown in the examples be
 
     You will notice that, because ``email`` is the default identifier, you must
     supply ``username`` as a second argument if you are providing a username.
+
+Obtain the username, email address and profile URL of a user
+============================================================
+Similar to how you obtain the User ID of a user, you can also retrieve a user's
+username, email address and profile URL using simple functions within the
+:ref:`primary-modules:Users Module (khorosjx.users)`.  These operations are
+explained in the following subsections.
+
+Obtain the username
+-------------------
+Assuming you have the User ID or email address for a user, you can quickly obtain
+their username via the :py:func:`khorosjx.users.get_username` function, as
+demonstrated in the examples below.
+
+.. code-block:: python
+
+    username_from_id = khorosjx.users.get_username(1234)
+    username_from_email = khorosjx.users.get_username('john.doe@example.com', 'email')
+
+.. note::
+
+    Similar to the :py:func:`khorosjx.users.get_user_id` function, you must provide the
+    *lookup type* (e.g. ``email``) as a second argument if not querying with the User ID.
+
+    You may also notice that when leveraging the User ID, you can provide it as either an
+    integer or a string value and both will be acceptable.
+
+Obtain the email address
+------------------------
+
+.. todo::
+
+    This section will be created once the :py:func:`khorosjx.users.get_email()` is
+    introduced within the library. *(Tentatively planned for v1.5.0.)*
+
+Obtain the user profile URL
+---------------------------
+When you have the username for a user, it is easy to determine the URL of their respective
+profile as the URL structure is simply your base URL, the ``people`` endpoint and then the
+username.  (e.g. ``https://community.example.com/people/john_doe``)
+
+However, the :py:func:`khorosjx.users.get_profile_url` function makes the process even
+easier by constructing the URL for you, and can even do so when supplied a User ID or
+email address rather than a username.
+
+All three methods are demonstrated below.
+
+.. code-block:: python
+
+    profile_url_from_id = khorosjx.users.get_profile_url(1234)
+    profile_url_from_email = khorosjx.users.get_profile_url('john.doe@example.com', 'email')
+    profile_url_from_username = khorosjxusers.get_profile_url('john_doe', 'username')
+
+.. note::
+
+    Despite the profile URL being constructed using the username, functions within this
+    module will generally utilize the **User ID** as the primary lookup type as it is the
+    main unique identifier leveraged within the Khoros JX / Jive platform.
+
+-----
 
 .. todo::
 
