@@ -3,6 +3,60 @@ Change Log
 ##########
 
 ******
+v1.5.0
+******
+**Release Date: 2019-12-05**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added to the ``datasets`` dictionary and a "field not found" error message in the
+  :py:func:`khorosjx.core.get_fields_from_api_response` function.
+* Added the :py:func:`khorosjx.content.get_document_info` function.
+* Added the :py:func:`khorosjx.content.get_document_attachments` function.
+* Added the internal :py:func:`khorosjx.content.__convert_lookup_value` function.
+* Added the internal :py:func:`khorosjx.content.__trim_attachments_info` function.
+* Added the :py:func:`khorosjx.spaces.get_space_info` function.
+* Added the :py:func:`khorosjx.spaces.get_place_id` and :py:func:`khorosjx.spaces.get_browse_id` functions.
+* Added the internal :py:func:`khorosjx.users.__validate_lookup_type` function.
+
+-----
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the ``place_fields`` and ``document_fields`` lists to the :py:class:`khorosjx.utils.classes.FieldLists` class.
+* Added the :py:exc:`khorosjx.errors.exceptions.LookupMismatchError` exception class.
+* Added the :py:exc:`khorosjx.errors.exceptions.CurrentlyUnsupportedError` exception class.
+
+-----
+
+Documentation
+-------------
+* Added the section on how to :ref:`managing-users:obtain the primary email address` within the
+  :doc:`Managing Users <managing-users>` page now that the function is available.
+
+Changed
+=======
+* Updated the :py:func:`khorosjx.users.get_user_id` and :py:func:`khorosjx.users.get_username` functions to leverage
+  the internal :py:func:`khorosjx.users.__validate_lookup_type` function.
+* Updated the :py:func:`khorosjx.users.get_user_id` function to confirm that an email address was provided if the
+  'email' lookup type is supplied.
+* Updated the header block docstring at the top of the :py:func:`khorosjx.spaces` module.
+* Updated the header block docstring at the top of the :py:func:`khorosjx.errors.exceptions` module.
+
+Fixed
+=====
+* Fixed a variable name error in the :py:func:`khorosjx.users.get_username` function.
+
+|
+
+******
 v1.4.0
 ******
 **Release Date: 2019-11-30**
@@ -87,8 +141,8 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
 * Added the new :ref:`supporting-modules:Helper Module (khorosjx.utils.helper)` which allows a "helper"
   configuration file to be imported and parsed to facilitate the use of the library (e.g. defining the base URL and
   API credentials) and defining additional settings.
-* Added the new :py:exc:`khorosjx.errors.exceptions.InvalidHelperArgumentsError` and
-  :py:exc:`khorosjx.errors.exceptions.HelperFunctionNotFoundError` exception classes.
+* Added the :py:exc:`khorosjx.errors.exceptions.InvalidHelperArgumentsError` exception class.
+* Added the :py:exc:`khorosjx.errors.exceptions.HelperFunctionNotFoundError` exception class.
 
 -----
 

@@ -6,13 +6,14 @@
 :Example:        ``content_id = content.get_content_id(url, 'discussion')``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  23 Nov 2019
+:Modified Date:  05 Dec 2019
 """
 
 import re
 import json
 
 import requests
+import pandas as pd
 
 from . import core
 from . import errors
@@ -167,3 +168,133 @@ def overwrite_doc_body(url, body_html, minor_edit=True, ignore_exceptions=False)
 
     # Return the response from the PUT query
     return put_response
+
+
+# Define an internal function to convert a lookup value to a proper lookup type
+def __convert_lookup_value(_lookup_value, _lookup_type, _content_type="document"):
+    """This function converts a lookup value to a proper lookup type.
+
+    :param _lookup_value: The lookup value to be converted
+    :type _lookup_value: str, int
+    :param _lookup_type: The current lookup type of the value to be converted
+    :type _lookup_type: str
+    :param _content_type: The type of content associated with the lookup value and lookup type (Default: ``document``)
+    :type _content_type: str
+    :returns: The properly formatted lookup value
+    :raises: LookupMismatchError, InvalidLookupTypeError, CurrentlyUnsupportedError
+    """
+    if _content_type == "document":
+        # Get the Content ID if not supplied
+        if _lookup_type == "doc_id" or _lookup_type == "url":
+            if _lookup_type == "doc_id":
+                if 'http' in str(_lookup_value):
+                    _error_msg = f"The 'doc_id' lookup_type was supplied (default) but the lookup value is a URL."
+                    raise errors.exceptions.LookupMismatchError(_error_msg)
+                _lookup_value = f"{base_url.split('/api')[0]}/docs/DOC-{_lookup_value}"
+            _lookup_value = get_content_id(_lookup_value)
+        elif _lookup_type != "id" and _lookup_type != "content_id":
+            _exception_msg = "The supplied lookup type for the API is not recognized. " + \
+                             "(Valid lookup types include 'id', 'content_id', 'doc_id' and 'url')"
+            raise errors.exceptions.InvalidLookupTypeError(_exception_msg)
+    else:
+        _exception_msg = f"The '{_content_type}' content type is not currently supported."
+        raise errors.exceptions.CurrentlyUnsupportedError(_exception_msg)
+        # TODO: Add functionality for other content types (e.g. discussion/question threads)
+    return _lookup_value
+
+
+# Define function to get basic group information for a particular Group ID
+def get_document_info(lookup_value, lookup_type='doc_id', return_fields=[], ignore_exceptions=False):
+    """This function obtains the group information for a given document.
+
+    :param lookup_value: The value with which to look up the document
+    :type lookup_value: int, str
+    :param lookup_type: Identifies the type of lookup value that has been provided (Default: ``doc_id``)
+    :type lookup_type: str
+    :param return_fields: Specific fields to return if not all of the default fields are needed (Optional)
+    :type return_fields: list
+    :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
+    :type ignore_exceptions: bool
+    :returns: A dictionary with the group information
+    :raises: GETRequestError, InvalidDatasetError, InvalidLookupTypeError, LookupMismatchError
+    """
+    # Verify that the core connection has been established
+    verify_core_connection()
+
+    # Get the Content ID if not supplied
+    lookup_value = __convert_lookup_value(lookup_value, lookup_type)
+
+    # Initialize the empty dictionary for the group information
+    doc_info = {}
+
+    # Perform the API query to retrieve the group information
+    query_uri = f"{base_url}/contents/{lookup_value}?fields=@all"
+    response = core.get_request_with_retries(query_uri)
+
+    # Verify that the query was successful
+    successful_response = errors.handlers.check_api_response(response, ignore_exceptions=ignore_exceptions)
+
+    # Parse the data if the response was successful
+    if successful_response:
+        # Determine which fields to return
+        doc_json = response.json()
+        doc_info = core.get_fields_from_api_response(doc_json, 'document', return_fields)
+    return doc_info
+
+
+# Define internal function to trim the attachments data
+def __trim_attachments_info(_attachment_info):
+    """This function removes certain fields from attachments data captured via the API.
+
+    :param _attachment_info: List containing dictionaries of attachments retrieved via the API
+    :type _attachment_info: list
+    :returns: The trimmed list of dictionaries
+    """
+    for _idx in range(0, len(_attachment_info)):
+        _fields_to_ignore = ['resources', 'doUpload']
+        for _ignored_field in _fields_to_ignore:
+            if _ignored_field in _attachment_info[_idx].keys():
+                del _attachment_info[_idx][_ignored_field]
+    return _attachment_info
+
+
+# Define function to get the attachments in a document
+def get_document_attachments(lookup_value, lookup_type='doc_id', return_dataframe=False):
+    """This function retrieves information on any attachments associated with a document.
+
+    :param lookup_value: The value with which to look up the document
+    :type lookup_value: str, int
+    :param lookup_type: Identifies the type of lookup value that has been provided (Default: ``doc_id``)
+    :type lookup_type: str
+    :param return_dataframe: Determines whether or not a pandas dataframe should be returned
+    :type return_dataframe: bool
+    :returns: A list, dictionary or pandas dataframe depending on the number of attachments and/or function arguments
+    :raises: GETRequestError, InvalidDatasetError, InvalidLookupTypeError, LookupMismatchError
+    """
+    # Verify that the core connection has been established
+    verify_core_connection()
+
+    # Get the attachments data from the API
+    try:
+        attachment_info = get_document_info(lookup_value, lookup_type, ['attachments'])
+        attachment_info = attachment_info['attachments']
+        attachment_info = __trim_attachments_info(attachment_info)
+
+        # Convert the data to a dataframe if indicated
+        if return_dataframe:
+            column_names = list(attachment_info[0].keys())
+            data = []
+            for idx in range(0,len(attachment_info)):
+                data.append(list(attachment_info[idx].values()))
+            attachment_info = pd.DataFrame(data, columns=column_names)
+
+        # Trim the data down to the inner dictionary if there is only one attachment
+        elif len(attachment_info) == 1:
+            attachment_info = attachment_info[0]
+
+    # Initiate an empty list to return if no attachments are found
+    except IndexError:
+        attachment_info = []
+
+    # Return a list, dataframe or dictionary depending on the data and arguments
+    return attachment_info

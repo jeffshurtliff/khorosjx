@@ -5,7 +5,7 @@ Synopsis:       Collection of classes relating to the khorosjx library
 Usage:          ``from khorosjx.utils.classes import Users``
 Created By:     Jeff Shurtliff
 Last Modified:  Jeff Shurtliff
-Modified Date:  30 Nov 2019
+Modified Date:  05 Dec 2019
 """
 
 
@@ -40,12 +40,21 @@ class Content:
 # Define a class for lists of JSON fields for various API data sets
 class FieldLists:
     """This class provides lists of JSON fields for various API data sets."""
-    security_group_fields = ['id', 'published', 'updated', 'administratorCount', 'memberCount', 'name',
-                             'description', 'federated']
+    document_fields = ['id', 'entityType', 'followerCount', 'likeCount', 'published', 'tags',
+                       'updated', 'contentID', 'author', 'content', 'parent', 'favoriteCount',
+                       'replyCount', 'status', 'subject', 'viewCount', 'visibleToExternalContributors',
+                       'parentVisible', 'parentContentVisible', 'restrictComments', 'editDisabled',
+                       'version', 'attachments', 'helpfulCount', 'unhelpfulCount', 'type', 'typeCode',
+                       'lastActivityDate']
     people_fields = ['id', 'followerCount', 'published', 'updated', 'displayName', 'mentionName',
                      'name.formatted', 'email.value', 'followingCount', 'directReportCount',
                      'initialLogin', 'jive.lastAuthenticated', 'jive.externalIdentities.identityType',
                      'jive.externalIdentities.identity', 'jive.username', 'jive.status']
+    place_fields = ['id', 'followerCount', 'followed', 'published', 'tags', 'updated', 'placeID', 'contentTypes',
+                    'description', 'displayName', 'name', 'parent', 'status', 'viewCount', 'placeTopics', 'childCount',
+                    'visibleToExternalContributors',  'locale', 'inheritsAppliedEntitlements', 'type', 'typeCode']
+    security_group_fields = ['id', 'published', 'updated', 'administratorCount', 'memberCount', 'name',
+                             'description', 'federated']
 
 
 # Define a class for group-related lists, dictionaries and other utilities

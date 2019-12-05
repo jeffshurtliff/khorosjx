@@ -6,7 +6,7 @@
 :Example:        ``user_info = khorosjx.core.get_data('people', 'john.doe@example.com', 'email')``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  30 Nov 2019
+:Modified Date:  05 Dec 2019
 """
 
 import re
@@ -376,7 +376,7 @@ def put_request_with_retries(url, json_payload):
 
 # Define function to get fields from API responses
 def get_fields_from_api_response(json_data, dataset, return_fields=[]):
-    """This functionb parses and retrieves fields from an API response from a specific dataset.
+    """This function parses and retrieves fields from an API response from a specific dataset.
 
     :param json_data: The JSON data from an API response
     :type json_data: dict
@@ -392,10 +392,12 @@ def get_fields_from_api_response(json_data, dataset, return_fields=[]):
 
     # Map the datasets to their respective field lists
     datasets = {
+        'document': FieldLists.document_fields,
         'people': FieldLists.people_fields,
         'group_admins': FieldLists.people_fields,
         'group_members': FieldLists.people_fields,
-        'security_group': FieldLists.security_group_fields
+        'security_group': FieldLists.security_group_fields,
+        'space': FieldLists.place_fields
     }
 
     # Define the fields that should be returned for the data

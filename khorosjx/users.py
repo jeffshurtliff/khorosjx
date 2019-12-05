@@ -6,7 +6,7 @@
 :Example:        ``user_info = khorosjx.users.get_people_followed(user_id)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  24 Nov 2019
+:Modified Date:  05 Dec 2019
 """
 
 import json
@@ -15,6 +15,7 @@ from . import core
 from . import errors
 from .utils import core_utils
 from .utils.classes import Users
+from .utils.core_utils import eprint
 
 
 # Define function to verify the connection in the core module
@@ -119,12 +120,63 @@ def get_user_id(lookup_value, lookup_type='email'):
     :returns: User ID for the user
     :raises: InvalidLookupTypeError, GETRequestError
     """
-    accepted_lookup_types = ('email', 'username')
-    if lookup_type not in accepted_lookup_types:
-        raise errors.exceptions.InvalidLookupTypeError
+    lookup_type = __validate_lookup_type(lookup_type)
+    if '@' not in lookup_value:
+        exception_msg = f"The lookup type is 'email' but '{lookup_value}' is not a valid email address."
+        raise errors.exceptions.LookupMismatchError(exception_msg)
     user_data = core.get_data('people', lookup_value, lookup_type, return_json=True)
     user_id = user_data['id']
     return user_id
+
+
+# Define internal function to validate the lookup type for a GET request function call
+def __validate_lookup_type(_lookup_type, _retrieval_value='id'):
+    """This function validates a lookup type to ensure that it is acceptable to the primary function call.
+
+    :param _lookup_type: The lookup type that will be used in the primary function call
+    :type _lookup_type: str
+    :param _retrieval_value: Indicates the value which the primary function call will be retrieving
+    :type _retrieval_value: str
+    :returns: The validated lookup type
+    :raises: InvalidLookupTypeError
+    """
+    _accepted_lookup_values = {
+        'id': ('email', 'username'),
+        'username': ('id', 'email'),
+        'email': ('id', 'username')
+    }
+    if _retrieval_value == "id":
+        if _lookup_type not in _accepted_lookup_values.get(_retrieval_value):
+            raise errors.exceptions.InvalidLookupTypeError
+    else:
+        _warn_msg = f"The lookup type {_lookup_type} is not recognized. The function will " + \
+                    "default to treating the lookup value as"
+        if _retrieval_value == "email" and _lookup_type not in _accepted_lookup_values.get(_retrieval_value):
+            eprint(f"{_warn_msg} a User ID.")
+            _lookup_type = "id"
+        elif _retrieval_value == "username" and _lookup_type not in _accepted_lookup_values.get(_retrieval_value):
+            eprint(f"{_warn_msg} an email address.")
+            _lookup_type = "email"
+        elif _lookup_type not in _accepted_lookup_values:
+            raise errors.exceptions.InvalidLookupTypeError
+    return _lookup_type
+
+
+# Define function to get the primary email address of a user
+def get_primary_email(lookup_value, lookup_type="id"):
+    """This function obtains the primary email address for a user by looking up their User ID or username.
+
+    :param lookup_value: The User ID or username for which to look up the user
+    :type lookup_value: str
+    :param lookup_type: Determines if the User ID or username should be used to find the user (Default: ``id``)
+    :type lookup_type: str
+    :returns: The primary email address for the user
+    :raises: InvalidLookupTypeError
+    """
+    lookup_type = __validate_lookup_type(lookup_type, 'email')
+    user_data = core.get_data('people', lookup_value, lookup_type, return_json=True)
+    primary_email = user_data['emails'][0]['value']
+    return primary_email
 
 
 # Define function to get someone's username using their email address or user ID (default)
@@ -137,11 +189,7 @@ def get_username(lookup_value, lookup_type="id"):
     :type lookup_type: str
     :returns: The username for the user
     """
-    if lookup_type != "id" and lookup_type != "email":
-        warn_msg = f"The lookup type {lookup_type} is not recognized. The function will " + \
-                   f"default to treating the lookup value as an email address."
-        print(warn_msg)
-        endpoint = "email"
+    lookup_type = __validate_lookup_type(lookup_type, 'username')
     user_data = core.get_data('people', lookup_value, lookup_type, return_json=True)
     username = user_data['jive']['username']
     return username

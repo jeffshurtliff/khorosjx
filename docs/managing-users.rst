@@ -12,6 +12,10 @@ user information and statistics and other similar operations.
 * `Leveraging the Users Module`_
 * `Obtaining User Information`_
     * `Obtain the User ID of a user`_
+    * `Obtain the username, email address and profile URL of a user`_
+        * `Obtain the username`_
+        * `Obtain the primary email address`_
+        * `Obtain the user profile URL`_
 
 ***************************
 Leveraging the Users Module
@@ -53,6 +57,8 @@ This is demonstrated in the example below.
 
     To simplify the initialization process, you should consider leveraging the 
     :ref:`supporting-modules:Helper Module (khorosjx.utils.helper)`.
+
+|
 
 **************************
 Obtaining User Information
@@ -108,13 +114,22 @@ demonstrated in the examples below.
     You may also notice that when leveraging the User ID, you can provide it as either an
     integer or a string value and both will be acceptable.
 
-Obtain the email address
-------------------------
+Obtain the primary email address
+--------------------------------
+You can quickly retrieve the primary email address for a user by leveraging the
+:py:func:`khorosjx.users.get_primary_email` function and supplying the User ID or username
+of the user.  This is demonstrated below.
 
-.. todo::
+.. code-block:: python
 
-    This section will be created once the :py:func:`khorosjx.users.get_email()` is
-    introduced within the library. *(Tentatively planned for v1.5.0.)*
+    email_address_from_id = khorosjx.users.get_primary_email(1234)
+    email_address_from_username = khorosjx.users.get_primary_email('john_doe', 'username')
+
+.. note::
+
+    As with the other functions above, you must provide the *lookup type* (e.g. ``username``)
+    as a second argument if not querying with the User ID. Also in similar fashion, the User ID
+    can be provided as either an integer or a string value and both will be acceptable.
 
 Obtain the user profile URL
 ---------------------------

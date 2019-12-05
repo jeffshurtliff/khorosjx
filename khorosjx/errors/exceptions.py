@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-:Module:         khorosjx.errors.exceptions
-:Synopsis:       Collection of exception classes relating to the khorosjx library
-:Usage:          import khorosjx.errors.exceptions
-:Created By:     Jeff Shurtliff
-:Last Modified:  Jeff Shurtliff
-:Modified Date:  23 Nov 2019
+:Module:        khorosjx.errors.exceptions
+:Synopsis:      Collection of exception classes relating to the khorosjx library
+:Usage:         ``import khorosjx.errors.exceptions``
+:Example:       ``raise khorosjx.errors.exceptions.BadCredentialsError``
+:Created By:    Jeff Shurtliff
+:Last Modified: Jeff Shurtliff
+:Modified Date: 05 Dec 2019
 """
 
 
@@ -160,6 +161,15 @@ class InvalidLookupTypeError(KhorosJXError):
         super().__init__(*args, **kwargs)
 
 
+class LookupMismatchError(KhorosJXError):
+    """This exception is used when an a lookup value doesn't match the supplied lookup type."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The supplied lookup type for the API does not match the value that was provided."
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args, **kwargs)
+
+
 class InvalidEndpointError(KhorosJXError):
     """This exception is used when an invalid API endpoint / service is provided."""
     def __init__(self, *args, **kwargs):
@@ -201,6 +211,14 @@ class InvalidScopeError(KhorosJXError, ValueError):
             args = (default_msg,)
         super().__init__(*args, **kwargs)
 
+
+class CurrentlyUnsupportedError(KhorosJXError):
+    """This exception is used when an operation is attempted that is not yet supported."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The attempted operation is not yet supported. Please try again in a future version."
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args, **kwargs)
 
 # -----------------
 # Helper Exceptions
