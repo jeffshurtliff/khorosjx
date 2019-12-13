@@ -6,11 +6,11 @@
 :Example:        khorosjx.core.connect(base_url, credentials)
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  23 Nov 2019
+:Modified Date:  13 Dec 2019
 """
 
 # Define all modules that will be imported with the "import *" method
-__all__ = ['core', 'admin', 'content', 'groups', 'spaces', 'users', 'helper']
+__all__ = ['core', 'admin', 'content', 'groups', 'spaces', 'users']
 
 # Always import the core module and the errors package
 from . import core
