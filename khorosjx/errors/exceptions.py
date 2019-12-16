@@ -6,7 +6,7 @@
 :Example:       ``raise khorosjx.errors.exceptions.BadCredentialsError``
 :Created By:    Jeff Shurtliff
 :Last Modified: Jeff Shurtliff
-:Modified Date: 05 Dec 2019
+:Modified Date: 16 Dec 2019
 """
 
 
@@ -37,7 +37,7 @@ class InvalidKhorosJXModuleError(KhorosJXError, ModuleNotFoundError):
         default_msg = "The module to be initiated is invalid and cannot be imported."
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
 
 
 # -------------------------
@@ -53,7 +53,7 @@ class NoCredentialsError(KhorosJXError, NameError):
                       "(base_url, api_credentials) function prior to calling any other khorosjx functions."
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
 
 
 class IncompleteCredentialsError(KhorosJXError, IndexError):
@@ -62,7 +62,7 @@ class IncompleteCredentialsError(KhorosJXError, IndexError):
         default_msg = "The API credentials are missing a username or password."
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
 
 
 class CredentialsUnpackingError(KhorosJXError, IndexError):
@@ -72,7 +72,7 @@ class CredentialsUnpackingError(KhorosJXError, IndexError):
                       "unpacked due to mismatched values."
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
 
 
 class WrongCredentialTypeError(KhorosJXError, TypeError):
@@ -81,7 +81,7 @@ class WrongCredentialTypeError(KhorosJXError, TypeError):
         default_msg = "The API username and password must both be in string format."
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
 
 
 class BadCredentialsError(KhorosJXError):
@@ -90,7 +90,7 @@ class BadCredentialsError(KhorosJXError):
         default_msg = "The API username and password combination is incorrect."
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
 
 
 # ------------------
@@ -105,7 +105,7 @@ class ContentPublishError(KhorosJXError):
         default_msg = "The content failed to publish."
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
 
 
 # ----------------------
@@ -120,7 +120,7 @@ class GETRequestError(KhorosJXError):
         default_msg = "The GET request did not return a successful response."
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
 
 
 class POSTRequestError(KhorosJXError):
@@ -129,7 +129,7 @@ class POSTRequestError(KhorosJXError):
         default_msg = "The POST request did not return a successful response."
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
 
 
 class PUTRequestError(KhorosJXError):
@@ -138,7 +138,7 @@ class PUTRequestError(KhorosJXError):
         default_msg = "The PUT request did not return a successful response."
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
 
 
 class InvalidRequestTypeError(KhorosJXError):
@@ -148,7 +148,7 @@ class InvalidRequestTypeError(KhorosJXError):
                       "request types include 'POST' and 'PUT')"
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
 
 
 class InvalidLookupTypeError(KhorosJXError):
@@ -158,7 +158,7 @@ class InvalidLookupTypeError(KhorosJXError):
                       "lookup types include 'id' and 'email')"
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
 
 
 class LookupMismatchError(KhorosJXError):
@@ -167,7 +167,7 @@ class LookupMismatchError(KhorosJXError):
         default_msg = "The supplied lookup type for the API does not match the value that was provided."
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
 
 
 class InvalidEndpointError(KhorosJXError):
@@ -177,7 +177,7 @@ class InvalidEndpointError(KhorosJXError):
                       "lookup types include 'people' and 'contents')"
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
 
 
 class APIConnectionError(KhorosJXError):
@@ -186,7 +186,7 @@ class APIConnectionError(KhorosJXError):
         default_msg = "The API query could not be completed due to connection aborts and/or timeouts."
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
 
 
 # --------------------------
@@ -200,7 +200,7 @@ class InvalidDatasetError(KhorosJXError, ValueError):
         default_msg = "The supplied value is not a valid dataset."
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
 
 
 class InvalidScopeError(KhorosJXError, ValueError):
@@ -209,7 +209,7 @@ class InvalidScopeError(KhorosJXError, ValueError):
         default_msg = "The supplied value is not a valid scope."
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
 
 
 class CurrentlyUnsupportedError(KhorosJXError):
@@ -218,7 +218,7 @@ class CurrentlyUnsupportedError(KhorosJXError):
         default_msg = "The attempted operation is not yet supported. Please try again in a future version."
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
 
 # -----------------
 # Helper Exceptions
@@ -231,7 +231,7 @@ class InvalidHelperArgumentsError(KhorosJXError, ValueError):
         default_msg = "The helper configuration file only accepts basic keyword arguments. (e.g. arg_name='arg_value')"
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
 
 
 class HelperFunctionNotFoundError(KhorosJXError, FileNotFoundError):
@@ -240,7 +240,21 @@ class HelperFunctionNotFoundError(KhorosJXError, FileNotFoundError):
         default_msg = "The function referenced in the helper configuration file could not be found."
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
+
+
+# -----------------
+# Spaces Exceptions
+# -----------------
+
+
+class SpaceNotFoundError(KhorosJXError):
+    """This exception is used when an API query for a space returns a 404 response."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The Place ID does not exist and the API returned a 404 response."
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args)
 
 
 # ---------------
@@ -255,7 +269,7 @@ class UserQueryError(KhorosJXError, ValueError):
         default_msg = "The Core API query for the user failed for an unknown reason."
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
 
 
 class UserNotFoundError(KhorosJXError, ValueError):
@@ -264,4 +278,4 @@ class UserNotFoundError(KhorosJXError, ValueError):
         default_msg = "The queried user could not be found by the Core API."
         if not (args or kwargs):
             args = (default_msg,)
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)

@@ -278,7 +278,7 @@ def add_user_to_group(group_id, user_value, lookup_type="id", return_mode="none"
     :type user_value: int, str
     :param lookup_type: Defines whether the user value is a User ID or an email address (Default: ``id``)
     :type lookup_type: str
-    :param return_mode: Determines what - if anything- should be returned by the function (Default: ``none``)
+    :param return_mode: Determines what--if anything--should be returned by the function (Default: ``none``)
     :type return_mode: str
     :param print_results: Determines whether or not all results (including success messages) should be printed onscreen
     :type print_results: bool

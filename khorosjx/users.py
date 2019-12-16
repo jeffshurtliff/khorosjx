@@ -260,7 +260,7 @@ def get_user_content_count(user_id, start_index=0):
 
 # Define function to get the people followed by a particular user
 def get_people_followed(user_id, ignore_exceptions=False, return_type=list, start_index=0):
-    """This function returns a comma-separated list of users followed by a particular user.
+    """This function returns a list of users followed by a particular user.
 
     :param user_id: The User ID for the user against which to check
     :type user_id: int

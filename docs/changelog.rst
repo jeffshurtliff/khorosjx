@@ -3,6 +3,33 @@ Change Log
 ##########
 
 ******
+v1.6.0
+******
+**Release Date: TBD**
+
+.. todo::
+
+   * Create py:func:`khorosjx.content.get_content_info` function.
+   * Create py:func:`khorosjx.content.get_attachments` function.
+   * Create py:func:`khorosjx.content.get_thread_attachments` function.
+
+Added
+=====
+* Added the :py:func:`khorosjx.spaces.get_permitted_content_types` function.
+* Added the :py:class:`khorosjx.errors.exceptions.SpaceNotFoundError` exception class.
+
+Fixed
+=====
+* Removed ``helper`` from ``__all__`` in the :py:func:`khorosjx.__init__` function.
+* Fixed how to query URL was generated in the :py:func:`khorosjx.core.get_api_info` function.
+* Fixed a docstring error in the :py:func:`khorosjx.core.put_request_with_retries` function.
+* Fixed a minor docstring error in :py:func:`khorosjx.groups.add_user_to_group` function.
+* Fixed a docstring error in the :py:func:`khorosjx.users.get_people_followed` function.
+* Removed the ``**kwargs`` argument in the ``super()`` call within all custom exceptions.
+
+|
+
+******
 v1.5.0
 ******
 **Release Date: 2019-12-05**

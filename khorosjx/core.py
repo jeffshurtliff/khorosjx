@@ -6,7 +6,7 @@
 :Example:        ``user_info = khorosjx.core.get_data('people', 'john.doe@example.com', 'email')``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  05 Dec 2019
+:Modified Date:  13 Dec 2019
 """
 
 import re
@@ -132,7 +132,7 @@ def get_api_info(api_filter="none"):
     verify_connection()
 
     # Get the query URL to use in the API call
-    query_url = f"{base_url}/api/version"
+    query_url = f"{base_url.split('/api')[0]}/api/version"
 
     # Perform GET request to obtain the version information
     response = requests.get(query_url)
@@ -348,28 +348,28 @@ def __api_request_with_payload(_url, _json_payload, _request_type):
 def post_request_with_retries(url, json_payload):
     """This function performs a POST request with a total of 5 retries in case of timeouts or connection issues.
 
-        :param url: The URI to be queried
-        :type url: str
-        :param json_payload: The payload for the POST request in JSON format
-        :type json_payload: json
-        :returns: The API response from the POST request
-        :raises: ValueError, APIConnectionError
-        """
+    :param url: The URI to be queried
+    :type url: str
+    :param json_payload: The payload for the POST request in JSON format
+    :type json_payload: json
+    :returns: The API response from the POST request
+    :raises: ValueError, APIConnectionError
+    """
     response = __api_request_with_payload(url, json_payload, 'post')
     return response
 
 
 # Define function to perform a PUT request with supplied JSON data
 def put_request_with_retries(url, json_payload):
-    """This function performs a GET request with a total of 5 retries in case of timeouts or connection issues.
+    """This function performs a PUT request with a total of 5 retries in case of timeouts or connection issues.
 
-        :param url: The URI to be queried
-        :type url: str
-        :param json_payload: The payload for the PUT request in JSON format
-        :type json_payload: json
-        :returns: The API response from the PUT request
-        :raises: ValueError, APIConnectionError
-        """
+    :param url: The URI to be queried
+    :type url: str
+    :param json_payload: The payload for the PUT request in JSON format
+    :type json_payload: json
+    :returns: The API response from the PUT request
+    :raises: ValueError, APIConnectionError
+    """
     response = __api_request_with_payload(url, json_payload, 'put')
     return response
 
