@@ -71,11 +71,11 @@ def check_json_for_error(json_data):
         error_status_code = json_data['error']['status']
         # Check if the error was because the space could not be found
         if error_status_code == 404:
-            raise errors.exceptions.SpaceNotFoundError
+            raise exceptions.SpaceNotFoundError
         else:
             exception_msg = f"The API request failed with a {error_status_code} status code and the " + \
                             f"following error: {json_data['error']['message']}"
-            raise errors.exceptions.GETRequestError(exception_msg)
+            raise exceptions.GETRequestError(exception_msg)
     except KeyError:
         pass
     return
