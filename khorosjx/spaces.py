@@ -170,9 +170,10 @@ def get_permitted_content_types(id_value, id_type='browse_id', return_type='list
 
 
 # Define function to get space permissions for a space
-def get_space_permissions(browse_id):
+def get_space_permissions(id_value, id_type):
     def __get_paginated_permissions(_browse_id, _start_index):
-        _query_uri = f"{base_url}/places/{_browse_id}/appliedEntitlements?fields=@all&count=100&startIndex={_start_index}"
+        _query_uri = f"{base_url}/places/{_browse_id}/appliedEntitlements?fields=@all&count=100&" + \
+                     f"startIndex={_start_index}"
         _permissions_json = core.get_request_with_retries(_query_uri, return_json=True)
         errors.handlers.check_json_for_error(_permissions_json)
         _permissions_list = _permissions_json['list']
