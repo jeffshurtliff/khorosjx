@@ -59,19 +59,27 @@ def check_api_response(response, request_type='get', ignore_exceptions=False):
     return successful_response
 
 
-def check_json_for_error(json_data):
+def check_json_for_error(json_data, data_type='space'):
     """This function checks to see if JSON from an API response contains an error.
 
     :param json_data: The API response data in JSON format
     :type json_data: dict
+    :param data_type: Determines what type of data was being queried (Default: ``space``)
+    :type data_type: str
     :returns: None
-    :raises: SpaceNotFoundError, GETRequestError
+    :raises: SpaceNotFoundError, NotFoundResponseError, GETRequestError
     """
+    not_found_exceptions = {
+        'space': exceptions.SpaceNotFoundError
+    }
     try:
         error_status_code = json_data['error']['status']
         # Check if the error was because the space could not be found
         if error_status_code == 404:
-            raise exceptions.SpaceNotFoundError
+            if data_type in not_found_exceptions:
+                raise not_found_exceptions.get(data_type)
+            else:
+                raise exceptions.NotFoundResponseError
         else:
             exception_msg = f"The API request failed with a {error_status_code} status code and the " + \
                             f"following error: {json_data['error']['message']}"

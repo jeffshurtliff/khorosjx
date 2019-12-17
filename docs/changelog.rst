@@ -2,10 +2,10 @@
 Change Log
 ##########
 
-******
-v1.6.0
-******
-**Release Date: TBD**
+***********
+v1.6.0.dev0
+***********
+**Release Date: 2019-12-17**
 
 .. todo::
 
@@ -15,9 +15,23 @@ v1.6.0
 
 Added
 =====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
 * Added the :py:func:`khorosjx.spaces.get_permitted_content_types` function.
 * Added the internal :py:func:`khorosjx.spaces._verify_browse_id` function.
+* Added the :py:func:`khorosjx.spaces.get_space_permissions` function.
+
+-----
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
 * Added the :py:func:`khorosjx.errors.handlers.check_json_for_error` function.
+* Added the :py:class:`khorosjx.errors.exceptions.NotFoundResponseError` exception class.
 * Added the :py:class:`khorosjx.errors.exceptions.SpaceNotFoundError` exception class.
 
 Fixed
@@ -27,7 +41,13 @@ Fixed
 * Fixed a docstring error in the :py:func:`khorosjx.core.put_request_with_retries` function.
 * Fixed a minor docstring error in :py:func:`khorosjx.groups.add_user_to_group` function.
 * Fixed a docstring error in the :py:func:`khorosjx.users.get_people_followed` function.
+* Added the missing ``verify_core_connection()`` function call in :py:func:`khorosjx.users.get_recent_logins`
+  function. (See `Issue #1 <https://github.com/jeffshurtliff/khorosjx/issues/1>`_)
 * Removed the ``**kwargs`` argument in the ``super()`` call within all custom exceptions.
+
+Documentation
+=============
+* Fixed minor typos in the `README.md <https://github.com/jeffshurtliff/khorosjx/blob/master/README.md>`_ file.
 
 |
 

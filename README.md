@@ -1,4 +1,4 @@
-# KhorosJX Python Library
+# Khoros JX Python Library
 The  **khorosjx**  library acts as a Python software development kit (SDK) to administer and manage 
 [Khoros JX](https://community.khoros.com/t5/Atlas-Insights-Blog/Lithium-and-Jive-x-It-s-Official/ba-p/325465) 
 (formerly  [Jive-x](https://www.prnewswire.com/news-releases/lithium-technologies-completes-acquisition-of-external-online-community-business-from-jive-300531058.html)) 
@@ -79,7 +79,7 @@ pip install khorosjx
 
 You may also clone the repository and install from source using the syntax below.
 
-```sh
+``` sh
 git clone git://github.com/jeffshurtliff/khorosjx.git
 cd khorosjx/
 python setup.py install

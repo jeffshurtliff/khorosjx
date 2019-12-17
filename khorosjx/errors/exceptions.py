@@ -189,6 +189,14 @@ class APIConnectionError(KhorosJXError):
         super().__init__(*args)
 
 
+class NotFoundResponseError(KhorosJXError):
+    """This exception is used when an API query returns a 404 response and there isn't a more specific class."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The API query returned a 404 response."
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args)
+
 # --------------------------
 # Generic Non-API Exceptions
 # --------------------------

@@ -6,10 +6,11 @@
 :Example:        ``space_info = khorosjx.spaces.get_space_info(1234)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  16 Dec 2019
+:Modified Date:  17 Dec 2019
 """
 
 from . import core, errors
+from .utils import core_utils
 
 
 # Define function to verify the connection in the core module
@@ -170,7 +171,7 @@ def get_permitted_content_types(id_value, id_type='browse_id', return_type='list
 
 
 # Define function to get space permissions for a space
-def get_space_permissions(id_value, id_type):
+def get_space_permissions(id_value, id_type, return_type='list'):
     def __get_paginated_permissions(_browse_id, _start_index):
         _query_uri = f"{base_url}/places/{_browse_id}/appliedEntitlements?fields=@all&count=100&" + \
                      f"startIndex={_start_index}"
@@ -185,4 +186,21 @@ def get_space_permissions(id_value, id_type):
     # Get the appropriate ID for the space to check
     id_value = __verify_browse_id(id_value, id_type)
 
+    # Initialize the empty list for the permissions information
+    all_permissions = []
 
+    # Perform the first query to get up to the first 100 groups
+    start_index = 0
+    permissions = __get_paginated_permissions(id_value, start_index)
+    all_permissions = core_utils.add_to_master_list(permissions, all_permissions)
+
+    # Continue querying for groups until none are returned
+    while len(permissions) > 0:
+        start_index += 100
+        permissions = __get_paginated_permissions(id_value, start_index)
+        all_permissions = core_utils.add_to_master_list(permissions, all_permissions)
+
+    # Return the data as a master list of group dictionaries or a pandas dataframe
+    if return_type == "dataframe":
+        all_permissions = core_utils.convert_dict_list_to_dataframe(all_permissions)
+    return all_permissions

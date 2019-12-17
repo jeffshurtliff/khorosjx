@@ -335,6 +335,10 @@ def get_recent_logins(count=100, start_index=0):
     :returns: The login data in JSON format
     :raises: UserQueryError
     """
+    # Verify that the core connection has been established
+    verify_core_connection()
+
+    # Perform and parse the query
     query_url = f"{base_url}/people?sort=lastLoggedIn&" + \
                 f"fields=jive,emails,name&count={count}&startIndex={start_index}"
     response = core.get_request_with_retries(query_url)
