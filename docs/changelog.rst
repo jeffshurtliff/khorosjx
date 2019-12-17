@@ -16,6 +16,8 @@ v1.6.0
 Added
 =====
 * Added the :py:func:`khorosjx.spaces.get_permitted_content_types` function.
+* Added the internal :py:func:`khorosjx.spaces._verify_browse_id` function.
+* Added the :py:func:`khorosjx.errors.handlers.check_json_for_error` function.
 * Added the :py:class:`khorosjx.errors.exceptions.SpaceNotFoundError` exception class.
 
 Fixed

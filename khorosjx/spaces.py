@@ -121,6 +121,19 @@ def get_browse_id(space_id, return_type='str'):
     return browse_id
 
 
+def __verify_browse_id(_id_value, _id_type):
+    """This function checks for a Browse ID and converts another value to get it if necessary."""
+    _accepted_id_types = ['browse_id', 'place_id', 'space_id']
+    if _id_type in _accepted_id_types:
+        if _id_type != "browse_id" and _id_type != "place_id":
+            _id_value = get_browse_id(_id_value)
+    else:
+        _exception_msg = "The supplied lookup type for the API query is not recognized. (Examples of valid " + \
+                         "lookup types include 'browse_id' and 'space_id')"
+        raise errors.exceptions.InvalidLookupTypeError(_exception_msg)
+    return _id_value
+
+
 # Define function to get the permitted content types for a space
 def get_permitted_content_types(id_value, id_type='browse_id', return_type='list'):
     """This function returns the permitted content types for a given space.
@@ -138,31 +151,14 @@ def get_permitted_content_types(id_value, id_type='browse_id', return_type='list
     verify_core_connection()
 
     # Get the appropriate ID for the space to check
-    accepted_id_types = ['browse_id', 'place_id', 'space_id']
-    if id_type in accepted_id_types:
-        if id_type != "browse_id" and id_type != "place_id":
-            id_value = get_browse_id(id_value)
-    else:
-        exception_msg = "The supplied lookup type for the API query is not recognized. (Examples of valid " + \
-                        "lookup types include 'browse_id' and 'space_id')"
-        raise errors.exceptions.InvalidLookupTypeError(exception_msg)
+    id_value = __verify_browse_id(id_value, id_type)
 
     # Get the permitted content types
     query_url = f"{base_url}/places/{id_value}/permissions"
     space_permissions = core.get_request_with_retries(query_url, return_json=True)
 
     # Check for an error in the response
-    try:
-        error_status_code = space_permissions['error']['status']
-        # Check if the error was because the space could not be found
-        if error_status_code == 404:
-            raise errors.exceptions.SpaceNotFoundError
-        else:
-            exception_msg = f"The API request failed with a {error_status_code} status code and the " + \
-                            f"following error: {space_permissions['error']['message']}"
-            raise errors.exceptions.GETRequestError(exception_msg)
-    except KeyError:
-        pass
+    errors.handlers.check_json_for_error(space_permissions)
 
     # Get and return the permitted content types as a list or string
     content_types = space_permissions['contentTypes']
@@ -171,3 +167,21 @@ def get_permitted_content_types(id_value, id_type='browse_id', return_type='list
     elif return_type == 'str':
         content_types = ', '.join(content_types)
     return content_types
+
+
+# Define function to get space permissions for a space
+def get_space_permissions(browse_id):
+    def __get_paginated_permissions(_browse_id, _start_index):
+        _query_uri = f"{base_url}/places/{_browse_id}/appliedEntitlements?fields=@all&count=100&startIndex={_start_index}"
+        _permissions_json = core.get_request_with_retries(_query_uri, return_json=True)
+        errors.handlers.check_json_for_error(_permissions_json)
+        _permissions_list = _permissions_json['list']
+        return _permissions_list
+
+    # Verify that the core connection has been established
+    verify_core_connection()
+
+    # Get the appropriate ID for the space to check
+    id_value = __verify_browse_id(id_value, id_type)
+
+
