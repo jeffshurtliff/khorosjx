@@ -19,14 +19,14 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'KhorosJX'
+project = 'Khoros JX Python Library'
 copyright = '2019, Jeff Shurtliff'
 author = 'Jeff Shurtliff'
 
 # The short X.Y version
 version = '1.6'
 # The full version, including alpha/beta/rc tags
-release = '1.6.0.dev0'
+release = '1.6.0.dev1'
 
 
 # -- General configuration ---------------------------------------------------

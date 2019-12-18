@@ -172,11 +172,22 @@ def get_permitted_content_types(id_value, id_type='browse_id', return_type='list
 
 # Define function to get space permissions for a space
 def get_space_permissions(id_value, id_type, return_type='list'):
+    """This function returns all of the defined permissions (aka ``appliedEntitlements``) for a specific space.
+
+    :param id_value: The space identifier as a Browse ID (default), Place ID or Space ID
+    :type id_value: int, str
+    :param id_type: Determines if the ``id_value`` is a ``browse_id`` (Default), ``place_id`` or ``space_id``
+    :type id_type: str
+    :param return_type: Determines if the result should be returned as a ``list`` (Default) or pandas ``dataframe``
+    :type return_type: str
+    :returns: The list or dataframe with the space permissions
+    :raises: SpaceNotFoundError, GETRequestError
+    """
     def __get_paginated_permissions(_browse_id, _start_index):
         _query_uri = f"{base_url}/places/{_browse_id}/appliedEntitlements?fields=@all&count=100&" + \
                      f"startIndex={_start_index}"
         _permissions_json = core.get_request_with_retries(_query_uri, return_json=True)
-        errors.handlers.check_json_for_error(_permissions_json)
+        errors.handlers.check_json_for_error(_permissions_json, 'space')
         _permissions_list = _permissions_json['list']
         return _permissions_list
 
@@ -202,5 +213,22 @@ def get_space_permissions(id_value, id_type, return_type='list'):
 
     # Return the data as a master list of group dictionaries or a pandas dataframe
     if return_type == "dataframe":
-        all_permissions = core_utils.convert_dict_list_to_dataframe(all_permissions)
+        unique_permission_fields = get_unique_permission_fields(all_permissions)
+        all_permissions = core_utils.convert_dict_list_to_dataframe(all_permissions, unique_permission_fields)
     return all_permissions
+
+
+# Define function to get the unique fields for the permissions data
+def get_unique_permission_fields(permissions_dict_list):
+    """This function gets the unique fields from a space permissions list from the ``get_space_permissions`` function.
+
+    :param permissions_dict_list: A list of dictionaries containing space permissions
+    :type permissions_dict_list: list
+    :returns: List of unique field names
+    """
+    unique_fields = []
+    for permissions_dict in permissions_dict_list:
+        for permission_field in permissions_dict.keys():
+            if permission_field not in unique_fields:
+                unique_fields.append(permission_field)
+    return unique_fields

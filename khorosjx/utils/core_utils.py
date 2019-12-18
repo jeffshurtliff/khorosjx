@@ -112,17 +112,19 @@ def convert_dict_to_json(data):
 
 
 # Define function to convert a list of dictionaries to a pandas dataframe
-def convert_dict_list_to_dataframe(dict_list):
-    """This function converts a list of dictinoaries into a pandas dataframe.
+def convert_dict_list_to_dataframe(dict_list, column_names=[]):
+    """This function converts a list of dictionaries into a pandas dataframe.
 
     :param dict_list: List of dictionaries
     :type dict_list: list
+    :param column_names: The column names for the dataframe (Optional)
+    :type column_names: list
     :returns: A pandas dataframe of the data
     """
     # Identify the dataframe column names
-    column_names = []
-    for field_name in dict_list[0].keys():
-        column_names.append(field_name)
+    if len(column_names) == 0:
+        for field_name in dict_list[0].keys():
+            column_names.append(field_name)
 
     # Identify the data for each column
     df_data = []

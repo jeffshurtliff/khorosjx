@@ -3,15 +3,9 @@ Change Log
 ##########
 
 ***********
-v1.6.0.dev0
+v1.6.0.dev1
 ***********
 **Release Date: 2019-12-17**
-
-.. todo::
-
-   * Create py:func:`khorosjx.content.get_content_info` function.
-   * Create py:func:`khorosjx.content.get_attachments` function.
-   * Create py:func:`khorosjx.content.get_thread_attachments` function.
 
 Added
 =====
@@ -23,6 +17,7 @@ Additions to the :doc:`primary modules <primary-modules>`.
 * Added the :py:func:`khorosjx.spaces.get_permitted_content_types` function.
 * Added the internal :py:func:`khorosjx.spaces._verify_browse_id` function.
 * Added the :py:func:`khorosjx.spaces.get_space_permissions` function.
+* Added the :py:func:`khorosjx.spaces.get_unique_permission_fields` function.
 
 -----
 
@@ -34,20 +29,66 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
 * Added the :py:class:`khorosjx.errors.exceptions.NotFoundResponseError` exception class.
 * Added the :py:class:`khorosjx.errors.exceptions.SpaceNotFoundError` exception class.
 
+-----
+
+Documentation
+-------------
+Addition to the documentation in this release.
+
+* Added a :doc:`Roadmap <roadmap>` page to list upcoming enhancements and changes.
+
+Changed
+=======
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the optional ``column_names`` keyword argument in the
+  :py:func:`khorosjx.utils.core_utils.convert_dict_list_to_dataframe` function.
+
+-----
+
+Documentation
+-------------
+Changes to the documentation in this release.
+
+* Changed the project name from ``KhorosJX`` to ``Khoros JX Python Library`` in the
+  `conf.py <https://github.com/jeffshurtliff/khorosjx/blob/master/docs/conf.py>`_ script.
+* Made adjustments to the ``toctree`` directives on the :doc:`index <index>` page.
+
+
 Fixed
 =====
-* Removed ``helper`` from ``__all__`` in the :py:func:`khorosjx.__init__` function.
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Removed ``helper`` from ``__all__`` in the :py:mod:`khorosjx.__init__` module.
 * Fixed how to query URL was generated in the :py:func:`khorosjx.core.get_api_info` function.
 * Fixed a docstring error in the :py:func:`khorosjx.core.put_request_with_retries` function.
 * Fixed a minor docstring error in :py:func:`khorosjx.groups.add_user_to_group` function.
 * Fixed a docstring error in the :py:func:`khorosjx.users.get_people_followed` function.
 * Added the missing ``verify_core_connection()`` function call in :py:func:`khorosjx.users.get_recent_logins`
   function. (See `Issue #1 <https://github.com/jeffshurtliff/khorosjx/issues/1>`_)
+
+-----
+
+Supporting Modules
+------------------
+Fixes to the :doc:`supporting modules <supporting-modules>`.
+
 * Removed the ``**kwargs`` argument in the ``super()`` call within all custom exceptions.
 
+-----
+
 Documentation
-=============
+-------------
+Fixes in the documentation in this release.
+
 * Fixed minor typos in the `README.md <https://github.com/jeffshurtliff/khorosjx/blob/master/README.md>`_ file.
+* Fixed a minor typo in the :py:func:`khorosjx.utils.core_utils.convert_dict_list_to_dataframe` function docstring.
 
 |
 
@@ -390,7 +431,7 @@ v1.0.1.post1
 Changed
 =======
 * Created a new :doc:`Introduction <introduction>` page with the existing home page content and added
-  a :ref:`index:Navigation` (i.e. Table of Contents) to the home page.
+  a :doc:`Navigation <index>` (i.e. Table of Contents) to the home page.
 * Changed all :doc:`auxilliary modules <supporting-modules>` references to be
   :doc:`supporting modules <supporting-modules>` instead.
 * Added a :ref:`introduction:Reporting Issues` section to the :doc:`Introduction <introduction>` page and to the
