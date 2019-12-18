@@ -6,7 +6,7 @@
 :Example:       ``timestamp = get_timestamp(time_format="delimited")``
 :Created By:    Jeff Shurtliff
 :Last Modified: Jeff Shurtliff
-:Modified Date: 30 Nov 2019
+:Modified Date: 18 Dec 2019
 """
 
 import sys
@@ -16,6 +16,7 @@ from datetime import datetime
 import pandas as pd
 from dateutil import tz
 
+from . import df_utils
 from .classes import TimeUtils
 
 
@@ -112,6 +113,7 @@ def convert_dict_to_json(data):
 
 
 # Define function to convert a list of dictionaries to a pandas dataframe
+# TODO: Add deprecation warning to this function
 def convert_dict_list_to_dataframe(dict_list, column_names=[]):
     """This function converts a list of dictionaries into a pandas dataframe.
 
@@ -121,21 +123,8 @@ def convert_dict_list_to_dataframe(dict_list, column_names=[]):
     :type column_names: list
     :returns: A pandas dataframe of the data
     """
-    # Identify the dataframe column names
-    if len(column_names) == 0:
-        for field_name in dict_list[0].keys():
-            column_names.append(field_name)
-
-    # Identify the data for each column
-    df_data = []
-    for idx in range(0, len(dict_list)):
-        row_data = []
-        for field_value in dict_list[idx].values():
-            row_data.append(field_value)
-        df_data.append(row_data)
-
-    # Create and return the dataframe
-    dataframe = pd.DataFrame(df_data, columns=column_names)
+    # Leverage the khorosjx.utils.df_utils.convert_dict_list_to_dataframe function to get and return the dataframe
+    dataframe = df_utils.convert_dict_list_to_dataframe(dict_list, column_names)
     return dataframe
 
 

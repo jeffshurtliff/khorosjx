@@ -6,11 +6,11 @@
 :Example:        ``space_info = khorosjx.spaces.get_space_info(1234)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  17 Dec 2019
+:Modified Date:  18 Dec 2019
 """
 
 from . import core, errors
-from .utils import core_utils
+from .utils import core_utils, df_utils
 
 
 # Define function to verify the connection in the core module
@@ -133,6 +133,60 @@ def __verify_browse_id(_id_value, _id_type):
                          "lookup types include 'browse_id' and 'space_id')"
         raise errors.exceptions.InvalidLookupTypeError(_exception_msg)
     return _id_value
+
+
+# Define function to get a space list from a CSV or Excel file
+def get_spaces_list_from_file(full_path, file_type='csv', has_headers=True,
+                              id_column='', id_type='browse_id', excel_sheet_name='', filter_info={}):
+    """This function retrieves a list of space identifiers from a file.
+
+    :param full_path: The full path to the file to import
+    :type full_path: str
+    :param file_type: Defines if the file to be imported is a ``csv`` (Default), ``xlsx``, ``xls`` or ``txt`` file.
+    :param has_headers: Defines if the import file uses column headers (``True`` by default)
+    :type has_headers: bool
+    :param id_column: Defines the column name (if applicable) which contains the space identifier (Null by default)
+    :type id_column: str
+    :param id_type: Defines if the ID type is a ``browse_id`` (Default) or ``place_id`` (aka ``container_id``)
+    :type id_type: str
+    :param excel_sheet_name: The sheet name to retrieve if an Excel file is supplied (First sheet imported by default)
+    :type excel_sheet_name: str
+    :param filter_info: Dictionary used to apply any filter to the imported data if necessary (Null by default)
+    :type filter_info: dict
+    :returns: A list of space identifiers
+    :raises: InvalidFileTypeError
+    """
+    # Make changes to the arguments depending on whether or not headers are present
+    if has_headers is False:
+        try:
+            id_column = int(id_column)
+        except ValueError:
+            id_column = 0
+
+    # Ensure that any filter columns are returned
+    return_cols = [id_column]
+    if len(filter_info) > 0:
+        for filter_col in filter_info.keys():
+            return_cols.append(str(filter_col))
+
+    # Determine the use case for importing the data based on the supplied arguments
+    if file_type == 'csv' or file_type == 'txt':
+        dataframe = df_utils.import_csv(full_path, columns_to_return=return_cols, has_headers=has_headers)
+    elif file_type == 'xlsx' or file_type == 'xls':
+        use_first_sheet = True if excel_sheet_name == '' else False
+        dataframe = df_utils.import_excel(full_path, excel_sheet_name, use_first_sheet=use_first_sheet,
+                                          columns_to_return=return_cols, has_headers=has_headers)
+    else:
+        raise errors.exceptions.InvalidFileTypeError
+
+    # Apply any given filters
+    if len(filter_info) > 0:
+        for filter_key, filter_val in filter_info.items():
+            dataframe = dataframe.loc[dataframe[filter_key] == filter_val]
+
+    # Convert the IDs to a list and return it
+    spaces_list = dataframe[id_column].tolist()
+    return spaces_list
 
 
 # Define function to get the permitted content types for a space

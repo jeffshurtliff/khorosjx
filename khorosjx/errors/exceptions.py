@@ -6,7 +6,7 @@
 :Example:       ``raise khorosjx.errors.exceptions.BadCredentialsError``
 :Created By:    Jeff Shurtliff
 :Last Modified: Jeff Shurtliff
-:Modified Date: 16 Dec 2019
+:Modified Date: 18 Dec 2019
 """
 
 
@@ -206,6 +206,15 @@ class InvalidDatasetError(KhorosJXError, ValueError):
     """This exception is used when a supplied dataset is invalid and cannot be found."""
     def __init__(self, *args, **kwargs):
         default_msg = "The supplied value is not a valid dataset."
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args)
+
+
+class InvalidFileTypeError(KhorosJXError, ValueError):
+    """This exception is used when a supplied file type is invalid and cannot be used."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The supplied value is not a valid file type and cannot be utilized."
         if not (args or kwargs):
             args = (default_msg,)
         super().__init__(*args)

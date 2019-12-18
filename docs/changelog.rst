@@ -4,6 +4,62 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v1.7.0
+******
+**Release Date: TBD**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khorosjx.spaces.get_spaces_list_from_file` function.
+
+-----
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the new :py:mod:`khorosjx.utils.df_utils` module to house all pandas-related functions and utilities.
+* Added the :py:func:`khorosjx.utils.df_utils.convert_dict_list_to_dataframe` function. (Moved from the
+  :py:mod:`khorosjx.utils.core_utils` module.)
+* Added the :py:func:`khorosjx.utils.df_utils.import_csv` function.
+* Added the :py:func:`khorosjx.utils.df_utils.import_excel` function.
+* Added the :py:exc:`khorosjx.errors.exceptions.InvalidFileTypeError` exception class.
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* TBD
+
+-----
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Updated the py:func:`khorosjx.utils.core_utils.convert_dict_list_to_dataframe` function to leverage the
+  py:func:`khorosjx.utils.df_utils.convert_dict_list_to_dataframe` function in the new module.
+
+Deprecated
+==========
+
+Supporting Modules
+------------------
+Deprecations in the :doc:`supporting modules <supporting-modules>`.
+
+* Deprecated the py:func:`khorosjx.utils.core_utils.convert_dict_list_to_dataframe` function as it now resides in the
+  py:func:`khorosjx.utils.df_utils.convert_dict_list_to_dataframe` function within the new module.
+
+
+******
 v1.6.0
 ******
 **Release Date: 2019-12-17**
