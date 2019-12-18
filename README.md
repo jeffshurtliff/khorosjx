@@ -6,7 +6,7 @@ and  [Jive-n](https://www.jivesoftware.com/)  online community platforms.
 
 <table>
     <tr>
-        <td>Latest Release</td>
+        <td>Latest Stable Release</td>
         <td>
             <a href='https://pypi.org/project/khorosjx/'>
                 <img alt="PyPI" src="https://img.shields.io/pypi/v/khorosjx">

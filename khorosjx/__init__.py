@@ -2,11 +2,11 @@
 """
 :Package:        khorosjx
 :Synopsis:       This package includes custom exceptions and a function to call them with specific error messages
-:Usage:          import khorosjx.errors (Imported by default in primary package)
-:Example:        khorosjx.core.connect(base_url, credentials)
+:Usage:          ``import khorosjx``
+:Example:        ``khorosjx.core.connect(base_url, credentials)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  13 Dec 2019
+:Modified Date:  17 Dec 2019
 """
 
 # Define all modules that will be imported with the "import *" method
@@ -27,17 +27,21 @@ def init_module(*args):
     :raises: ModuleNotFoundError, KhorosJXError, InvalidKhorosJXModuleError
     """
     # Get any arguments supplied in the function
-    arguments = []
-    for arg in args:
-        if type(arg) == tuple or type(arg) == list:
-            for item in arg:
-                if type(item) == tuple or type(item) == list:
-                    for subitem in item:
-                        arguments.append(subitem)
-                else:
-                    arguments.append(item)
-        else:
-            arguments.append(arg)
+    if 'all' in args:
+        arguments = __all__
+        arguments.remove('core')
+    else:
+        arguments = []
+        for arg in args:
+            if type(arg) == tuple or type(arg) == list:
+                for item in arg:
+                    if type(item) == tuple or type(item) == list:
+                        for subitem in item:
+                            arguments.append(subitem)
+                    else:
+                        arguments.append(item)
+            else:
+                arguments.append(arg)
 
     # Import any of the supplied modules
     for mod_entry in arguments:

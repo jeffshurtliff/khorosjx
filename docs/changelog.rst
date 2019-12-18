@@ -1,10 +1,11 @@
 ##########
 Change Log
 ##########
+This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
-***********
-v1.6.0.dev1
-***********
+******
+v1.6.0
+******
 **Release Date: 2019-12-17**
 
 Added
@@ -17,7 +18,8 @@ Additions to the :doc:`primary modules <primary-modules>`.
 * Added the :py:func:`khorosjx.spaces.get_permitted_content_types` function.
 * Added the internal :py:func:`khorosjx.spaces._verify_browse_id` function.
 * Added the :py:func:`khorosjx.spaces.get_space_permissions` function.
-* Added the :py:func:`khorosjx.spaces.get_unique_permission_fields` function.
+* Added the internal :py:func:`khorosjx.spaces.__get_unique_permission_fields` function.
+* Added the internal :py:func:`khorosjx.spaces.__generate_permissions_dataframe` function.
 
 -----
 
@@ -40,6 +42,15 @@ Addition to the documentation in this release.
 Changed
 =======
 
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the :py:func:`khorosjx.__init__.init_module` function to allow the ``all`` string to be passed which
+  imports all modules.
+
+-----
+
 Supporting Modules
 ------------------
 Changes to the :doc:`supporting modules <supporting-modules>`.
@@ -56,6 +67,9 @@ Changes to the documentation in this release.
 * Changed the project name from ``KhorosJX`` to ``Khoros JX Python Library`` in the
   `conf.py <https://github.com/jeffshurtliff/khorosjx/blob/master/docs/conf.py>`_ script.
 * Made adjustments to the ``toctree`` directives on the :doc:`index <index>` page.
+* Changed the **Latest Release** badge in the
+  `README.md <https://github.com/jeffshurtliff/khorosjx/blob/master/README.md>`_ file to be labeled
+  **Latest Stable Release** instead.
 
 
 Fixed

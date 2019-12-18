@@ -13,11 +13,9 @@ Short-Term
 **********
 The following list includes enhancements, changes and other items currently planned for short-term release.
 
-* Create the py:func:`khorosjx.content.get_content_info` function.
-* Create the py:func:`khorosjx.content.get_attachments` function.
-* Create the py:func:`khorosjx.content.get_thread_attachments` function.
-
-|
+* Create the :py:func:`khorosjx.content.get_content_info` function.
+* Create the :py:func:`khorosjx.content.get_attachments` function.
+* Create the :py:func:`khorosjx.content.get_thread_attachments` function.
 
 *********
 Long-Term

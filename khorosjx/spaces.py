@@ -171,7 +171,7 @@ def get_permitted_content_types(id_value, id_type='browse_id', return_type='list
 
 
 # Define function to get space permissions for a space
-def get_space_permissions(id_value, id_type, return_type='list'):
+def get_space_permissions(id_value, id_type='browse_id', return_type='list'):
     """This function returns all of the defined permissions (aka ``appliedEntitlements``) for a specific space.
 
     :param id_value: The space identifier as a Browse ID (default), Place ID or Space ID
@@ -213,22 +213,45 @@ def get_space_permissions(id_value, id_type, return_type='list'):
 
     # Return the data as a master list of group dictionaries or a pandas dataframe
     if return_type == "dataframe":
-        unique_permission_fields = get_unique_permission_fields(all_permissions)
-        all_permissions = core_utils.convert_dict_list_to_dataframe(all_permissions, unique_permission_fields)
+        all_permissions = __generate_permissions_dataframe(all_permissions)
     return all_permissions
 
 
 # Define function to get the unique fields for the permissions data
-def get_unique_permission_fields(permissions_dict_list):
+def __get_unique_permission_fields(_permissions_dict_list):
     """This function gets the unique fields from a space permissions list from the ``get_space_permissions`` function.
 
-    :param permissions_dict_list: A list of dictionaries containing space permissions
-    :type permissions_dict_list: list
+    :param _permissions_dict_list: A list of dictionaries containing space permissions
+    :type _permissions_dict_list: list
     :returns: List of unique field names
     """
-    unique_fields = []
-    for permissions_dict in permissions_dict_list:
-        for permission_field in permissions_dict.keys():
-            if permission_field not in unique_fields:
-                unique_fields.append(permission_field)
-    return unique_fields
+    _unique_fields = []
+    for _permissions_dict in _permissions_dict_list:
+        for _permission_field in _permissions_dict.keys():
+            if _permission_field not in _unique_fields:
+                _unique_fields.append(_permission_field)
+    return _unique_fields
+
+
+# Define function to generate a dataframe with the space permissions
+def __generate_permissions_dataframe(_permissions_dict_list):
+    """This function converts a list of dictionaries containing space permissions into a pandas dataframe.
+
+    :param _permissions_dict_list: A list of dictionaries containing space permissions
+    :type _permissions_dict_list: list
+    :returns: A pandas dataframe with the permissions data
+    """
+    # Get the unique field names to act as the dataframe columns
+    _unique_permission_fields = __get_unique_permission_fields(_permissions_dict_list)
+
+    # Loop through the dictionaries in the original list
+    for _permissions_dict in _permissions_dict_list:
+        # Loop through the unique permission fields to see if they are all present
+        for _unique_field in _unique_permission_fields:
+            if _unique_field not in _permissions_dict.keys():
+                # Add the field if it does not exist
+                _permissions_dict[_unique_field] = ''
+
+    # Convert the dictionary list to a pandas dataframe
+    _permissions_data = core_utils.convert_dict_list_to_dataframe(_permissions_dict_list, _unique_permission_fields)
+    return _permissions_data
