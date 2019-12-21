@@ -23,3 +23,5 @@ Long-Term
 The following list includes enhancements, changes and other items currently planned for long-term release.
 
 * Support for OAuth authentication as opposed to only basic authentication.
+* Extend the :py:mod:`khorosjx.spaces` and :py:mod:`khorosjx.content` modules to be more segregated by content and
+  container types.

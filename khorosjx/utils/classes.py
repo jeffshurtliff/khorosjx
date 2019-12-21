@@ -5,7 +5,7 @@ Synopsis:       Collection of classes relating to the khorosjx library
 Usage:          ``from khorosjx.utils.classes import Users``
 Created By:     Jeff Shurtliff
 Last Modified:  Jeff Shurtliff
-Modified Date:  05 Dec 2019
+Modified Date:  19 Dec 2019
 """
 
 
@@ -52,7 +52,8 @@ class FieldLists:
                      'jive.externalIdentities.identity', 'jive.username', 'jive.status']
     place_fields = ['id', 'followerCount', 'followed', 'published', 'tags', 'updated', 'placeID', 'contentTypes',
                     'description', 'displayName', 'name', 'parent', 'status', 'viewCount', 'placeTopics', 'childCount',
-                    'visibleToExternalContributors',  'locale', 'inheritsAppliedEntitlements', 'type', 'typeCode']
+                    'visibleToExternalContributors',  'locale', 'inheritsAppliedEntitlements', 'type', 'typeCode',
+                    'resources.html.ref']
     security_group_fields = ['id', 'published', 'updated', 'administratorCount', 'memberCount', 'name',
                              'description', 'federated']
 

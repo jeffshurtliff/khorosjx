@@ -3,10 +3,10 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
-***********
-v1.7.0.dev0
-***********
-**Release Date: 2019-12-19**
+******
+v1.7.0
+******
+**Release Date: 2019-12-21**
 
 Added
 =====
@@ -37,7 +37,7 @@ Primary Modules
 ---------------
 Changes to the :doc:`primary modules <primary-modules>`.
 
-* TBD
+* Updated the :py:func:`khorosjx.core.get_fields_from_api_response` function to handle the ``resources.html.ref`` field.
 
 -----
 
@@ -46,7 +46,20 @@ Supporting Modules
 Changes to the :doc:`supporting modules <supporting-modules>`.
 
 * Updated the py:func:`khorosjx.utils.core_utils.convert_dict_list_to_dataframe` function to leverage the
-  py:func:`khorosjx.utils.df_utils.convert_dict_list_to_dataframe` function in the new module.
+  :py:func:`khorosjx.utils.df_utils.convert_dict_list_to_dataframe` function in the new module.
+* Updated the ``place_fields`` list in the :py:class:`khorosjx.utils.classes.FieldLists` class to include the
+  ``resources.html.ref`` field.
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes in the :doc:`primary modules <primary-modules>`.
+
+* Fixed a logic error in the :py:func:`khorosjx.core.get_fields_from_api_response` function which was preventing
+  custom-curated fields for nested values from returning properly.
+
 
 Deprecated
 ==========
