@@ -4,6 +4,36 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.0.0
+******
+**Release Date: TBD**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Created the ``khorosjx.places`` subpackage with the following modules:
+    * :py:mod:`khorosjx.places.base`
+    * :py:mod:`khorosjx.places.spaces`
+    * :py:mod:`khorosjx.places.blogs`
+
+Changes
+=======
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Included the ``blog`` and ``place`` datasets in the dictionary within the
+  :py:func:`get_fields_from_api_response` function.
+
+
+
+|
+
+******
 v1.7.0
 ******
 **Release Date: 2019-12-21**

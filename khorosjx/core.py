@@ -392,10 +392,12 @@ def get_fields_from_api_response(json_data, dataset, return_fields=[]):
 
     # Map the datasets to their respective field lists
     datasets = {
+        'blog': FieldLists.place_fields,
         'document': FieldLists.document_fields,
-        'people': FieldLists.people_fields,
         'group_admins': FieldLists.people_fields,
         'group_members': FieldLists.people_fields,
+        'people': FieldLists.people_fields,
+        'place': FieldLists.place_fields,
         'security_group': FieldLists.security_group_fields,
         'space': FieldLists.place_fields
     }
