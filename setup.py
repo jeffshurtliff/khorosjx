@@ -16,7 +16,7 @@ setuptools.setup(
     url="https://github.com/jeffshurtliff/khorosjx",
     packages=setuptools.find_packages(),
     classifiers=[
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",
         "Intended Audience :: Information Technology",
         "Intended Audience :: System Administrators",
