@@ -17,8 +17,19 @@ Additions to the :doc:`primary modules <primary-modules>`.
 
 * Created the :py:mod:`khorosjx.places` module with the following sub-modules and functions:
     * :py:mod:`khorosjx.places.base`
+        * :py:func:`khorosjx.places.base.verify_core_connection`
+        * :py:func:`khorosjx.places.base.get_browse_id`
+        * :py:func:`khorosjx.places.base.get_place_id`
+        * :py:func:`khorosjx.places.base.get_place_info`
+        * :py:func:`khorosjx.places.base.get_places_list_from_file`
     * :py:mod:`khorosjx.places.spaces`
+        * :py:func:`khorosjx.places.spaces.verify_core_connection`
+        * :py:func:`khorosjx.places.spaces.get_space_info`
+        * :py:func:`khorosjx.places.spaces.get_permitted_content_types`
+        * :py:func:`khorosjx.places.spaces.get_space_permissions`
     * :py:mod:`khorosjx.places.blogs`
+        * :py:func:`khorosjx.places.blogs.verify_core_connection`
+        * :py:func:`khorosjx.places.blogs.get_blog_info`
 * Created the :py:mod:`khorosjx.content` module with the following sub-modules and functions:
     * :py:mod:`khorosjx.content.base`
         * :py:func:`khorosjx.content.base.verify_core_connection`
@@ -63,6 +74,11 @@ Additions to the documentation.
 
 Changed
 =======
+
+General
+-------
+* Changed the ``Development Status`` PyPI classifier in the
+  `setup.py <https://github.com/jeffshurtliff/khorosjx/blob/master/setup.py>`_ file to be ``5 - Production/Stable``.
 
 Primary Modules
 ---------------
