@@ -15,21 +15,140 @@ Primary Modules
 ---------------
 Additions to the :doc:`primary modules <primary-modules>`.
 
-* Created the ``khorosjx.places`` subpackage with the following modules:
+* Created the :py:mod:`khorosjx.places` module with the following sub-modules and functions:
     * :py:mod:`khorosjx.places.base`
     * :py:mod:`khorosjx.places.spaces`
     * :py:mod:`khorosjx.places.blogs`
+* Created the :py:mod:`khorosjx.content` module with the following sub-modules and functions:
+    * :py:mod:`khorosjx.content.base`
+        * :py:func:`khorosjx.content.base.verify_core_connection`
+        * :py:func:`khorosjx.content.base.get_content_id`
+        * :py:func:`khorosjx.content.base.__convert_lookup_value`
+        * :py:func:`khorosjx.content.base.__trim_attachments_info`
+    * :py:mod:`khorosjx.content.docs`
+        * :py:func:`khorosjx.content.docs.verify_core_connection`
+        * :py:func:`khorosjx.content.docs.get_content_id`
+        * :py:func:`khorosjx.content.docs.overwrite_doc_body`
+        * :py:func:`khorosjx.content.docs.get_document_info`
+        * :py:func:`khorosjx.content.docs.get_document_attachments`
+    * :py:mod:`khorosjx.content.events`
+        * :py:func:`khorosjx.content.events.verify_core_connection`
+        * :py:func:`khorosjx.content.events.get_content_id`
+    * :py:mod:`khorosjx.content.ideas`
+        * :py:func:`khorosjx.content.ideas.verify_core_connection`
+        * :py:func:`khorosjx.content.ideas.get_content_id`
+    * :py:mod:`khorosjx.content.threads`
+        * :py:func:`khorosjx.content.threads.verify_core_connection`
+        * :py:func:`khorosjx.content.threads.get_content_id`
+    * :py:mod:`khorosjx.content.videos`
+        * :py:func:`khorosjx.content.videos.verify_core_connection`
+        * :py:func:`khorosjx.content.videos.get_content_id`
+* Added the :py:func:`khorosjx.content.videos.download_video` function.
 
-Changes
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:func:`khorosjx.utils.core_utils.print_if_verbose` function.
+* Added the ``permitted_video_file_types`` list to the :py:class:`khorosjx.utils.classes.Content` class.
+
+Documentation
+-------------
+Additions to the documentation.
+
+* Added "Return to Top" hyperlinks on the :doc:`primary modules <primary-modules>`,
+  :doc:`supporting modules <supporting-modules>` and :doc:`change log <changelog>` pages.
+* Added the :py:mod:`khorosjx.utils.df_utils` and :py:mod:`khorosjx.errors` modules to the
+  :doc:`supporting modules <supporting-modules>` page.
+
+Changed
 =======
+
 Primary Modules
 ---------------
 Changes to the :doc:`primary modules <primary-modules>`.
 
 * Included the ``blog`` and ``place`` datasets in the dictionary within the
-  :py:func:`get_fields_from_api_response` function.
+  :py:func:`khorosjx.core.get_fields_from_api_response` function.
 
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
 
+* Added ``df_utils`` and ``helper`` to ``__all__`` in the :py:mod:`khorosjx.utils` module.
+
+Documentation
+-------------
+Changes to the documentation.
+
+* Updated the :doc:`Primary Modules <primary-modules>` page to show functions within the ``__init__.py`` files.
+* Added ``deprecated`` directives to docstrings of deprecated functions.
+* Adjusted the docstrings on the :py:func:`khorosjx.init_helper` function.
+* Restructured the table of contents at the top of the :doc:`Supporting Modules <supporting-modules>` page.
+* Updated the short-term and long-term items on the :doc:`Roadmap <roadmap>` page.
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes applied in the :doc:`primary modules <primary-modules>`.
+
+* Fixed the try/except in the :py:func:`khorosjx.content.docs.get_document_attachments` function to account for both
+  ``KeyError`` and ``IndexError`` exceptions instead of just the latter.
+
+Supporting Modules
+------------------
+Fixes applied in the :doc:`supporting modules <supporting-modules>`.
+
+* Fixed the :py:func:`khorosjx.errors.handlers.check_api_response` function so that a 502 response code displays a
+  simple ``Site Temporarily Unavailable`` error rather than displaying the entire raw HTML response from the API.
+
+Documentation
+-------------
+Fixes applied to the documentation.
+
+* Fixed an issue with the header block docstring for the :py:mod:`khorosjx.utils.classes` module.
+
+Deprecated
+==========
+
+Primary Modules
+---------------
+Deprecations in the :doc:`primary modules <primary-modules>`.
+
+* Deprecated and moved the functions below to the
+  `khorosjx/content/__init__.py <https://github.com/jeffshurtliff/khorosjx/blob/master/khorosjx/content.py>`_ file
+  from the removed `khorosjx/content.py <https://github.com/jeffshurtliff/khorosjx/commits/master/khorosjx/content.py>`_
+  file. (The deprecated functions will be removed in v3.0.0.)
+
+    * :py:func:`khorosjx.content.get_content_id`
+    * :py:func:`khorosjx.content.overwrite_doc_body`
+    * :py:func:`khorosjx.content.__convert_lookup_value`
+    * :py:func:`khorosjx.content.get_document_info`
+    * :py:func:`khorosjx.content.__trim_attachments_info`
+    * :py:func:`khorosjx.content.get_document_attachments`
+
+* Deprecated the :py:func:`khorosjx.spaces.get_space_info` function.
+* Deprecated the :py:func:`khorosjx.spaces.get_place_id` function.
+* Deprecated the :py:func:`khorosjx.spaces.get_browse_id` function.
+* Deprecated the :py:func:`khorosjx.spaces.__verify_browse_id` function.
+* Deprecated the :py:func:`khorosjx.spaces.get_spaces_list_from_file` function.
+* Deprecated the :py:func:`khorosjx.spaces.get_permitted_content_types` function.
+* Deprecated the :py:func:`khorosjx.spaces.get_space_permissions` function.
+* Deprecated the :py:func:`khorosjx.spaces.__get_unique_permission_fields` function.
+* Deprecated the :py:func:`khorosjx.spaces.__generate_permissions_dataframe` function.
+
+Removed
+=======
+
+Primary Modules
+---------------
+Removals in the :doc:`primary modules <primary-modules>`.
+
+* The :py:mod:`khorosjx.content` module has been removed. (See the previous sections for additional context.)
+
+:doc:`Return to Top <changelog>`
 
 |
 
@@ -75,7 +194,7 @@ Supporting Modules
 ------------------
 Changes to the :doc:`supporting modules <supporting-modules>`.
 
-* Updated the py:func:`khorosjx.utils.core_utils.convert_dict_list_to_dataframe` function to leverage the
+* Updated the :py:func:`khorosjx.utils.core_utils.convert_dict_list_to_dataframe` function to leverage the
   :py:func:`khorosjx.utils.df_utils.convert_dict_list_to_dataframe` function in the new module.
 * Updated the ``place_fields`` list in the :py:class:`khorosjx.utils.classes.FieldLists` class to include the
   ``resources.html.ref`` field.
@@ -98,9 +217,12 @@ Supporting Modules
 ------------------
 Deprecations in the :doc:`supporting modules <supporting-modules>`.
 
-* Deprecated the py:func:`khorosjx.utils.core_utils.convert_dict_list_to_dataframe` function as it now resides in the
-  py:func:`khorosjx.utils.df_utils.convert_dict_list_to_dataframe` function within the new module.
+* Deprecated the :py:func:`khorosjx.utils.core_utils.convert_dict_list_to_dataframe` function as it now resides in the
+  :py:func:`khorosjx.utils.df_utils.convert_dict_list_to_dataframe` function within the new module.
 
+:doc:`Return to Top <changelog>`
+
+|
 
 ******
 v1.6.0
@@ -145,7 +267,7 @@ Primary Modules
 ---------------
 Changes to the :doc:`primary modules <primary-modules>`.
 
-* Updated the :py:func:`khorosjx.__init__.init_module` function to allow the ``all`` string to be passed which
+* Updated the :py:func:`khorosjx.init_module` function to allow the ``all`` string to be passed which
   imports all modules.
 
 -----
@@ -178,7 +300,7 @@ Primary Modules
 ---------------
 Fixes to the :doc:`primary modules <primary-modules>`.
 
-* Removed ``helper`` from ``__all__`` in the :py:mod:`khorosjx.__init__` module.
+* Removed ``helper`` from ``__all__`` in the :ref:`primary-modules:Init Module (khorosjx)`.
 * Fixed how to query URL was generated in the :py:func:`khorosjx.core.get_api_info` function.
 * Fixed a docstring error in the :py:func:`khorosjx.core.put_request_with_retries` function.
 * Fixed a minor docstring error in :py:func:`khorosjx.groups.add_user_to_group` function.
@@ -202,6 +324,8 @@ Fixes in the documentation in this release.
 
 * Fixed minor typos in the `README.md <https://github.com/jeffshurtliff/khorosjx/blob/master/README.md>`_ file.
 * Fixed a minor typo in the :py:func:`khorosjx.utils.core_utils.convert_dict_list_to_dataframe` function docstring.
+
+:doc:`Return to Top <changelog>`
 
 |
 
@@ -256,6 +380,8 @@ Changed
 Fixed
 =====
 * Fixed a variable name error in the :py:func:`khorosjx.users.get_username` function.
+
+:doc:`Return to Top <changelog>`
 
 |
 
@@ -314,8 +440,10 @@ Primary Modules
 ---------------
 Removals in the :doc:`primary modules <primary-modules>`.
 
-* Removed the internal function ``add_to_master_list()`` from within the
+* Removed the nested ``add_to_master_list()`` function from within the
   :py:func:`khorosjx.groups.get_all_groups` function.
+
+:doc:`Return to Top <changelog>`
 
 |
 
@@ -331,9 +459,8 @@ Primary Modules
 ---------------
 Additions to the :doc:`primary modules <primary-modules>`.
 
-* Added the ``init_helper()`` function to the
-  `khorosjx/__init__.py <https://github.com/jeffshurtliff/khorosjx/blob/master/khorosjx/__init__.py>`_ file to
-  initialize a helper configuration file.
+* Added the ``init_helper()`` function to the :ref:`primary-modules:Init Module (khorosjx)`
+  to initialize a helper configuration file.
 
 -----
 
@@ -364,6 +491,8 @@ Documentation
   :doc:`Supporting Modules<supporting-modules>` page.
 * Added a "See Also" section mentioning the Helper Utility on the :doc:`Core Functionality <core-functionality>` page.
 
+:doc:`Return to Top <changelog>`
+
 |
 
 ******
@@ -378,10 +507,9 @@ Primary Modules
 ---------------
 Additions to the :doc:`primary modules <primary-modules>`.
 
-* Added the internal ``__api_request_with_payload()`` function in the :py:mod:`khorosjx.core` module to leverage
-  for both POST and PUT requests.
+* Added the :py:func:`khorosjx.core.__api_request_with_payload` function to leverage for both POST and PUT requests.
 * Added the :py:func:`khorosjx.core.post_request_with_retries` function for POST requests, which leverages the
-  internal function above.
+  private function above.
 * Added the :py:func:`khorosjx.groups.add_user_to_group` function.
 * Added the :py:func:`khorosjx.groups.check_user_membership` function.
 
@@ -426,8 +554,8 @@ Changes to existing functions in the :doc:`primary modules <primary-modules>`.
   ``people`` endpoint.
 * Updated the :py:func:`khorosjx.core.get_request_with_retries` function to include the ``return_json`` optional
   argument. (Disabled by default)
-* Refactored the :py:func:`khorosjx.core.put_request_with_retries` function to leverage the internal
-  ``__api_request_with_payload()`` function.
+* Refactored the :py:func:`khorosjx.core.put_request_with_retries` function to leverage
+  the :py:func:`khorosjx.core.__api_request_with_payload` function.
 * Updated the :py:func:`khorosjx.users.get_user_id` function to accept a username as well as an email address.
 
 -----
@@ -444,6 +572,8 @@ Documentation
 -------------
 * Updated the :doc:`Introduction <introduction>` page to insert the :ref:`introduction:Basic Usage` content.
 * Added the :doc:`Basic Usage <basic-usage>` page with the intent of inserting it into more than one page.
+
+:doc:`Return to Top <changelog>`
 
 |
 
@@ -470,12 +600,14 @@ Changed
 
 Removed
 =======
-* The ``raise_exceptions()`` function is no longer necessary as the exception classes now have
-  default messages and has been removed from the :py:mod:`khorosjx.errors` module
+* The :py:func:`khorosjx.errors.raise_exceptions` function is no longer necessary as the exception classes now have
+  default messages and it has been removed from the :py:mod:`khorosjx.errors` module
   (`__init__.py <https://github.com/jeffshurtliff/khorosjx/blob/master/khorosjx/errors/__init__.py>`_) and the
   :ref:`supporting-modules:Handlers Module (khorosjx.errors.handlers)`.
-* Removed the ``ExceptionMapping`` and ``ExceptionGrouping`` classes from the
-  :ref:`supporting-modules:Exceptions Module (khorosjx.errors.exceptions)` as they are no longer used.
+* Removed the :py:class:`khorosjx.errors.exceptions.ExceptionMapping` and
+  :py:class:`khorosjx.errors.exceptions.ExceptionGrouping` classes as they are no longer used.
+
+:doc:`Return to Top <changelog>`
 
 |
 
@@ -527,12 +659,14 @@ Deprecated
 ==========
 * The ``raise_exception()`` function in the ``khorosjx.errors`` module now displays a ``DeprecationWarning`` as it has
   been moved into the new :ref:`supporting-modules:Handlers Module (khorosjx.errors.handlers)`.
-* Added a ``PendingDeprecationWarning`` warning on the ``khorosjx.errors.handlers.raise_exception()`` function as it
-  will be deprecated in a future release.  (See `v1.1.1`_)
+* Added a ``PendingDeprecationWarning`` warning on the :py:func:`khorosjx.errors.handlers.raise_exception` function as
+  it will be deprecated in a future release.  (See `v1.1.1`_)
 
 Fixed
 =====
 * Added the :py:func:`khorosjx.core.verify_connection` function call to the :py:func:`khorosjx.core.get_data` function.
+
+:doc:`Return to Top <changelog>`
 
 |
 
@@ -550,6 +684,8 @@ Changed
 * Added a :ref:`introduction:Reporting Issues` section to the :doc:`Introduction <introduction>` page and to the
   `README <https://github.com/jeffshurtliff/khorosjx/blob/master/README.md>`_ file.
 
+:doc:`Return to Top <changelog>`
+
 |
 
 ******
@@ -561,7 +697,9 @@ Changed
 =======
 * Removed the version from the individual module header blocks as all will adhere to the primary versioning.
 
-
 Fixed
 =====
-* Added missing ``from . import core`` in the ``admin``, ``groups`` and ``spaces`` modules.
+* Added missing ``from . import core`` in the :py:mod:`khorosjx.admin`, :py:mod:`khorosjx.groups`
+  and :py:mod:`khorosjx.spaces` modules.
+
+:doc:`Return to Top <changelog>`

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Module:         khorosjx.utils.classes
-Synopsis:       Collection of classes relating to the khorosjx library
-Usage:          ``from khorosjx.utils.classes import Users``
-Created By:     Jeff Shurtliff
-Last Modified:  Jeff Shurtliff
-Modified Date:  19 Dec 2019
+:Module:         khorosjx.utils.classes
+:Synopsis:       Collection of classes relating to the khorosjx library
+:Usage:          ``from khorosjx.utils.classes import Users``
+:Created By:     Jeff Shurtliff
+:Last Modified:  Jeff Shurtliff
+:Modified Date:  08 Jan 2020
 """
 
 
@@ -35,6 +35,9 @@ class Content:
         'thread': '/thread',
         'video': '/videos'
     }
+
+    # Define the permitted file types for videos
+    permitted_video_file_types = ['avi', 'mov', 'wmv', 'mp4', 'mpg', 'mpeg', 'flv', '3gp', '3g2']
 
 
 # Define a class for lists of JSON fields for various API data sets

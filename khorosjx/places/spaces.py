@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 """
-:Module:         khorosjx.places.spaces
-:Synopsis:       Collection of core places functions that are specific to spaces
-:Usage:          ``import khorosjx.places.spaces``
-:Example:        ``space_info = khorosjx.places.spaces.get_space_info(browse_id)``
-:Created By:     Jeff Shurtliff
-:Last Modified:  Jeff Shurtliff
-:Modified Date:  22 Dec 2019
+:Module:            khorosjx.places.spaces
+:Synopsis:          Collection of core places functions that are specific to spaces
+:Usage:             ``import khorosjx.places.spaces``
+:Example:           ``space_info = khorosjx.places.spaces.get_space_info(browse_id)``
+:Created By:        Jeff Shurtliff
+:Last Modified:     Jeff Shurtliff
+:Modified Date:     04 Jan 2020
 """
 
 from .. import core, errors
-from ..utils import core_utils, df_utils
 from . import base as places_core
+from ..utils import core_utils, df_utils
+
 
 # Define function to verify the connection in the core module
 def verify_core_connection():

@@ -6,11 +6,11 @@
 :Example:        ``khorosjx.core.connect(base_url, credentials)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  17 Dec 2019
+:Modified Date:  07 Jan 2020
 """
 
 # Define all modules that will be imported with the "import *" method
-__all__ = ['core', 'admin', 'content', 'groups', 'spaces', 'users']
+__all__ = ['core', 'admin', 'content', 'groups', 'places', 'spaces', 'users']
 
 # Always import the core module and the errors package
 from . import core
@@ -69,6 +69,7 @@ def init_helper(file_path, file_type='yaml'):
     :param file_path: Path to the helper configuration file
     :type file_path: str
     :param file_type: The type of file utilized as the configuration file (Default: ``yaml``)
+    :type file_type: str
     :returns: None (Defines global variables and establishes API connection)
     :raises: FileNotFoundError, CredentialsUnpackingError, InvalidHelperArgumentsError, HelperFunctionNotFoundError
     """

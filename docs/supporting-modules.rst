@@ -4,11 +4,16 @@ Supporting Modules
 This section provides details around the supporting modules used in the **khorosjx** package,
 which are listed below.
 
-* `Core Utilities Module (khorosjx.utils.core_utils)`_
-* `Classes Module (khorosjx.utils.classes)`_
-* `Exceptions Module (khorosjx.errors.exceptions)`_
-* `Handlers Module (khorosjx.errors.handlers)`_
-* `Tests Module (khorosjx.utils.tests)`_
+* `Tools and Utilities`_
+    * `Core Utilities Module (khorosjx.utils.core_utils)`_
+    * `Dataframe Utilities Module (khorosjx.utils.df_utils)`_
+    * `Helper Module (khorosjx.utils.helper)`_
+    * `Tests Module (khorosjx.utils.tests)`_
+* `Classes and Exceptions`_
+    * `Classes Module (khorosjx.utils.classes)`_
+    * `Errors Module (khorosjx.errors)`_
+        * `Exceptions Module (khorosjx.errors.exceptions)`_
+        * `Handlers Module (khorosjx.errors.handlers)`_
 
 |
 
@@ -24,7 +29,23 @@ This module includes various utilities to assist in converting dictionaries to J
 formatting timestamps, etc.
 
 .. automodule:: khorosjx.utils.core_utils
-    :members:
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Dataframe Utilities Module (khorosjx.utils.df_utils)
+----------------------------------------------------
+This module includes various utilities to assist in creating, importing, exporting and manipulating
+pandas dataframes.
+
+.. automodule:: khorosjx.utils.df_utils
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
 
 Helper Module (khorosjx.utils.helper)
 -------------------------------------
@@ -33,7 +54,11 @@ facilitate the use of the library (e.g. defining the base URL and API credential
 defining additional settings.
 
 .. automodule:: khorosjx.utils.helper
-    :members:
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
 
 Tests Module (khorosjx.utils.tests)
 -----------------------------------
@@ -42,7 +67,9 @@ This module includes unit tests for the package that are performed using pytest.
 **Test Module Import (khorosjx.utils.tests.test_init_module)**
 
 .. automodule:: khorosjx.utils.tests.test_init_module
-    :members:
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
 
 |
 
@@ -57,22 +84,39 @@ Classes Module (khorosjx.utils.classes)
 This module contains nearly all classes utilized by other modules within the library.
 
 .. automodule:: khorosjx.utils.classes
-    :members:
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Errors Module (khorosjx.errors)
+-------------------------------
+This module contains all of the exception classes and error handling functions leveraged throughout hte library.
+
+.. automodule:: khorosjx.errors
+   :members:
 
 |
 
 Exceptions Module (khorosjx.errors.exceptions)
-----------------------------------------------
-This module contains all of the exception classes leveraged in functions throughout 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+This sub-module contains all of the exception classes leveraged in functions throughout
 the library.
 
 .. automodule:: khorosjx.errors.exceptions
-    :members:
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
 
 Handlers Module (khorosjx.errors.handlers)
-------------------------------------------
-This module contains various error handling functions that are leveraged throughout
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+This sub-module contains various error handling functions that are leveraged throughout
 the library.
 
 .. automodule:: khorosjx.errors.handlers
-    :members:
+   :members:
+
+:doc:`Return to Top <supporting-modules>`

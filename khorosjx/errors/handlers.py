@@ -44,6 +44,8 @@ def check_api_response(response, request_type='get', ignore_exceptions=False):
     # Define the status code and response message from the API response
     status_code = response.status_code
     message = response.text
+    if status_code == 502:
+        message = "Site Temporarily Unavailable"
     result_msg = f"The API request returned a {status_code} status code with the following message: {message}"
 
     # Check if the API response was successful

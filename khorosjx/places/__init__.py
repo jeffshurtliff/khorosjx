@@ -6,12 +6,10 @@
 :Example:        TBD
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  22 Dec 2019
+:Modified Date:  07 Jan 2020
 """
 # Define all modules that will be imported with the "import *" method
 __all__ = ['base', 'blogs', 'spaces']
 
-# Always import the primary core module, the places base modules and also the exceptions and handlers modules
-from .. import core
-from ..errors import exceptions, handlers
-from . import base as places_core
+# Always import the places base module
+from . import base

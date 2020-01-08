@@ -6,10 +6,10 @@
 :Example:        ``blog_info = khorosjx.places.blogs.get_blog_info(browse_id)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  22 Dec 2019
+:Modified Date:  04 Jan 2020
 """
 
-from .. import core, errors
+from .. import core
 from . import base as places_core
 
 

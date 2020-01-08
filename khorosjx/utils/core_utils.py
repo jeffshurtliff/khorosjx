@@ -155,3 +155,17 @@ def add_to_master_list(single_list, master_list):
     for list_item in single_list:
         master_list.append(list_item)
     return master_list
+
+
+def print_if_verbose(msg, verbose_enabled=False):
+    """This function prints a message onscreen only if verbose mode is enabled.
+
+    :param msg: The message to print onscreen
+    :type msg: str
+    :param verbose_enabled: Determines if verbose mode is enabled (``False`` by default)
+    :type verbose_enabled: bool
+    :returns: None
+    """
+    if verbose_enabled:
+        print(msg)
+    return

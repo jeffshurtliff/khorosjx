@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-:Module:         khorosjx.places.base
-:Synopsis:       Collection of core functions relating to places (i.e. spaces and blogs)
-:Usage:          ``import khorosjx.places.base as places_core``
-:Example:        ``place_info = khorosjx.spaces.core.get_place_info(browse_id)``
-:Created By:     Jeff Shurtliff
-:Last Modified:  Jeff Shurtliff
-:Modified Date:  22 Dec 2019
+:Module:            khorosjx.places.base
+:Synopsis:          Collection of core functions relating to places (i.e. spaces and blogs)
+:Usage:             ``import khorosjx.places.base as places_core``
+:Example:           ``place_info = khorosjx.spaces.core.get_place_info(browse_id)``
+:Created By:        Jeff Shurtliff
+:Last Modified:     Jeff Shurtliff
+:Modified Date:     07 Jan 2020
 """
 
 from .. import core, errors
 from ..utils import core_utils, df_utils
+
 
 # Define function to verify the connection in the core module
 def verify_core_connection():
@@ -37,7 +38,7 @@ def verify_core_connection():
     return
 
 
-    # Define function to get basic place information for a particular Place ID
+# Define function to get basic place information for a particular Place ID
 def get_place_info(place_id, return_fields=[], ignore_exceptions=False):
     """This function obtains the place information for a given Place ID. (aka Browse ID)
 

@@ -1,50 +1,26 @@
 # -*- coding: utf-8 -*-
 """
-:Module:         khorosjx.spaces
-:Synopsis:       Collection of functions relating to spaces/places
-:Usage:          ``import khorosjx.spaces``
-:Example:        ``space_info = khorosjx.spaces.get_space_info(1234)``
-:Created By:     Jeff Shurtliff
-:Last Modified:  Jeff Shurtliff
-:Modified Date:  18 Dec 2019
+:Module:            khorosjx.spaces
+:Synopsis:          Collection of deprecated functions relating to spaces/places
+:Usage:             ``import khorosjx.spaces``
+:Example:           ``space_info = khorosjx.spaces.get_space_info(1234)``
+:Created By:        Jeff Shurtliff
+:Last Modified:     Jeff Shurtliff
+:Modified Date:     07 Jan 2020
 """
 
-from . import core, errors
-from .utils import core_utils, df_utils
+import warnings
 
-
-# Define function to verify the connection in the core module
-def verify_core_connection():
-    """This function verifies that the core connection information (Base URL and API credentials) has been defined.
-
-    :returns: None
-    :raises: NameError, KhorosJXError, NoCredentialsError
-    """
-    def get_info():
-        """This function initializes and defines the global variables for the connection information.
-
-        :returns: None
-        :raises: NameError, KhorosJXError, NoCredentialsError
-        """
-        # Initialize global variables
-        global base_url
-        global api_credentials
-
-        # Define the global variables at this module level
-        base_url, api_credentials = core.get_connection_info()
-        return
-
-    try:
-        base_url
-        api_credentials
-    except NameError:
-        get_info()
-    return
+from .places import spaces
+from .places import base as places_core
 
 
 # Define function to get basic group information for a particular Group ID
 def get_space_info(place_id, return_fields=[], ignore_exceptions=False):
     """This function obtains the space information for a given Space ID.
+
+    .. deprecated:: 2.0.0
+       The :py:func:`khorosjx.places.spaces.get_space_info` function should be used.
 
     :param place_id: The Place ID (aka Browse ID) of the space whose information will be requested
     :type place_id: int, str
@@ -55,30 +31,21 @@ def get_space_info(place_id, return_fields=[], ignore_exceptions=False):
     :returns: A dictionary with the space information
     :raises: GETRequestError, InvalidDatasetError
     """
-    # Verify that the core connection has been established
-    verify_core_connection()
-
-    # Initialize the empty dictionary for the space information
-    space_info = {}
-
-    # Perform the API query to retrieve the space information
-    query_uri = f"{base_url}/places/{place_id}?fields=@all"
-    response = core.get_request_with_retries(query_uri)
-
-    # Verify that the query was successful
-    successful_response = errors.handlers.check_api_response(response, ignore_exceptions=ignore_exceptions)
-
-    # Parse the data if the response was successful
-    if successful_response:
-        # Determine which fields to return
-        space_json = response.json()
-        space_info = core.get_fields_from_api_response(space_json, 'space', return_fields)
+    warnings.warn(
+        "The khorosjx.spaces.get_space_info function is deprecated and will be removed in v3.0.0. Use " +
+        "khorosjx.places.spaces.get_space_info instead.",
+        DeprecationWarning
+    )
+    space_info = spaces.get_space_info(place_id, return_fields, ignore_exceptions)
     return space_info
 
 
 # Define function to get the Place ID for a space
 def get_place_id(space_id, return_type='str'):
     """This function retrieves the Place ID (aka Browse ID) for a space given its ID.
+
+    .. deprecated:: 2.0.0
+       The :py:func:`khorosjx.places.spaces.get_place_id` function should be used.
 
     :param space_id: The Space ID for the space to query
     :type space_id: int, str
@@ -87,29 +54,21 @@ def get_place_id(space_id, return_type='str'):
     :returns: The Place ID (aka Browse ID) for the space
     :raises: GETRequestError
     """
-    # Verify that the core connection has been established
-    verify_core_connection()
-
-    # Perform the API query to retrieve the information
-    query_uri = f"{base_url}/places?filter=entityDescriptor(14,{space_id})&fields=@all"
-    response = core.get_request_with_retries(query_uri)
-
-    # Verify that the query was successful and raise an exception if not
-    successful_response = errors.handlers.check_api_response(response)
-
-    # Get the placeID value from the JSON response
-    if successful_response:
-        space_json = response.json()
-        space_dict = core.get_fields_from_api_response(space_json['list'][0], 'space', ['placeID'])
-        place_id = space_dict.get('placeID')
-    if return_type == 'int':
-        place_id = int(place_id)
+    warnings.warn(
+        "The khorosjx.spaces.get_place_id function is deprecated and will be removed in v3.0.0. Use " +
+        "khorosjx.places.base.get_place_id instead.",
+        DeprecationWarning
+    )
+    place_id = places_core.get_place_id(space_id, return_type)
     return place_id
 
 
 # Define function to get the Browse ID for a space
 def get_browse_id(space_id, return_type='str'):
     """This function retrieves the Browse ID (aka Place ID) for a space given its ID.
+
+    .. deprecated:: 2.0.0
+       The :py:func:`khorosjx.places.spaces.get_browse_id` function should be used.
 
     :param space_id: The Space ID for the space to query
     :type space_id: int, str
@@ -118,20 +77,27 @@ def get_browse_id(space_id, return_type='str'):
     :returns: The Browse ID (aka Place ID) for the space
     :raises: GETRequestError
     """
-    browse_id = get_place_id(space_id, return_type)
+    warnings.warn(
+        "The khorosjx.spaces.get_browse_id function is deprecated and will be removed in v3.0.0. Use " +
+        "khorosjx.places.base.get_browse_id instead.",
+        DeprecationWarning
+    )
+    browse_id = places_core.get_place_id(space_id, return_type)
     return browse_id
 
 
 def __verify_browse_id(_id_value, _id_type):
-    """This function checks for a Browse ID and converts another value to get it if necessary."""
-    _accepted_id_types = ['browse_id', 'place_id', 'space_id']
-    if _id_type in _accepted_id_types:
-        if _id_type != "browse_id" and _id_type != "place_id":
-            _id_value = get_browse_id(_id_value)
-    else:
-        _exception_msg = "The supplied lookup type for the API query is not recognized. (Examples of valid " + \
-                         "lookup types include 'browse_id' and 'space_id')"
-        raise errors.exceptions.InvalidLookupTypeError(_exception_msg)
+    """This function checks for a Browse ID and converts another value to get it if necessary.
+
+    .. deprecated:: 2.0.0
+       The :py:func:`khorosjx.places.spaces.__verify_browse_id` function should be used.
+    """
+    warnings.warn(
+        "The khorosjx.spaces.__verify_browse_id function is deprecated and will be removed in v3.0.0. Use " +
+        "khorosjx.places.base.__verify_browse_id instead.",
+        DeprecationWarning
+    )
+    _id_value = places_core.__verify_browse_id(_id_value, _id_type)
     return _id_value
 
 
@@ -139,6 +105,9 @@ def __verify_browse_id(_id_value, _id_type):
 def get_spaces_list_from_file(full_path, file_type='csv', has_headers=True,
                               id_column='', id_type='browse_id', excel_sheet_name='', filter_info={}):
     """This function retrieves a list of space identifiers from a file.
+
+    .. deprecated:: 2.0.0
+       The :py:func:`khorosjx.places.base.get_places_list_from_file` function should be used.
 
     :param full_path: The full path to the file to import
     :type full_path: str
@@ -156,42 +125,22 @@ def get_spaces_list_from_file(full_path, file_type='csv', has_headers=True,
     :returns: A list of space identifiers
     :raises: InvalidFileTypeError
     """
-    # Make changes to the arguments depending on whether or not headers are present
-    if has_headers is False:
-        try:
-            id_column = int(id_column)
-        except ValueError:
-            id_column = 0
-
-    # Ensure that any filter columns are returned
-    return_cols = [id_column]
-    if len(filter_info) > 0:
-        for filter_col in filter_info.keys():
-            return_cols.append(str(filter_col))
-
-    # Determine the use case for importing the data based on the supplied arguments
-    if file_type == 'csv' or file_type == 'txt':
-        dataframe = df_utils.import_csv(full_path, columns_to_return=return_cols, has_headers=has_headers)
-    elif file_type == 'xlsx' or file_type == 'xls':
-        use_first_sheet = True if excel_sheet_name == '' else False
-        dataframe = df_utils.import_excel(full_path, excel_sheet_name, use_first_sheet=use_first_sheet,
-                                          columns_to_return=return_cols, has_headers=has_headers)
-    else:
-        raise errors.exceptions.InvalidFileTypeError
-
-    # Apply any given filters
-    if len(filter_info) > 0:
-        for filter_key, filter_val in filter_info.items():
-            dataframe = dataframe.loc[dataframe[filter_key] == filter_val]
-
-    # Convert the IDs to a list and return it
-    spaces_list = dataframe[id_column].tolist()
+    warnings.warn(
+        "The khorosjx.spaces.get_spaces_list_from_file function is deprecated and will be removed in v3.0.0. Use " +
+        "khorosjx.places.base.get_places_list_from_file instead.",
+        DeprecationWarning
+    )
+    spaces_list = places_core.get_places_list_from_file(full_path, file_type, has_headers, id_column,
+                                                        id_type, excel_sheet_name, filter_info)
     return spaces_list
 
 
 # Define function to get the permitted content types for a space
 def get_permitted_content_types(id_value, id_type='browse_id', return_type='list'):
     """This function returns the permitted content types for a given space.
+
+    .. deprecated:: 2.0.0
+       The :py:func:`khorosjx.places.spaces.get_permitted_content_types` function should be used.
 
     :param id_value: The space identifier as a Browse ID (default), Place ID or Space ID
     :type id_value: int, str
@@ -202,31 +151,21 @@ def get_permitted_content_types(id_value, id_type='browse_id', return_type='list
     :returns: The permitted content types in list, tuple or string format
     :raises: SpaceNotFountError, GETRequestError
     """
-    # Verify that the core connection has been established
-    verify_core_connection()
-
-    # Get the appropriate ID for the space to check
-    id_value = __verify_browse_id(id_value, id_type)
-
-    # Get the permitted content types
-    query_url = f"{base_url}/places/{id_value}/permissions"
-    space_permissions = core.get_request_with_retries(query_url, return_json=True)
-
-    # Check for an error in the response
-    errors.handlers.check_json_for_error(space_permissions)
-
-    # Get and return the permitted content types as a list or string
-    content_types = space_permissions['contentTypes']
-    if return_type == 'tuple':
-        content_types = tuple(content_types)
-    elif return_type == 'str':
-        content_types = ', '.join(content_types)
+    warnings.warn(
+        "The khorosjx.spaces.get_permitted_content_types function is deprecated and will be removed in v3.0.0. Use " +
+        "khorosjx.places.spaces.get_permitted_content_types instead.",
+        DeprecationWarning
+    )
+    content_types = spaces.get_permitted_content_types(id_value, id_type, return_type)
     return content_types
 
 
 # Define function to get space permissions for a space
 def get_space_permissions(id_value, id_type='browse_id', return_type='list'):
-    """This function returns all of the defined permissions (aka ``appliedEntitlements``) for a specific space.
+    """This function returns all of the defined permissions for a specific space.
+
+    .. deprecated:: 2.0.0
+       The :py:func:`khorosjx.places.spaces.get_space_permissions` function should be used.
 
     :param id_value: The space identifier as a Browse ID (default), Place ID or Space ID
     :type id_value: int, str
@@ -237,53 +176,32 @@ def get_space_permissions(id_value, id_type='browse_id', return_type='list'):
     :returns: The list or dataframe with the space permissions
     :raises: SpaceNotFoundError, GETRequestError
     """
-    def __get_paginated_permissions(_browse_id, _start_index):
-        _query_uri = f"{base_url}/places/{_browse_id}/appliedEntitlements?fields=@all&count=100&" + \
-                     f"startIndex={_start_index}"
-        _permissions_json = core.get_request_with_retries(_query_uri, return_json=True)
-        errors.handlers.check_json_for_error(_permissions_json, 'space')
-        _permissions_list = _permissions_json['list']
-        return _permissions_list
-
-    # Verify that the core connection has been established
-    verify_core_connection()
-
-    # Get the appropriate ID for the space to check
-    id_value = __verify_browse_id(id_value, id_type)
-
-    # Initialize the empty list for the permissions information
-    all_permissions = []
-
-    # Perform the first query to get up to the first 100 groups
-    start_index = 0
-    permissions = __get_paginated_permissions(id_value, start_index)
-    all_permissions = core_utils.add_to_master_list(permissions, all_permissions)
-
-    # Continue querying for groups until none are returned
-    while len(permissions) > 0:
-        start_index += 100
-        permissions = __get_paginated_permissions(id_value, start_index)
-        all_permissions = core_utils.add_to_master_list(permissions, all_permissions)
-
-    # Return the data as a master list of group dictionaries or a pandas dataframe
-    if return_type == "dataframe":
-        all_permissions = __generate_permissions_dataframe(all_permissions)
+    warnings.warn(
+        "The khorosjx.spaces.get_space_permissions function is deprecated and will be removed in v3.0.0. Use " +
+        "khorosjx.places.spaces.get_space_permissions instead.",
+        DeprecationWarning
+    )
+    all_permissions = spaces.get_space_permissions(id_value, id_type, return_type)
     return all_permissions
 
 
 # Define function to get the unique fields for the permissions data
 def __get_unique_permission_fields(_permissions_dict_list):
-    """This function gets the unique fields from a space permissions list from the ``get_space_permissions`` function.
+    """This function gets the unique fields from a space permissions list.
+
+    .. deprecated:: 2.0.0
+       The :py:func:`khorosjx.places.spaces.__get_unique_permission_fields` function should be used.
 
     :param _permissions_dict_list: A list of dictionaries containing space permissions
     :type _permissions_dict_list: list
     :returns: List of unique field names
     """
-    _unique_fields = []
-    for _permissions_dict in _permissions_dict_list:
-        for _permission_field in _permissions_dict.keys():
-            if _permission_field not in _unique_fields:
-                _unique_fields.append(_permission_field)
+    warnings.warn(
+        "The khorosjx.spaces.__get_unique_permission_fields function is deprecated and will be removed " +
+        "in v3.0.0. Use khorosjx.places.spaces.__get_unique_permission_fields instead.",
+        DeprecationWarning
+    )
+    _unique_fields = spaces.__get_unique_permission_fields(_permissions_dict_list)
     return _unique_fields
 
 
@@ -291,21 +209,17 @@ def __get_unique_permission_fields(_permissions_dict_list):
 def __generate_permissions_dataframe(_permissions_dict_list):
     """This function converts a list of dictionaries containing space permissions into a pandas dataframe.
 
+    .. deprecated:: 2.0.0
+       The :py:func:`khorosjx.places.spaces.__generate_permissions_dataframe` function should be used.
+
     :param _permissions_dict_list: A list of dictionaries containing space permissions
     :type _permissions_dict_list: list
     :returns: A pandas dataframe with the permissions data
     """
-    # Get the unique field names to act as the dataframe columns
-    _unique_permission_fields = __get_unique_permission_fields(_permissions_dict_list)
-
-    # Loop through the dictionaries in the original list
-    for _permissions_dict in _permissions_dict_list:
-        # Loop through the unique permission fields to see if they are all present
-        for _unique_field in _unique_permission_fields:
-            if _unique_field not in _permissions_dict.keys():
-                # Add the field if it does not exist
-                _permissions_dict[_unique_field] = ''
-
-    # Convert the dictionary list to a pandas dataframe
-    _permissions_data = core_utils.convert_dict_list_to_dataframe(_permissions_dict_list, _unique_permission_fields)
+    warnings.warn(
+        "The khorosjx.spaces.__generate_permissions_dataframe function is deprecated and will be removed " +
+        "in v3.0.0. Use khorosjx.places.spaces.__generate_permissions_dataframe instead.",
+        DeprecationWarning
+    )
+    _permissions_data = spaces.__generate_permissions_dataframe(_permissions_dict_list)
     return _permissions_data
