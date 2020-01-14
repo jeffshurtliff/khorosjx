@@ -6,12 +6,12 @@
 :Example:           ``content_id = content.base.get_content_id(url, 'document')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     07 Jan 2020
+:Modified Date:     14 Jan 2020
 """
 
 import warnings
 
-from . import base, docs, videos
+from . import base, docs, events, ideas, threads, videos
 
 __all__ = ['base', 'docs', 'events', 'ideas', 'threads', 'videos']
 

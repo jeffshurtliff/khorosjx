@@ -6,11 +6,9 @@
 :Example:        ``helper_cfg = helper.import_yaml_file('/path/to/jxhelper.yml')``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  27 Nov 2019
+:Modified Date:  14 Jan 2020
 """
 
-import sys
-import os.path
 import importlib
 
 import yaml
@@ -44,11 +42,13 @@ def parse_helper_cfg(helper_cfg, file_type='yaml'):
     """
     __get_connection_info(helper_cfg, file_type)
     __get_console_color_settings(helper_cfg, file_type)
+    __get_modules_to_import(helper_cfg, file_type)
     return
 
 
 # Define function to covert a YAML Boolean value to a Python Boolean value
 def __convert_yaml_to_bool(_yaml_bool_value):
+    """This function converts the 'yes' and 'no' YAML values to traditional Boolean values."""
     true_values = ['yes', 'true']
     if _yaml_bool_value.lower() in true_values:
         _bool_value = True
@@ -123,6 +123,31 @@ def __get_credentials_from_module(_helper_cfg):
     return _helper_username, _helper_password
 
 
+# Define function to get the modules to import
+def __get_modules_to_import(_helper_cfg, _file_type='yaml'):
+    global modules_to_import
+    modules_to_import = []
+    if 'import_all' in _helper_cfg['modules'].keys():
+        if __convert_yaml_to_bool(_helper_cfg['modules']['import_all']) is True:
+            modules_to_import.append('all')
+            return
+    for _mod_name, _import_val in _helper_cfg['modules'].items():
+        if _mod_name == 'import_all':
+            break
+        elif _mod_name not in HelperParsing.accepted_import_modules:
+            _error_msg = f"The module '{_mod_name}' is not a valid option for the " + \
+                         "'modules' setting. The entry will be ignored."
+            eprint(_error_msg)
+        elif _import_val not in HelperParsing.yaml_boolean_values.keys():
+            _error_msg = f"The value '{_import_val}' is not a valid option for the " + \
+                         f"'{_mod_name}' setting. The entry will be ignored."
+            eprint(_error_msg)
+        else:
+            if __convert_yaml_to_bool(_helper_cfg['modules'][_import_val]) is True:
+                modules_to_import.append(_mod_name)
+    return
+
+
 # Define function to get console color settings
 def __get_console_color_settings(_helper_cfg, _file_type='yaml'):
     # Define the console colors setting as a Boolean global variable
@@ -147,7 +172,8 @@ def retrieve_helper_settings():
     helper_settings = {
         'base_url': helper_base_url,
         'api_credentials': helper_api_credentials,
-        'use_console_colors': helper_console_colors
+        'use_console_colors': helper_console_colors,
+        'modules_to_import': modules_to_import
     }
     return helper_settings
 
@@ -162,3 +188,8 @@ class HelperParsing:
         'yes': True,
         'no': False
     }
+
+    # Defined the acceptable import fields within the 'modules' section
+    accepted_import_modules = ['all_modules', 'admin', 'blogs', 'content', 'content.base', 'docs', 'events', 'groups',
+                               'ideas', 'places', 'places.spaces', 'spaces', 'threads', 'users', 'videos']
+    all_modules = ['admin', 'content', 'groups', 'places', 'users']

@@ -6,15 +6,14 @@
 :Example:        ``khorosjx.core.connect(base_url, credentials)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  07 Jan 2020
+:Modified Date:  14 Jan 2020
 """
 
 # Define all modules that will be imported with the "import *" method
 __all__ = ['core', 'admin', 'content', 'groups', 'places', 'spaces', 'users']
 
 # Always import the core module and the errors package
-from . import core
-from . import errors
+from . import core, errors
 
 
 # Define function to initialize additional modules via the primary package
@@ -27,9 +26,9 @@ def init_module(*args):
     :raises: ModuleNotFoundError, KhorosJXError, InvalidKhorosJXModuleError
     """
     # Get any arguments supplied in the function
+    import_all = ['admin', 'content', 'groups', 'places', 'users']
     if 'all' in args:
-        arguments = __all__
-        arguments.remove('core')
+        arguments = import_all
     else:
         arguments = []
         for arg in args:
@@ -42,6 +41,8 @@ def init_module(*args):
                         arguments.append(item)
             else:
                 arguments.append(arg)
+        if 'all' in arguments:
+            arguments = import_all
 
     # Import any of the supplied modules
     for mod_entry in arguments:
@@ -49,14 +50,32 @@ def init_module(*args):
             print("The module `khorosjx.core` is already imported and will not be imported again.")
         elif mod_entry == "admin":
             from . import admin
+        elif mod_entry == "blogs":
+            from .places import blogs
         elif mod_entry == "content":
             from . import content
+        elif mod_entry == "content.base":
+            from .content import base as content_base
+        elif mod_entry == "docs":
+            from .content import docs
+        elif mod_entry == "events":
+            from .content import events
         elif mod_entry == "groups":
             from . import groups
+        elif mod_entry == "ideas":
+            from .content import ideas
+        elif mod_entry == "places":
+            from . import places
+        elif mod_entry == "places.spaces":
+            from .places import spaces
         elif mod_entry == "spaces":
             from . import spaces
+        elif mod_entry == "threads":
+            from .content import threads
         elif mod_entry == "users":
             from . import users
+        elif mod_entry == "videos":
+            from .content import videos
         else:
             raise errors.exceptions.InvalidKhorosJXModuleError
     return
@@ -82,6 +101,10 @@ def init_helper(file_path, file_type='yaml'):
     # Obtain the helper configuration settings
     if file_type == 'yaml':
         helper_cfg = helper.import_yaml_file(file_path)
+    else:
+        exception_msg = f"The '{file_type}' file type is not currently supported and the '{file_path}' file cannot" + \
+                        "be utilized as a Helper configuration file."
+        raise errors.exceptions.InvalidFileTypeError(exception_msg)
     helper.parse_helper_cfg(helper_cfg)
     helper_settings = helper.retrieve_helper_settings()
 
@@ -91,4 +114,8 @@ def init_helper(file_path, file_type='yaml'):
     # Define global variable for the console colors setting
     global use_console_colors
     use_console_colors = helper_settings['use_console_colors']
+
+    # Import any specified modules
+    if len(helper_settings['modules_to_import']) > 0:
+        init_module(helper_settings['modules_to_import'])
     return

@@ -21,6 +21,12 @@ Additions to the :doc:`primary modules <primary-modules>`.
 * Added the :py:func:`khorosjx.places.base.get_uri_for_id` function.
 * Added the :py:func:`khorosjx.content.docs.get_url_for_id` function.
 
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:func:`khorosjx.utils.helper.__get_modules_to_import` function.
+
 Changed
 =======
 
@@ -28,7 +34,30 @@ Primary Modules
 ---------------
 Changes to the :doc:`primary modules <primary-modules>`.
 
+* Updated the :py:mod:`khorosjx.places` module to proactively import the :py:mod:`khorosjx.places.base`,
+  :py:mod:`khorosjx.places.blogs` and :py:mod:`khorosjx.places.spaces` modules.
 * Updated the :py:func:`khorosjx.content.docs.get_content_id` function to accept both URLs and Document IDs.
+* Updated the :py:func:`khorosjx.init_helper` function to handle the ``modules`` section of the YAML configuration file.
+* Added error handling for invalid file types in the :py:func:`khorosjx.init_helper` function.
+* Updated the :py:func:`khorosjx.init_module` function to properly handle the ``all`` string within an iterable.
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Updated the :py:func:`khorosjx.utils.helper.parse_helper_cfg` and
+  :py:func:`khorosjx.utils.helper.retrieve_helper_settings` functions to leverage the
+  :py:func:`khorosjx.utils.helper.__get_modules_to_import` function.
+* Added the ``accepted_import_modules`` and ``all_modules`` lists to the
+  :py:class:`khorosjx.utils.helper.HelperParsing` class.
+
+Examples
+--------
+Changes to the example files found in the `examples <https://github.com/jeffshurtliff/khorosjx/tree/master/examples>`_
+directory within the GitHub repository.
+
+* Added the ``modules`` section to the
+  `khorosjx_helper.yml <https://github.com/jeffshurtliff/khorosjx/blob/master/examples/khorosjx_helper.yml>`_ file.
 
 |
 

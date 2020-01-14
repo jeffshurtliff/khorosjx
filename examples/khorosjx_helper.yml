@@ -18,6 +18,28 @@ connection:
         # function_name: get_credentials
         # function_kwargs: username='adminuser'
 
+# Define which modules to import by default
+modules:
+    # Set the value below to 'yes' to import all modules
+    import_all: yes
+
+    # Set one or more of the values to 'yes' to import specific modules
+    # (Note: The values below are ignored if `import_all` is set to `yes` above.)
+    admin: no
+    blogs: no
+    content: no
+    content.base: no
+    docs: no
+    events: no
+    groups: no
+    ideas: no
+    places: no
+    places.spaces: no
+    spaces: no              # The deprecated khorosjx.spaces module
+    threads: no
+    users: no
+    videos: no
+
 # Define whether or not to color-code the function output
 styling:
     use_console_colors: no
