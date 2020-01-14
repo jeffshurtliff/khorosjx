@@ -4,9 +4,38 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
-v2.0.0
+v2.1.0
 ******
 **Release Date: TBD**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khorosjx.core.delete` function.
+* Added the :py:func:`khorosjx.content.docs.create_document` function.
+* Added the :py:func:`khorosjx.content.docs.delete_document` function.
+* Added the :py:func:`khorosjx.places.base.get_uri_for_id` function.
+* Added the :py:func:`khorosjx.content.docs.get_url_for_id` function.
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the :py:func:`khorosjx.content.docs.get_content_id` function to accept both URLs and Document IDs.
+
+|
+
+******
+v2.0.0
+******
+**Release Date: 8 Jan 2020**
 
 Added
 =====

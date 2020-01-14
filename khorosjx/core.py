@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-:Module:         khorosjx.core
-:Synopsis:       Collection of core functions and tools to work with the Jive Core API v3
-:Usage:          ``import khorosjx.core`` (Imported by default in primary package)
-:Example:        ``user_info = khorosjx.core.get_data('people', 'john.doe@example.com', 'email')``
-:Created By:     Jeff Shurtliff
-:Last Modified:  Jeff Shurtliff
-:Modified Date:  21 Dec 2019
+:Module:            khorosjx.core
+:Synopsis:          Collection of core functions and tools to work with the Jive Core API v3
+:Usage:             ``import khorosjx.core`` (Imported by default in primary package)
+:Example:           ``user_info = khorosjx.core.get_data('people', 'john.doe@example.com', 'email')``
+:Created By:        Jeff Shurtliff
+:Last Modified:     Jeff Shurtliff
+:Modified Date:     13 Jan 2020
 """
 
 import re
@@ -371,6 +371,22 @@ def put_request_with_retries(url, json_payload):
     :raises: ValueError, APIConnectionError
     """
     response = __api_request_with_payload(url, json_payload, 'put')
+    return response
+
+
+# Define function to perform a DELETE request against the API
+def delete(uri, return_json=False):
+    """This function performs a DELETE request against the Core API.
+
+    :param uri: The URI against which the DELETE request will be issued
+    :type uri: str
+    :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``False``)
+    :type return_json: bool
+    :returns: The API response from the DELETE request (optionally in JSON format)
+    """
+    response = requests.delete(uri, auth=api_credentials)
+    if return_json:
+        response = response.json()
     return response
 
 

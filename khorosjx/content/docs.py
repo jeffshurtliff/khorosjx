@@ -6,13 +6,15 @@
 :Example:        ``content_id = docs.get_content_id(url)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  07 Jan 2020
+:Modified Date:  13 Jan 2020
 """
 
 import pandas as pd
 
 from .. import core, errors
 from . import base
+from ..utils import core_utils
+from ..places import base as places_core
 
 
 # Define function to verify the connection in the core module
@@ -45,7 +47,7 @@ def verify_core_connection():
 
 
 # Define function to get the content ID from a URL
-def get_content_id(url):
+def get_content_id(lookup_value, lookup_type='url'):
     """This function obtains the Content ID for a particular document.
 
     :param url: The URL of the document
@@ -53,8 +55,66 @@ def get_content_id(url):
     :returns: The Content ID for the document
     :raises: ValueError
     """
-    content_id = base.get_content_id(url, 'document')
+    acceptable_types = ['url', 'id', 'doc_id']
+    if lookup_type not in acceptable_types:
+        raise errors.exceptions.InvalidLookupTypeError
+    if lookup_type != 'url':
+        lookup_value = get_url_for_id(lookup_value)
+    content_id = base.get_content_id(lookup_value, 'document')
     return content_id
+
+
+def get_url_for_id(doc_id):
+    """This function constructs a full URL for a given Document ID.
+
+    :param doc_id: The Document ID with which to construct the URL
+    :type doc_id: int, str
+    :returns: The fully constructed URL for the document (e.g. https://community.example.com/docs/DOC-1234)
+    :raises: TypeError, ValueError
+    """
+    verify_core_connection()
+    url = base_url.split('api/')[0]
+    url = f"{url}docs/DOC-{doc_id}"
+    return url
+
+
+def create_document(subject, body, place_id, categories=[], tags=[]):
+    """This function creates a new document.
+
+    :param subject: The title/subject of the document
+    :type subject: str
+    :param body: The raw HTML making up the document body
+    :type body: str
+    :param place_id: The Place ID (aka Browse ID) of the space where the document should reside
+    :type place_id: int, str
+    :param categories: Any categories associated with the document (none by default)
+    :type categories: list
+    :param tags: Any tags associated with the document (none by default)
+    :type tags: list
+    :returns: The API response from the POST request for the document creation
+    :raises: POSTRequestError, TypeError
+    """
+    # TODO: Allow the author to be specified
+    verify_core_connection()
+    place_uri = places_core.get_uri_for_id(place_id)
+    content_dict = {
+        "type": "text/html",
+        "text": body
+    }
+    full_dict = {
+        "content": content_dict,
+        "subject": subject,
+        "parent": place_uri,
+        "type": "document"
+    }
+    if len(categories) > 0:
+        full_dict["categories"] = categories
+    if len(tags) > 0:
+        full_dict["tags"] = tags
+    payload = core_utils.convert_dict_to_json(full_dict)
+    content_uri = f"{base_url}/contents"
+    response = core.post_request_with_retries(content_uri, payload)
+    return response
 
 
 # Define function to overwrite the body of a document
@@ -211,3 +271,28 @@ def get_document_attachments(lookup_value, lookup_type='doc_id', return_datafram
 
     # Return a list, dataframe or dictionary depending on the data and arguments
     return attachment_info
+
+
+def delete_document(lookup_value, lookup_type='content_id', return_json=False):
+    """This function deletes a document.
+
+    :param lookup_value: THe value with which to identify the document.
+    :type lookup_value: str, int
+    :param lookup_type: Identifies the value as a ``content_id`` (default), ``doc_id`` or ``url``
+    :type lookup_type: str
+    :param return_json: Determines if the API response should be returned in JSON format (``False`` by default)
+    :type return_json: bool
+    :returns: The API response for the DELETE request
+    :raises: InvalidLookupTypeError
+    """
+    accepted_types = ['content_id', 'doc_id', 'url']
+    if lookup_type not in accepted_types:
+        raise errors.exceptions.InvalidLookupTypeError
+    if lookup_type == "url":
+        lookup_value = base.get_content_id(lookup_value)
+    elif lookup_value == "doc_id":
+        url = get_url_for_id(lookup_value)
+        lookup_value = base.get_content_id(url)
+    content_uri = f"{base_url}/contents/{lookup_value}"
+    response = core.delete(content_uri)
+    return response

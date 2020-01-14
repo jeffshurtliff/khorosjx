@@ -131,6 +131,22 @@ def __verify_browse_id(_id_value, _id_type):
     return _id_value
 
 
+def get_uri_for_id(destination_id, browse_id=True):
+    """This function generates the full URI for a place given an identifier.
+
+    :param desination_id: A Jive ID or Place ID (aka Browse ID) for a place
+    :type destination_id: int, str
+    :param browse_id: Defines whether or not the identifier provided is a Browse ID (``True`` by default)
+    :type browse_id: bool
+    :returns: The full URI in string format
+    """
+    verify_core_connection()
+    if not browse_id:
+        destination_id = get_browse_id(destination_id)
+    uri = f"{base_url}/places/{destination_id}"
+    return uri
+
+
 # Define function to get a list of places from a CSV or Excel file
 def get_places_list_from_file(full_path, file_type='csv', has_headers=True,
                               id_column='', id_type='browse_id', excel_sheet_name='', filter_info={}):
