@@ -23,11 +23,11 @@ project = 'Khoros JX Python Library'
 copyright = '2019, Jeff Shurtliff'
 author = 'Jeff Shurtliff'
 
-# The short X.Y version
-version = '2.1'
-# The full version, including alpha/beta/rc tags
-release = '2.1.0'
-
+with open(os.path.join('..', 'VERSION')) as version_file:
+    # The short X.Y version
+    version = ".".join((version_file.read().strip()).split('.')[:2])
+    # The full version, including alpha/beta/rc tags
+    release = version_file.read().strip()
 
 # -- General configuration ---------------------------------------------------
 

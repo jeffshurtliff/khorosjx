@@ -11,6 +11,11 @@ v2.1.0
 Added
 =====
 
+General
+-------
+* Created the ``VERSION`` file and the ``MANIFEST.in`` file to include it in the source distribution.
+* Added the ``__version__`` global variable in the :py:mod:`khorosjx` (__init__.py) module.
+
 Primary Modules
 ---------------
 Additions to the :doc:`primary modules <primary-modules>`.
@@ -29,6 +34,11 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
 
 Changed
 =======
+
+General
+-------
+* Updated ``setup.py`` to obtain the ``version`` value from the ``VERSION`` file.
+* Updated ``docs/conf.py`` to obtain the ``version`` value from the ``VERSION`` file.
 
 Primary Modules
 ---------------
