@@ -5,8 +5,29 @@
 :Usage:          ``from khorosjx.utils.classes import Users``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  08 Jan 2020
+:Modified Date:  15 Jan 2020
 """
+
+
+# Define a class for lists of JSON fields for various API data sets
+class FieldLists:
+    """This class provides lists of JSON fields for various API data sets."""
+    document_fields = ['id', 'entityType', 'followerCount', 'likeCount', 'published', 'tags',
+                       'updated', 'contentID', 'author', 'content', 'parent', 'favoriteCount',
+                       'replyCount', 'status', 'subject', 'viewCount', 'visibleToExternalContributors',
+                       'parentVisible', 'parentContentVisible', 'restrictComments', 'editDisabled',
+                       'version', 'attachments', 'helpfulCount', 'unhelpfulCount', 'type', 'typeCode',
+                       'lastActivityDate']
+    people_fields = ['id', 'followerCount', 'published', 'updated', 'displayName', 'mentionName',
+                     'name.formatted', 'email.value', 'followingCount', 'directReportCount',
+                     'initialLogin', 'jive.lastAuthenticated', 'jive.externalIdentities.identityType',
+                     'jive.externalIdentities.identity', 'jive.username', 'jive.status']
+    place_fields = ['id', 'followerCount', 'followed', 'published', 'tags', 'updated', 'placeID', 'contentTypes',
+                    'description', 'displayName', 'name', 'parent', 'status', 'viewCount', 'placeTopics', 'childCount',
+                    'visibleToExternalContributors',  'locale', 'inheritsAppliedEntitlements', 'type', 'typeCode',
+                    'resources.html.ref']
+    security_group_fields = ['id', 'published', 'updated', 'administratorCount', 'memberCount', 'name',
+                             'description', 'federated']
 
 
 # Define a class for content-related list, dictionaries and other utilities
@@ -39,26 +60,92 @@ class Content:
     # Define the permitted file types for videos
     permitted_video_file_types = ['avi', 'mov', 'wmv', 'mp4', 'mpg', 'mpeg', 'flv', '3gp', '3g2']
 
+    # Map the datasets to their respective field lists
+    datasets = {
+        'blog': FieldLists.place_fields,
+        'document': FieldLists.document_fields,
+        'group_admins': FieldLists.people_fields,
+        'group_members': FieldLists.people_fields,
+        'people': FieldLists.people_fields,
+        'place': FieldLists.place_fields,
+        'security_group': FieldLists.security_group_fields,
+        'space': FieldLists.place_fields
+    }
 
-# Define a class for lists of JSON fields for various API data sets
-class FieldLists:
-    """This class provides lists of JSON fields for various API data sets."""
-    document_fields = ['id', 'entityType', 'followerCount', 'likeCount', 'published', 'tags',
-                       'updated', 'contentID', 'author', 'content', 'parent', 'favoriteCount',
-                       'replyCount', 'status', 'subject', 'viewCount', 'visibleToExternalContributors',
-                       'parentVisible', 'parentContentVisible', 'restrictComments', 'editDisabled',
-                       'version', 'attachments', 'helpfulCount', 'unhelpfulCount', 'type', 'typeCode',
-                       'lastActivityDate']
-    people_fields = ['id', 'followerCount', 'published', 'updated', 'displayName', 'mentionName',
-                     'name.formatted', 'email.value', 'followingCount', 'directReportCount',
-                     'initialLogin', 'jive.lastAuthenticated', 'jive.externalIdentities.identityType',
-                     'jive.externalIdentities.identity', 'jive.username', 'jive.status']
-    place_fields = ['id', 'followerCount', 'followed', 'published', 'tags', 'updated', 'placeID', 'contentTypes',
-                    'description', 'displayName', 'name', 'parent', 'status', 'viewCount', 'placeTopics', 'childCount',
-                    'visibleToExternalContributors',  'locale', 'inheritsAppliedEntitlements', 'type', 'typeCode',
-                    'resources.html.ref']
-    security_group_fields = ['id', 'published', 'updated', 'administratorCount', 'memberCount', 'name',
-                             'description', 'federated']
+    # Map security group query URI identifiers to datasets
+    security_group_uri_map = {
+        '/administrators': 'group_admins',
+        '/members': 'group_members'
+    }
+
+    # Map query URI identifiers to dataset nicknames
+    uri_dataset_mapping = {
+        'abuseReports': 'abuse_report',                         # Not yet supported
+        'acclaim': 'acclaim',                                   # Not yet supported
+        'actions': 'action',                                    # Not yet supported
+        'activities': 'activity',                               # Not yet supported
+        'addOns': 'add_on',                                     # Not yet supported
+        'admin/plugins': 'admin_plugin',                        # Not yet supported
+        'admin/profileFields': 'admin_profile_field',           # Not yet supported
+        'admin/properties': 'admin_property',                   # Not yet supported
+        'announcements': 'announcement',                        # Not yet supported
+        'attachments': 'attachment',                            # Not yet supported
+        'calendar': 'calendar',                                 # Not yet supported
+        'checkpoints': 'checkpoint',                            # Not yet supported
+        'collaborations': 'collaboration',                      # Not yet supported
+        'comments': 'comment',                                  # Not yet supported
+        'deletedObjects': 'deleted_object',                     # Not yet supported
+        'dms': 'dms',                                           # Not yet supported
+        'events': 'event',                                      # Not yet supported
+        'eventTypes': 'event_type',                             # Not yet supported
+        'extprops': 'extended_properties',                      # Not yet supported
+        'extstreamDefs': 'external_stream_definition',          # Not yet supported
+        'extstreams': 'external_stream',                        # Not yet supported
+        'ideaVotes': 'idea_vote',                               # Not yet supported
+        'images': 'image',                                      # Not yet supported
+        'inbox': 'inbox',                                       # Not yet supported
+        'invites': '__get_invite_dataset',                      # Not yet supported
+        'v3/members': 'social_group_member',                    # Not yet supported
+        'mentions': 'mention',                                  # Not yet supported
+        'messages': 'message',                                  # Not yet supported
+        'metadata/locales': 'metadata_locale',                  # Not yet supported
+        'metadata/objects': 'metadata_object',                  # Not yet supported
+        'metadata/properties': '__get_metadata_dataset',        # Not yet supported
+        'metadata/resources': 'metadata_resource',              # Not yet supported
+        'metadata/timezones': 'metadata_timezone',              # Not yet supported
+        'moderation': '__get_moderation_dataset',               # Not yet supported
+        'oembed': 'oembed',                                     # Not yet supported
+        'outcomes': 'outcome',                                  # Not yet supported
+        'pages': 'page',                                        # Not yet supported
+        'v3/people': 'people',
+        'v3/places': 'place',
+        'securityGroups': '__get_security_group_dataset',
+        'placeTemplateCategories': 'place_template_category',   # Not yet supported
+        'placeTemplates': 'place_template',                     # Not yet supported
+        'placeTopics': 'place_topic',                           # Not yet supported
+        'profileImages': 'profile_image',                       # Not yet supported
+        'publications': 'publication',                          # Not yet supported
+        'questions': 'question',                                # Not yet supported
+        'rsvp': 'rsvp',                                         # Not yet supported
+        'search': '__get_search_dataset',                       # Not yet supported
+        'v3/sections': 'section',                               # Not yet supported
+        'shares': 'share',                                      # Not yet supported
+        'slides': 'slide',                                      # Not yet supported
+        'supportCenter': '__get_support_center_dataset',        # Not yet supported
+        'stages': 'stage',                                      # Not yet supported
+        'statics': 'static_resource',                           # Not yet supported
+        'streamEntries': 'stream_entry',                        # Not yet supported
+        'streams': 'stream',                                    # Not yet supported
+        'v3/tags': 'tag',                                       # Not yet supported
+        'tileDefs': 'tile_definition',                          # Not yet supported
+        'tiles': '__get_tile_dataset',                          # Not yet supported
+        'urls': 'url',                                          # Not yet supported
+        'versions': 'version',                                  # Not yet supported
+        'videos': 'video',                                      # Not yet supported
+        'vitals': 'vitals',                                     # Not yet supported
+        'votes': 'vote',                                        # Not yet supported
+        'webhooks': 'webhook'                                   # Not yet supported
+    }
 
 
 # Define a class for group-related lists, dictionaries and other utilities

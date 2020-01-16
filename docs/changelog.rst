@@ -6,7 +6,7 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ******
 v2.1.0
 ******
-**Release Date: TBD**
+**Release Date: 16 Jan 2020**
 
 Added
 =====
@@ -31,6 +31,17 @@ Supporting Modules
 Additions to the :doc:`supporting modules <supporting-modules>`.
 
 * Added the :py:func:`khorosjx.utils.helper.__get_modules_to_import` function.
+* Added the :py:exc:`khorosjx.errors.exceptions.DatasetNotFoundError` exception class.
+* Added the ``uri_dataset_mapping`` and ``security_group_uri_map`` dictionaries to the
+  :py:class:`khorosjx.utils.classes.Content` class.
+* Added the :py:func:`khorosjx.utils.core_utils.identify_dataset` function with the accompanying internal functions:
+    * :py:func:`khorosjx.utils.core_utils.__get_security_group_dataset`
+    * :py:func:`khorosjx.utils.core_utils.__get_invite_dataset`
+    * :py:func:`khorosjx.utils.core_utils.__get_metadata_dataset`
+    * :py:func:`khorosjx.utils.core_utils.__get_moderation_dataset`
+    * :py:func:`khorosjx.utils.core_utils.__get_search_dataset`
+    * :py:func:`khorosjx.utils.core_utils.__get_support_center_dataset`
+    * :py:func:`khorosjx.utils.core_utils.__get_tile_dataset`
 
 Changed
 =======
@@ -50,6 +61,8 @@ Changes to the :doc:`primary modules <primary-modules>`.
 * Updated the :py:func:`khorosjx.init_helper` function to handle the ``modules`` section of the YAML configuration file.
 * Added error handling for invalid file types in the :py:func:`khorosjx.init_helper` function.
 * Updated the :py:func:`khorosjx.init_module` function to properly handle the ``all`` string within an iterable.
+* Updated the :py:func:`khorosjx.core.get_fields_from_api_response` to reference the ``datasets`` dictionary that was
+  moved into the :py:class:`khorosjx.utils.classes.Content` class.
 
 Supporting Modules
 ------------------
@@ -60,6 +73,15 @@ Changes to the :doc:`supporting modules <supporting-modules>`.
   :py:func:`khorosjx.utils.helper.__get_modules_to_import` function.
 * Added the ``accepted_import_modules`` and ``all_modules`` lists to the
   :py:class:`khorosjx.utils.helper.HelperParsing` class.
+* Moved the ``datasets`` dictionary from the :py:func:`khorosjx.core.get_fields_from_api_response` function into the
+  :py:class:`khorosjx.utils.classes.Content` class.
+
+Documentation
+-------------
+Changes to the documentation.
+
+* Adjusted the docstring for the :py:exc:`khorosjx.errors.exceptions.InvalidDatasetError` exception class to
+  differentiate it from the :py:exc:`khorosjx.errors.exceptions.DatasetNotFoundError` exception class.
 
 Examples
 --------

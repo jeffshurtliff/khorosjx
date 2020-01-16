@@ -50,10 +50,12 @@ def verify_core_connection():
 def get_content_id(lookup_value, lookup_type='url'):
     """This function obtains the Content ID for a particular document.
 
-    :param url: The URL of the document
-    :type url: str
+    :param lookup_value: The URL of the document
+    :type lookup_value: str
+    :param lookup_type: The type of value is being used for lookup (``url`` by default)
+    :type lookup_type: str
     :returns: The Content ID for the document
-    :raises: ValueError
+    :raises: ValueError, InvalidLookupTypeError
     """
     acceptable_types = ['url', 'id', 'doc_id']
     if lookup_type not in acceptable_types:

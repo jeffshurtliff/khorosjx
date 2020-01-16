@@ -6,7 +6,7 @@
 :Example:           ``user_info = khorosjx.core.get_data('people', 'john.doe@example.com', 'email')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     13 Jan 2020
+:Modified Date:     16 Jan 2020
 """
 
 import re
@@ -17,7 +17,7 @@ import requests
 
 from . import errors
 from .utils.core_utils import eprint, convert_dict_to_json
-from .utils.classes import FieldLists, Platform
+from .utils.classes import Platform, Content
 
 
 # Define function to get the base API URL
@@ -318,6 +318,7 @@ def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_
 
 # Define internal function to perform API requests (PUT or POST) with JSON payload
 def __api_request_with_payload(_url, _json_payload, _request_type):
+    """This function performs an API request while supplying a JSON payload."""
     _retries = 0
     while _retries <= 5:
         try:
@@ -406,27 +407,15 @@ def get_fields_from_api_response(json_data, dataset, return_fields=[]):
     # Define the empty dictionary for data to return
     fields_data = {}
 
-    # Map the datasets to their respective field lists
-    datasets = {
-        'blog': FieldLists.place_fields,
-        'document': FieldLists.document_fields,
-        'group_admins': FieldLists.people_fields,
-        'group_members': FieldLists.people_fields,
-        'people': FieldLists.people_fields,
-        'place': FieldLists.place_fields,
-        'security_group': FieldLists.security_group_fields,
-        'space': FieldLists.place_fields
-    }
-
     # Define the fields that should be returned for the data
     if len(return_fields) > 0:
         fields_to_return = return_fields
     else:
         # Get the default return fields for the dataset
-        if dataset not in datasets:
+        if dataset not in Content.datasets:
             error_msg = f"The supplied value '{dataset}' is not a valid dataset."
             raise errors.exceptions.InvalidDatasetError(error_msg)
-        fields_to_return = datasets.get(dataset)
+        fields_to_return = Content.datasets.get(dataset)
 
     # Get and return the fields and corresponding values
     for field in fields_to_return:

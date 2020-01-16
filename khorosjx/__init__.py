@@ -6,18 +6,19 @@
 :Example:        ``khorosjx.core.connect(base_url, credentials)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  14 Jan 2020
+:Modified Date:  16 Jan 2020
 """
+
+import os
+
+from . import core, errors
 
 # Define all modules that will be imported with the "import *" method
 __all__ = ['core', 'admin', 'content', 'groups', 'places', 'spaces', 'users']
 
 # Define the package version by pulling from the VERSION file
-with open("VERSION") as version_file:
+with open(os.path.join('..', 'VERSION')) as version_file:
     __version__ = version_file.read().strip() 
-
-# Always import the core module and the errors package
-from . import core, errors
 
 
 # Define function to initialize additional modules via the primary package

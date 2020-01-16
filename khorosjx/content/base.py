@@ -6,12 +6,13 @@
 :Example:           ``content_id = content_core.get_content_id(url, 'document')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     05 Jan 2020
+:Modified Date:     15 Jan 2020
 """
 
 import re
 
 from .. import core, errors
+from ..utils import core_utils
 from ..utils.classes import Content
 
 
@@ -137,3 +138,47 @@ def __trim_attachments_info(_attachment_info):
             if _ignored_field in _attachment_info[_idx].keys():
                 del _attachment_info[_idx][_ignored_field]
     return _attachment_info
+
+
+def get_paginated_content(endpoint, query_string="", start_index=0, dataset="",
+                          return_fields=[], ignore_exceptions=False):
+    """This function returns paginated group information. (Up to 100 records at a time)
+
+    :param endpoint: The full endpoint without preceding slash (e.g. ``securityGroups``, ``people/email/user_email``)
+    :type endpoint: str
+    :param query_string: Any query strings to apply (without preceding ``?``) excluding ``count`` and ``startIndex``
+    :type query_string: str
+    :param start_index: The startIndex API value
+    :type start_index: int, str
+    :param dataset: Defines the type of data returned in the API response (e.g. ``security_group``, ``people``, etc.)
+    :type dataset: str
+    :param return_fields: Specific fields to return if not all of the default fields are needed (Optional)
+    :type return_fields: list
+    :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
+    :type ignore_exceptions: bool
+    :returns: A list of dictionaries containing information for each group in the paginated query
+    """
+    # Initialize the empty list for the group information
+    content = []
+
+    # Construct the API query
+    start_index_delimiter = {True: '?', False: '&'}
+    query_uri = f"{base_url}/{endpoint.replace('?', '')}?{query_string.replace('?', '')}"
+    empty_query = True if query_string == "" else False
+    query_uri = f"{query_uri}{start_index_delimiter.get(empty_query)}startIndex={start_index}&count=100"
+
+    # Perform the API query to retrieve the group information
+    response = core.get_request_with_retries(query_uri)
+
+    # Verify that the query was successful
+    successful_response = errors.handlers.check_api_response(response, ignore_exceptions=ignore_exceptions)
+
+    if successful_response:
+        # Get the response data in JSON format
+        paginated_data = response.json()
+        for content_data in paginated_data['list']:
+            if dataset == "" or dataset not in Content.datasets:
+                dataset = core_utils.identify_dataset(query_uri)
+            parsed_data = core.get_fields_from_api_response(content_data, dataset, return_fields)
+            content.append(parsed_data)
+    return content

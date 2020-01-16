@@ -203,9 +203,18 @@ class NotFoundResponseError(KhorosJXError):
 
 
 class InvalidDatasetError(KhorosJXError, ValueError):
-    """This exception is used when a supplied dataset is invalid and cannot be found."""
+    """This exception is used when a supplied dataset is invalid."""
     def __init__(self, *args, **kwargs):
         default_msg = "The supplied value is not a valid dataset."
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args)
+
+
+class DatasetNotFoundError(KhorosJXError, ValueError):
+    """This exception is used when a dataset was not provided and/or cannot be found."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "A valid dataset could not be found or was not provided."
         if not (args or kwargs):
             args = (default_msg,)
         super().__init__(*args)

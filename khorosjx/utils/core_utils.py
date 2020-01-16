@@ -17,7 +17,8 @@ import pandas as pd
 from dateutil import tz
 
 from . import df_utils
-from .classes import TimeUtils
+from ..errors import exceptions
+from .classes import TimeUtils, Content
 
 
 # Print an error message to stderr instead of stdout
@@ -169,3 +170,99 @@ def print_if_verbose(msg, verbose_enabled=False):
     if verbose_enabled:
         print(msg)
     return
+
+
+def identify_dataset(query_uri):
+    dataset = ""
+    for uri_identifier, dataset_mapping in Content.uri_dataset_mapping.items():
+        if uri_identifier in query_uri:
+            dataset = dataset_mapping
+            break
+    if dataset == "":
+        raise exceptions.DatasetNotFoundError
+    if uri_identifier == '__get_security_group_dataset':
+        dataset = __get_security_group_dataset(query_uri)
+    elif uri_identifier == '__get_invite_dataset':
+        dataset = __get_invite_dataset(query_uri)
+    elif uri_identifier == '__get_metadata_dataset':
+        dataset = __get_metadata_dataset(query_uri)
+    elif uri_identifier == '__get_moderation_dataset':
+        dataset = __get_moderation_dataset(query_uri)
+    elif uri_identifier == '__get_search_dataset':
+        dataset = __get_search_dataset(query_uri)
+    elif uri_identifier == '__get_support_center_dataset':
+        dataset = __get_support_center_dataset(query_uri)
+    elif uri_identifier == '__get_tile_dataset':
+        dataset = __get_tile_dataset(query_uri)
+    return dataset
+
+
+def __get_security_group_dataset(_query_uri):
+    _dataset = ""
+    for _uri_identifier, _dataset_mapping in Content.security_group_uri_map.items():
+        if _uri_identifier in _query_uri:
+            _dataset = _dataset_mapping
+    if _dataset == "":
+        _dataset = "security_group"
+    return _dataset
+
+
+def __get_invite_dataset(_query_uri):
+    _dataset = "invite"
+    if 'invites/event' in _query_uri:
+        _dataset = "event_invite"
+    return _dataset
+
+
+def __get_metadata_dataset(_query_uri):
+    _dataset = "metadata_property"
+    if 'properties/public' in _query_uri:
+        _dataset = "metadata_public_property"
+    return _dataset
+
+
+def __get_moderation_dataset(_query_uri):
+    _dataset = "moderation"
+    if 'pending/counts' in _query_uri:
+        _dataset = "moderation_pending_count"
+    elif 'pending' in _query_uri:
+        _dataset = "moderation_pending"
+    return _dataset
+
+
+def __get_search_dataset(_query_uri):
+    _dataset = ""
+    if 'search/contents' in _query_uri:
+        _dataset = "search_contents"
+    elif 'search/people' in _query_uri:
+        _dataset = "search_people"
+    elif 'search/places' in _query_uri:
+        _dataset = "search_places"
+    elif 'search/tags' in _query_uri:
+        _dataset = "search_tags"
+    return _dataset
+
+
+def __get_support_center_dataset(_query_uri):
+    _dataset = ""
+    if 'avatar' in _query_uri:
+        _dataset = "support_center_avatar"
+    elif 'banner' in _query_uri:
+        _dataset = "support_center_banner"
+    elif 'blocks' in _query_uri:
+        _dataset = "support_center_block"
+    elif 'channels' in _query_uri:
+        _dataset = "support_center_channel"
+    elif 'categories' in _query_uri:
+        _dataset = "support_center_category"
+    elif 'section' in _query_uri:
+        _dataset = "section"
+    return _dataset
+
+
+def __get_tile_dataset(_query_uri):
+    if 'categories' in _query_uri:
+        _dataset = "tile_category"
+    else:
+        _dataset = "tile"
+    return _dataset
