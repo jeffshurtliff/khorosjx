@@ -173,6 +173,12 @@ def print_if_verbose(msg, verbose_enabled=False):
 
 
 def identify_dataset(query_uri):
+    """This function identifies the appropriate field dataset by examining a query URI.
+
+    :param query_uri: The API query URI to be examined
+    :type query_uri: str
+    :returns: The appropriate dataset name in string format
+    """
     dataset = ""
     for uri_identifier, dataset_mapping in Content.uri_dataset_mapping.items():
         if uri_identifier in query_uri:
@@ -198,6 +204,7 @@ def identify_dataset(query_uri):
 
 
 def __get_security_group_dataset(_query_uri):
+    """This function identifies the appropriate security group dataset."""
     _dataset = ""
     for _uri_identifier, _dataset_mapping in Content.security_group_uri_map.items():
         if _uri_identifier in _query_uri:
@@ -208,6 +215,7 @@ def __get_security_group_dataset(_query_uri):
 
 
 def __get_invite_dataset(_query_uri):
+    """This function identifies the appropriate invite dataset."""
     _dataset = "invite"
     if 'invites/event' in _query_uri:
         _dataset = "event_invite"
@@ -215,6 +223,7 @@ def __get_invite_dataset(_query_uri):
 
 
 def __get_metadata_dataset(_query_uri):
+    """This function identifies the appropriate metadata dataset."""
     _dataset = "metadata_property"
     if 'properties/public' in _query_uri:
         _dataset = "metadata_public_property"
@@ -222,6 +231,7 @@ def __get_metadata_dataset(_query_uri):
 
 
 def __get_moderation_dataset(_query_uri):
+    """This function identifies the appropriate moderation dataset."""
     _dataset = "moderation"
     if 'pending/counts' in _query_uri:
         _dataset = "moderation_pending_count"
@@ -231,6 +241,7 @@ def __get_moderation_dataset(_query_uri):
 
 
 def __get_search_dataset(_query_uri):
+    """This function identifies the appropriate search dataset."""
     _dataset = ""
     if 'search/contents' in _query_uri:
         _dataset = "search_contents"
@@ -244,6 +255,7 @@ def __get_search_dataset(_query_uri):
 
 
 def __get_support_center_dataset(_query_uri):
+    """This function identifies the appropriate support center dataset."""
     _dataset = ""
     if 'avatar' in _query_uri:
         _dataset = "support_center_avatar"
@@ -261,6 +273,7 @@ def __get_support_center_dataset(_query_uri):
 
 
 def __get_tile_dataset(_query_uri):
+    """This function identifies the appropriate tile dataset."""
     if 'categories' in _query_uri:
         _dataset = "tile_category"
     else:
