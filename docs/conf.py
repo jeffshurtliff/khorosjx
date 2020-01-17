@@ -16,6 +16,7 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 
+import khorosjx.utils.version
 
 # -- Project information -----------------------------------------------------
 
@@ -23,11 +24,10 @@ project = 'Khoros JX Python Library'
 copyright = '2019, Jeff Shurtliff'
 author = 'Jeff Shurtliff'
 
-with open(os.path.join('..', 'VERSION')) as version_file:
-    # The short X.Y version
-    version = ".".join((version_file.read().strip()).split('.')[:2])
-    # The full version, including alpha/beta/rc tags
-    release = version_file.read().strip()
+# The short X.Y version
+version = khorosjx.utils.version.get_major_minor_version()
+# The full version, including alpha/beta/rc tags
+release = khorosjx.utils.version.get_full_version()
 
 # -- General configuration ---------------------------------------------------
 

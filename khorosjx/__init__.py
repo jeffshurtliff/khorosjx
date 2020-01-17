@@ -9,16 +9,14 @@
 :Modified Date:  16 Jan 2020
 """
 
-import os
-
 from . import core, errors
+from .utils import version
 
 # Define all modules that will be imported with the "import *" method
 __all__ = ['core', 'admin', 'content', 'groups', 'places', 'spaces', 'users']
 
-# Define the package version by pulling from the VERSION file
-with open(os.path.join('..', 'VERSION')) as version_file:
-    __version__ = version_file.read().strip() 
+# Define the package version by pulling from the khorosjx.utils.version module
+__version__ = version.get_full_version()
 
 
 # Define function to initialize additional modules via the primary package

@@ -2,11 +2,12 @@
 
 import setuptools
 
+import khorosjx.utils.version
+
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-with open("VERSION") as version_file:
-    version = version_file.read().strip()
+version = khorosjx.utils.version.__version__
 
 setuptools.setup(
     name="khorosjx",
