@@ -9,6 +9,7 @@ which are listed below.
     * `Dataframe Utilities Module (khorosjx.utils.df_utils)`_
     * `Helper Module (khorosjx.utils.helper)`_
     * `Tests Module (khorosjx.utils.tests)`_
+    * `Version Module (khorosjx.utils.version)`_
 * `Classes and Exceptions`_
     * `Classes Module (khorosjx.utils.classes)`_
     * `Errors Module (khorosjx.errors)`_
@@ -67,6 +68,18 @@ This module includes unit tests for the package that are performed using pytest.
 **Test Module Import (khorosjx.utils.tests.test_init_module)**
 
 .. automodule:: khorosjx.utils.tests.test_init_module
+   :members:
+
+:doc:`Return to Top <supporting-modules>`
+
+|
+
+Version Module (khorosjx.utils.version)
+---------------------------------------
+This module is the primary source of the current version of the khorosjx package, and includes two simple
+functions to return either the full version or the major.minor (i.e. X.Y) version.
+
+.. automodule:: khorosjx.utils.version
    :members:
 
 :doc:`Return to Top <supporting-modules>`

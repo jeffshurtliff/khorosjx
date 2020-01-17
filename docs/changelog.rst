@@ -13,8 +13,7 @@ Added
 
 General
 -------
-* Created the ``VERSION`` file and the ``MANIFEST.in`` file to include it in the source distribution.
-* Added the ``__version__`` global variable in the :py:mod:`khorosjx` (__init__.py) module.
+* Added the ``__version__`` global variable in the :py:mod:`khorosjx` (``__init__.py``) module.
 
 Primary Modules
 ---------------
@@ -42,14 +41,19 @@ Additions to the :doc:`supporting modules <supporting-modules>`.
     * :py:func:`khorosjx.utils.core_utils.__get_search_dataset`
     * :py:func:`khorosjx.utils.core_utils.__get_support_center_dataset`
     * :py:func:`khorosjx.utils.core_utils.__get_tile_dataset`
+* Added the :py:mod:`khorosjx.utils.version` module containing the source ``__version__`` and the following functions:
+    * :py:func:`khorosjx.utils.version.get_full_version()`
+    * :py:func:`khorosjx.utils.version.get_major_minor_version()`
 
 Changed
 =======
 
 General
 -------
-* Updated ``setup.py`` to obtain the ``version`` value from the ``VERSION`` file.
-* Updated ``docs/conf.py`` to obtain the ``version`` value from the ``VERSION`` file.
+* Updated `setup.py <https://github.com/jeffshurtliff/khorosjx/blob/master/setup.py>`_ to obtain the ``version``
+  value from the :py:func:`khorosjx.utils.version` function.
+* Updated `docs/conf.py <https://github.com/jeffshurtliff/khorosjx/blob/master/docs/conf.py>`_ to obtain
+  the ``version`` value from the :py:func:`khorosjx.utils.version` function.
 
 Primary Modules
 ---------------
