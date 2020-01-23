@@ -6,7 +6,7 @@
 :Example:           ``content_id = content_core.get_content_id(url, 'document')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     15 Jan 2020
+:Modified Date:     22 Jan 2020
 """
 
 import re
@@ -54,7 +54,7 @@ def get_content_id(url, content_type="document"):
     :param content_type: The content type for the URL for which to obtain the Content ID (Default: ``document``)
     :type content_type: str
     :returns: The Content ID for the content URL
-    :raises: ValueError
+    :raises: ValueError, ContentNotFoundError
     """
     # Verify that the core connection has been established
     verify_core_connection()
@@ -85,9 +85,12 @@ def get_content_id(url, content_type="document"):
         raise ValueError(f"{error_msg}")
 
     # Query the API to get the content ID
-    response = core.get_request_with_retries(query_url)
-    content_data = response.json()
-    content_id = content_data['list'][0]['contentID']
+    try:
+        response = core.get_request_with_retries(query_url)
+        content_data = response.json()
+        content_id = content_data['list'][0]['contentID']
+    except KeyError:
+        raise errors.exceptions.ContentNotFoundError
     return content_id
 
 
@@ -142,7 +145,7 @@ def __trim_attachments_info(_attachment_info):
 
 def get_paginated_content(endpoint, query_string="", start_index=0, dataset="",
                           return_fields=[], ignore_exceptions=False):
-    """This function returns paginated group information. (Up to 100 records at a time)
+    """This function returns paginated content information. (Up to 100 records at a time)
 
     :param endpoint: The full endpoint without preceding slash (e.g. ``securityGroups``, ``people/email/user_email``)
     :type endpoint: str

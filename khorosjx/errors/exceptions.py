@@ -6,7 +6,7 @@
 :Example:       ``raise khorosjx.errors.exceptions.BadCredentialsError``
 :Created By:    Jeff Shurtliff
 :Last Modified: Jeff Shurtliff
-:Modified Date: 18 Dec 2019
+:Modified Date: 22 Jan 2020
 """
 
 
@@ -99,6 +99,15 @@ class BadCredentialsError(KhorosJXError):
 
 
 # Define content exception classes
+class ContentNotFoundError(KhorosJXError, ValueError):
+    """This exception is used when an API query for content returns a 404 status code."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "The queried content could not be found by the Core API."
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args)
+
+
 class ContentPublishError(KhorosJXError):
     """This exception is used when content is unable to publish successfully."""
     def __init__(self, *args, **kwargs):

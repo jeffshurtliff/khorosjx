@@ -89,3 +89,9 @@ def check_json_for_error(json_data, data_type='space'):
     except KeyError:
         pass
     return
+
+
+def bad_lookup_type(lookup_type, good_examples):
+    """This function raises the InvalidLookupTypeError exception and provides a custom message."""
+    raise exceptions.InvalidLookupTypeError(f"The lookup type '{lookup_type}' is invalid. " +
+                                            f"Use '{good_examples[0]}' or '{good_examples[1]}' instead.")

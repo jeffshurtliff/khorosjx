@@ -6,7 +6,7 @@
 :Example:        ``group_info = groups.get_group_info(1051)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  30 Nov 2019
+:Modified Date:  22 Jan 2020
 """
 
 import re
@@ -92,7 +92,7 @@ def get_all_groups(return_fields=[], return_type='list', ignore_exceptions=False
     :type return_type: str
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
-    :returns: A list of dictionaries containing information for each group
+    :returns: A list of dictionaries or a dataframe containing information for each group
     :raises: InvalidDatasetError
     """
     def __get_paginated_groups(_return_fields, _ignore_exceptions, _start_index):

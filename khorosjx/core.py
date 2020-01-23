@@ -6,7 +6,7 @@
 :Example:           ``user_info = khorosjx.core.get_data('people', 'john.doe@example.com', 'email')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     16 Jan 2020
+:Modified Date:     22 Jan 2020
 """
 
 import re
@@ -240,6 +240,49 @@ def get_request_with_retries(query_url, return_json=False):
     return response
 
 
+def get_base_url(api_base=True):
+    """This function returns the base URL of the environment with or withut the ``/api/core/v3/`` path appended.
+
+    :param api_base: Determines if the ``/api/core/v3/`` path should be appended (``True`` by default)
+    :type api_base: bool
+    :returns: The base URL for the Khoros JX or Jive-n environment
+    """
+    verify_connection()
+    url = base_url
+    if not api_base:
+        url = url.split('/api')[0]
+    return url
+
+
+def get_query_url(pre_endpoint, asset_id="", post_endpoint=""):
+    """This function constructs an API query URL excluding any query strings.
+
+    :param pre_endpoint: The endpoint portion of the URL preceding any ID numbers (e.g. ``places``)
+    :type pre_endpoint: str
+    :param asset_id: The ID for an asset (e.g. User ID, Browse ID for a space/blog, etc.)
+    :type asset_id: str, int
+    :param post_endpoint: Any remaining endpoints following the ID number (e.g. ``contents``)
+    :type post_endpoint: str
+    :returns: The fully structured query URL
+    """
+    # Verify that the connection has been established
+    verify_connection()
+
+    # Construct and return the query URL
+    if pre_endpoint[-1:] == '/':
+        pre_endpoint = pre_endpoint[:-1]
+    query_url = f"{base_url}/{pre_endpoint}"
+    for section in (asset_id, post_endpoint):
+        if type(section) != str:
+            section = str(section)
+        if len(section) > 0:
+            if section[-1:] == '/':
+                section = section[:1]
+            section = f"/{section}"
+        query_url = f"{query_url}{section}"
+    return query_url
+
+
 # Define function to perform a general GET request
 def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_exceptions=False):
     """This function returns data for a specific API endpoint.
@@ -442,7 +485,23 @@ def get_fields_from_api_response(json_data, dataset, return_fields=[]):
     return fields_data
 
 
-def get_paginated_results(query, response_data_type, start_index=0,
+def __get_filter_syntax(_filter_info, _prefix=True):
+    if type(_filter_info) != tuple and type(_filter_info) != list:
+        raise TypeError("Filter information must be provided as a tuple (element, criteria) or a list of tuples.")
+    elif type(_filter_info) == tuple:
+        _filter_info = [_filter_info]
+    _syntax = ""
+    if len(_filter_info[0]) > 0:
+        _define_prefix = {True: '&', False: ''}
+        _syntax_prefix = _define_prefix.get(_prefix)
+        for _filter_tuple in _filter_info:
+            _element, _criteria = _filter_tuple
+            _syntax = f"{_syntax_prefix}filter={_element}({_criteria})&"
+        _syntax = _syntax[:-1]
+    return _syntax
+
+
+def get_paginated_results(query, response_data_type, start_index=0, filter_info=(),
                           query_all=True, return_fields=[], ignore_exceptions=False):
     """This function performs a GET request for a single paginated response up to 100 records.
 
@@ -452,6 +511,8 @@ def get_paginated_results(query, response_data_type, start_index=0,
     :type response_data_type: str
     :param start_index: The startIndex value in the API query string
     :type start_index: int, str
+    :param filter_info: A tuple of list of tuples containing the filter element and criteria (Optional)
+    :type filter_info: tuple, list
     :param query_all: Determines if ``fields=@all`` filter should be included in the query string (Default: ``True``)
     :type query_all: bool
     :param return_fields: The fields that should be returned from the API response (Default: all fields in dataset)
@@ -471,7 +532,8 @@ def get_paginated_results(query, response_data_type, start_index=0,
     if '?' in query:
         # Strip out the query string if present to prevent interference with the query string to be added
         query = query.split("?")[0]
-    full_query = f"{query}?{fields_filter}count=100&startIndex={start_index}"
+    other_filters = __get_filter_syntax(filter_info, _prefix=True)
+    full_query = f"{query}?{fields_filter}count=100&startIndex={start_index}{other_filters}"
 
     # Perform the API query to retrieve the information
     response = get_request_with_retries(full_query)

@@ -4,6 +4,57 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.2.0
+******
+**Release Date: 2020-01-22**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khorosjx.core.get_base_url` function.
+* Added the :py:func:`khorosjx.core.get_query_url` function.
+* Added the :py:func:`khorosjx.core.__get_filter_syntax` function.
+* Added the :py:func:`khorosjx.content.videos.get_video_id` function.
+* Added the :py:func:`khorosjx.content.videos.get_native_videos_for_space` function.
+* Added the :py:func:`khorosjx.content.videos.find_video_attachments` function.
+* Added the :py:func:`khorosjx.content.videos.__construct_url_from_id` function.
+* Added the :py:func:`khorosjx.content.videos.check_if_embedded` function.
+* Added the :py:func:`khorosjx.content.videos.get_video_dimensions` function.
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the ``video_fields`` list to the :py:class:`khorosjx.utils.classes.FieldLists` class.
+* Added the ``video`` key value pair to the ``datasets`` dictionary within the
+  :py:class:`khorosjx.utils.classes.Content` class.
+* Added the :py:func:`khorosjx.errors.handlers.bad_lookup_type` function.
+* Added the :py:exc:`khorosjx.errors.exceptions.ContentNotFoundError` exception.
+
+Changed
+=======
+
+General
+-------
+* Updated `setup.py <https://github.com/jeffshurtliff/khorosjx/blob/master/setup.py>`_ to define ``version`` in the
+  :py:func:`setuptools.setup` function using the ``__version__`` value from :py:func:`khorosjx.utils.version`.
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the :py:func:`khorosjx.core.get_paginated_results` function to allow additional filters to be supplied as
+  a tuple containing the element and criteria (e.g. ``('type', 'video')`` or a list of tuples for multiple filters.
+* Made minor adjustment to the :py:func:`khorosjx.groups.get_all_groups` function.
+* Updated the :py:func:`khorosjx.content.videos.get_content_id` function to allow a URL or Video ID to be supplied.
+* Updated the :py:func:`khorosjx.content.base.get_content_id` function to raise the
+  :py:exc:`khorosjx.errors.exceptions.ContentNotFoundError` exception instead of a generic ``KeyError`` exception.
+
+******
 v2.1.0
 ******
 **Release Date: 16 Jan 2020**

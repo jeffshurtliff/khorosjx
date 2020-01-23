@@ -5,7 +5,7 @@
 :Usage:          ``from khorosjx.utils.classes import Users``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  15 Jan 2020
+:Modified Date:  22 Jan 2020
 """
 
 
@@ -28,6 +28,13 @@ class FieldLists:
                     'resources.html.ref']
     security_group_fields = ['id', 'published', 'updated', 'administratorCount', 'memberCount', 'name',
                              'description', 'federated']
+    video_fields = ['id', 'followerCount', 'followed', 'likeCount', 'published', 'tags', 'updated', 'contentID',
+                    'author', 'content', 'parent', 'contentVideos', 'favoriteCount', 'replyCount', 'status',
+                    'subject', 'viewCount', 'visibleToExternalContributors', 'parentVisible', 'parentContentVisible',
+                    'lastActivity', 'abuseCount', 'categories', 'visibility', 'duration', 'inline', 'externalID',
+                    'hours', 'minutes', 'seconds', 'stillImageURL', 'authtoken', 'autoplay', 'height', 'playerBaseURL',
+                    'playerName', 'width', 'watermarkURL', 'videoType', 'videoMetadata', 'embedded', 'type',
+                    'typeCode', 'lastActivityDate']
 
 
 # Define a class for content-related list, dictionaries and other utilities
@@ -69,7 +76,8 @@ class Content:
         'people': FieldLists.people_fields,
         'place': FieldLists.place_fields,
         'security_group': FieldLists.security_group_fields,
-        'space': FieldLists.place_fields
+        'space': FieldLists.place_fields,
+        'video': FieldLists.video_fields
     }
 
     # Map security group query URI identifiers to datasets

@@ -11,7 +11,7 @@ version = khorosjx.utils.version.__version__
 
 setuptools.setup(
     name="khorosjx",
-    version="2.1.0",
+    version=version,
     author="Jeff Shurtliff",
     author_email="jeff.shurtliff@rsa.com",
     description="Useful tools and utilities to assist in managing a Khoros JX (formerly Jive-x) or Jive-n community.",
