@@ -35,7 +35,8 @@ class FieldLists:
                     'hours', 'minutes', 'seconds', 'stillImageURL', 'authtoken', 'autoplay', 'height', 'playerBaseURL',
                     'playerName', 'width', 'watermarkURL', 'videoType', 'videoMetadata', 'embedded', 'type',
                     'typeCode', 'lastActivityDate']
-
+    publications = ['id', 'published', 'updated', 'subscriptions', 'name', 'author', 'displayOrder', 'subscriberCount',
+                    'associationCount', 'receiveEmails', 'subscribersType', 'beingProcessed', 'type', 'typeCode']
 
 # Define a class for content-related list, dictionaries and other utilities
 class Content:

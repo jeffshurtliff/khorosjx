@@ -4,6 +4,30 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.3.0
+******
+**Release Date: TBD**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:mod:`khorosjx.news` module with the following functions:
+    * :py:func:`khorosjx.news.verify_core_connection`
+    * :py:func:`khorosjx.news.get_publications`
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the ``publications`` list to the :py:class:`khorosjx.utils.classes.FieldLists` class.
+
+|
+
+******
 v2.2.0
 ******
 **Release Date: 2020-01-22**
