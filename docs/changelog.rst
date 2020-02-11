@@ -23,7 +23,8 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khorosjx.news.get_subscription_data`
     * :py:func:`khorosjx.news.get_subscription_ids`
     * :py:func:`khorosjx.news.get_subscriber_groups`
-    * :py:func:`khorosjx.news.get_subscribers` (Unfinished)
+    * :py:func:`khorosjx.news.get_subscribers`
+    * :py:func:`khorosjx.news.rebuild_publication`
 
 Supporting Modules
 ------------------
@@ -42,12 +43,26 @@ Changes to the :doc:`primary modules <primary-modules>`.
 * Added the :py:mod:`khorosjx.news` module to the ``__all__`` special variable in the primary :py:mod:`khorosjx` module.
 * Updated the :py:func:`khorosjx.init_module` function to be compatible with the :py:mod:`khorosjx.news` module.
 * Updated the :py:func:`khorosjx.core.get_data` function to include the ``all_fields`` argument. (``False`` by default)
+* Referenced the :py:exc:`khorosjx.errors.exceptions.POSTRequestError` exception class in the docstring for the
+  :py:func:`khorosjx.core.post_request_with_retries` function.
+* Referenced the :py:exc:`khorosjx.errors.exceptions.PUTRequestError` exception class in the docstring for the
+  :py:func:`khorosjx.core.put_request_with_retries` function.
 
 Supporting Modules
 ------------------
 Changes to the :doc:`supporting modules <supporting-modules>`.
 
 * Added a ``DeprecationWarning`` to the :py:func:`khorosjx.utils.core_utils.convert_dict_list_to_dataframe` function.
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Changed the ``json_payload`` type to ``dict`` in the docstring for the
+  :py:func:`khorosjx.core.put_request_with_retries` and :py:func:`khorosjx.core.post_request_with_retries` functions.
 
 |
 

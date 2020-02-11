@@ -401,9 +401,9 @@ def post_request_with_retries(url, json_payload):
     :param url: The URI to be queried
     :type url: str
     :param json_payload: The payload for the POST request in JSON format
-    :type json_payload: json
+    :type json_payload: dict
     :returns: The API response from the POST request
-    :raises: ValueError, APIConnectionError
+    :raises: ValueError, APIConnectionError, POSTRequestError
     """
     response = __api_request_with_payload(url, json_payload, 'post')
     return response
@@ -416,9 +416,9 @@ def put_request_with_retries(url, json_payload):
     :param url: The URI to be queried
     :type url: str
     :param json_payload: The payload for the PUT request in JSON format
-    :type json_payload: json
+    :type json_payload: dict
     :returns: The API response from the PUT request
-    :raises: ValueError, APIConnectionError
+    :raises: ValueError, APIConnectionError, PUTRequestError
     """
     response = __api_request_with_payload(url, json_payload, 'put')
     return response
