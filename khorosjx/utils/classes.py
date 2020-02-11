@@ -5,7 +5,7 @@
 :Usage:          ``from khorosjx.utils.classes import Users``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  22 Jan 2020
+:Modified Date:  10 Feb 2020
 """
 
 
@@ -26,8 +26,13 @@ class FieldLists:
                     'description', 'displayName', 'name', 'parent', 'status', 'viewCount', 'placeTopics', 'childCount',
                     'visibleToExternalContributors',  'locale', 'inheritsAppliedEntitlements', 'type', 'typeCode',
                     'resources.html.ref']
+    publication_fields = ['id', 'published', 'updated', 'subscriptions', 'name', 'author', 'displayOrder',
+                          'subscriberCount', 'associationCount', 'receiveEmails', 'subscribersType', 'beingProcessed',
+                          'type', 'typeCode']
     security_group_fields = ['id', 'published', 'updated', 'administratorCount', 'memberCount', 'name',
                              'description', 'federated']
+    subscription_fields = ['id', 'published', 'updated', 'name', 'subscriberCount', 'subscribers', 'associations',
+                           'type', 'typeCode']
     video_fields = ['id', 'followerCount', 'followed', 'likeCount', 'published', 'tags', 'updated', 'contentID',
                     'author', 'content', 'parent', 'contentVideos', 'favoriteCount', 'replyCount', 'status',
                     'subject', 'viewCount', 'visibleToExternalContributors', 'parentVisible', 'parentContentVisible',
@@ -35,8 +40,7 @@ class FieldLists:
                     'hours', 'minutes', 'seconds', 'stillImageURL', 'authtoken', 'autoplay', 'height', 'playerBaseURL',
                     'playerName', 'width', 'watermarkURL', 'videoType', 'videoMetadata', 'embedded', 'type',
                     'typeCode', 'lastActivityDate']
-    publications = ['id', 'published', 'updated', 'subscriptions', 'name', 'author', 'displayOrder', 'subscriberCount',
-                    'associationCount', 'receiveEmails', 'subscribersType', 'beingProcessed', 'type', 'typeCode']
+
 
 # Define a class for content-related list, dictionaries and other utilities
 class Content:
@@ -76,8 +80,10 @@ class Content:
         'group_members': FieldLists.people_fields,
         'people': FieldLists.people_fields,
         'place': FieldLists.place_fields,
+        'publications': FieldLists.publication_fields,
         'security_group': FieldLists.security_group_fields,
         'space': FieldLists.place_fields,
+        'subscriptions': FieldLists.subscription_fields,
         'video': FieldLists.video_fields
     }
 
@@ -128,16 +134,16 @@ class Content:
         'pages': 'page',                                        # Not yet supported
         'v3/people': 'people',
         'v3/places': 'place',
-        'securityGroups': '__get_security_group_dataset',
         'placeTemplateCategories': 'place_template_category',   # Not yet supported
         'placeTemplates': 'place_template',                     # Not yet supported
         'placeTopics': 'place_topic',                           # Not yet supported
         'profileImages': 'profile_image',                       # Not yet supported
-        'publications': 'publication',                          # Not yet supported
+        'publications': 'publication',
         'questions': 'question',                                # Not yet supported
         'rsvp': 'rsvp',                                         # Not yet supported
         'search': '__get_search_dataset',                       # Not yet supported
         'v3/sections': 'section',                               # Not yet supported
+        'securityGroups': '__get_security_group_dataset',
         'shares': 'share',                                      # Not yet supported
         'slides': 'slide',                                      # Not yet supported
         'supportCenter': '__get_support_center_dataset',        # Not yet supported

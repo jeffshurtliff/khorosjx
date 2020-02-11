@@ -278,6 +278,21 @@ class HelperFunctionNotFoundError(KhorosJXError, FileNotFoundError):
         super().__init__(*args)
 
 
+# ---------------
+# News Exceptions
+# ---------------
+
+
+class SubscriptionNotFoundError(KhorosJXError):
+    """This exception is used when a subscription referenced in a function does not exist."""
+
+    def __init__(self, *args, **kwargs):
+        default_msg = "The Subscription ID could not be found."
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args)
+
+
 # -----------------
 # Spaces Exceptions
 # -----------------

@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 """
-:Module:        khorosjx.utils.core_utils
-:Synopsis:      Useful tools and utilities to assist in managing a Khoros JX (formerly Jive-x) or Jive-n community
-:Usage:         ``import khorosjx``
-:Example:       ``timestamp = get_timestamp(time_format="delimited")``
-:Created By:    Jeff Shurtliff
-:Last Modified: Jeff Shurtliff
-:Modified Date: 18 Dec 2019
+:Module:            khorosjx.utils.core_utils
+:Synopsis:          Useful tools and utilities to assist in managing a Khoros JX (formerly Jive-x) or Jive-n community
+:Usage:             ``import khorosjx``
+:Example:           ``timestamp = khorosjx.utils.core_utils.get_timestamp(time_format="delimited")``
+:Created By:        Jeff Shurtliff
+:Last Modified:     Jeff Shurtliff
+:Modified Date:      Dec 2019
 """
 
 import sys
 import json
+import warnings
 from datetime import datetime
 
-import pandas as pd
 from dateutil import tz
 
 from . import df_utils
@@ -114,7 +114,6 @@ def convert_dict_to_json(data):
 
 
 # Define function to convert a list of dictionaries to a pandas dataframe
-# TODO: Add deprecation warning to this function
 def convert_dict_list_to_dataframe(dict_list, column_names=[]):
     """This function converts a list of dictionaries into a pandas dataframe.
 
@@ -124,6 +123,11 @@ def convert_dict_list_to_dataframe(dict_list, column_names=[]):
     :type column_names: list
     :returns: A pandas dataframe of the data
     """
+    warnings.warn(
+        "The khorosjx.utils.core_utils.convert_dict_list_to_dataframe function is deprecated and will be removed "
+        "in v3.0.0. Use khorosjx.utils.df_utils.convert_dict_list_to_dataframe instead.",
+        DeprecationWarning
+    )
     # Leverage the khorosjx.utils.df_utils.convert_dict_list_to_dataframe function to get and return the dataframe
     dataframe = df_utils.convert_dict_list_to_dataframe(dict_list, column_names)
     return dataframe

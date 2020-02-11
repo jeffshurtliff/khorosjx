@@ -13,7 +13,7 @@ from . import core, errors
 from .utils import version
 
 # Define all modules that will be imported with the "import *" method
-__all__ = ['core', 'admin', 'content', 'groups', 'places', 'spaces', 'users']
+__all__ = ['core', 'admin', 'content', 'groups', 'news', 'places', 'spaces', 'users']
 
 # Define the package version by pulling from the khorosjx.utils.version module
 __version__ = version.get_full_version()
@@ -29,7 +29,7 @@ def init_module(*args):
     :raises: ModuleNotFoundError, KhorosJXError, InvalidKhorosJXModuleError
     """
     # Get any arguments supplied in the function
-    import_all = ['admin', 'content', 'groups', 'places', 'users']
+    import_all = ['admin', 'content', 'groups', 'news', 'places', 'users']
     if 'all' in args:
         arguments = import_all
     else:
@@ -67,6 +67,8 @@ def init_module(*args):
             from . import groups
         elif mod_entry == "ideas":
             from .content import ideas
+        elif mod_entry == "news":
+            from . import news
         elif mod_entry == "places":
             from . import places
         elif mod_entry == "places.spaces":

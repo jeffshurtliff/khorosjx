@@ -284,7 +284,7 @@ def get_query_url(pre_endpoint, asset_id="", post_endpoint=""):
 
 
 # Define function to perform a general GET request
-def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_exceptions=False):
+def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_exceptions=False, all_fields=False):
     """This function returns data for a specific API endpoint.
 
     :param endpoint: The API endpoint against which to request data (e.g. ``people``, ``contents``, etc.)
@@ -297,6 +297,8 @@ def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_
     :type return_json: bool
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
+    :param all_fields: Determines whether or not the ``fields=@all`` query should be included (Default: ``False``)
+    :type all_fields: bool
     :returns: The API response either as a requests response or in JSON format depending on the ``return_json`` value
     :raises: GETRequestError
     """
@@ -339,6 +341,10 @@ def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_
                                           "The function will attempt to use the default 'id' identifier."
         eprint(unrecognized_endpoint_retry_msg)
         query_url = f"{endpoint_url}/{lookup_value}"
+
+    # Append the fields=@all query if requested
+    if all_fields:
+        query_url = f"{query_url}?fields=@all"
 
     # Perform the GET request with retries to account for any timeouts
     response = get_request_with_retries(query_url)

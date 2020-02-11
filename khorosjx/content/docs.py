@@ -296,5 +296,5 @@ def delete_document(lookup_value, lookup_type='content_id', return_json=False):
         url = get_url_for_id(lookup_value)
         lookup_value = base.get_content_id(url)
     content_uri = f"{base_url}/contents/{lookup_value}"
-    response = core.delete(content_uri)
+    response = core.delete(content_uri, return_json=return_json)
     return response

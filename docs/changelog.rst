@@ -17,13 +17,37 @@ Additions to the :doc:`primary modules <primary-modules>`.
 
 * Added the :py:mod:`khorosjx.news` module with the following functions:
     * :py:func:`khorosjx.news.verify_core_connection`
-    * :py:func:`khorosjx.news.get_publications`
+    * :py:func:`khorosjx.news.get_all_publications`
+    * :py:func:`khorosjx.news.get_publication`
+    * :py:func:`khorosjx.news.delete_publication`
+    * :py:func:`khorosjx.news.get_subscription_data`
+    * :py:func:`khorosjx.news.get_subscription_ids`
+    * :py:func:`khorosjx.news.get_subscriber_groups`
+    * :py:func:`khorosjx.news.get_subscribers` (Unfinished)
 
 Supporting Modules
 ------------------
 Additions to the :doc:`supporting modules <supporting-modules>`.
 
 * Added the ``publications`` list to the :py:class:`khorosjx.utils.classes.FieldLists` class.
+* Added the :py:exc:`khorosjx.errors.exceptions.SubscriptionNotFoundError` exception class.
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:mod:`khorosjx.news` module to the ``__all__`` special variable in the primary :py:mod:`khorosjx` module.
+* Updated the :py:func:`khorosjx.init_module` function to be compatible with the :py:mod:`khorosjx.news` module.
+* Updated the :py:func:`khorosjx.core.get_data` function to include the ``all_fields`` argument. (``False`` by default)
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Added a ``DeprecationWarning`` to the :py:func:`khorosjx.utils.core_utils.convert_dict_list_to_dataframe` function.
 
 |
 

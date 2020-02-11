@@ -15,6 +15,7 @@ which are listed below.
     * `Threads Module (khorosjx.content.threads)`_
     * `Videos Module (khorosjx.content.videos)`_
 * `Groups Module (khorosjx.groups)`_
+* `News Module (khorosjx.news)`_
 * `Places Module (khorosjx.places)`_
     * `Base Places Module (khorosjx.places.base)`_
     * `Blogs Module (khorosjx.places.blogs)`_
@@ -145,6 +146,17 @@ This module contains functions for working with security groups (and eventually 
 groups) such as obtaining and managing group membership.
 
 .. automodule:: khorosjx.groups
+   :members:
+
+:doc:`Return to Top <primary-modules>`
+
+|
+
+News Module (khorosjx.news)
+===========================
+This module contains functions for working with news streams, including publications and subscriptions.
+
+.. automodule:: khorosjx.news
    :members:
 
 :doc:`Return to Top <primary-modules>`
