@@ -68,6 +68,13 @@ Fixes to the :doc:`primary modules <primary-modules>`.
 * Changed the ``json_payload`` type to ``dict`` in the docstring for the
   :py:func:`khorosjx.core.put_request_with_retries` and :py:func:`khorosjx.core.post_request_with_retries` functions.
 
+Removed
+=======
+
+General
+-------
+* Removed the ``MANIFEST.in`` file as the ``VERSION`` file is no longer used.
+
 |
 
 ******
