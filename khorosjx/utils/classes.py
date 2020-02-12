@@ -31,6 +31,7 @@ class FieldLists:
                           'type', 'typeCode']
     security_group_fields = ['id', 'published', 'updated', 'administratorCount', 'memberCount', 'name',
                              'description', 'federated']
+    stream_fields = ['id', 'name', 'published', 'receiveEmails', 'source', 'updated', 'type']
     subscription_fields = ['id', 'published', 'updated', 'name', 'subscriberCount', 'subscribers', 'associations',
                            'type', 'typeCode']
     video_fields = ['id', 'followerCount', 'followed', 'likeCount', 'published', 'tags', 'updated', 'contentID',
@@ -80,9 +81,10 @@ class Content:
         'group_members': FieldLists.people_fields,
         'people': FieldLists.people_fields,
         'place': FieldLists.place_fields,
-        'publications': FieldLists.publication_fields,
+        'publication': FieldLists.publication_fields,
         'security_group': FieldLists.security_group_fields,
         'space': FieldLists.place_fields,
+        'stream': FieldLists.stream_fields,
         'subscriptions': FieldLists.subscription_fields,
         'video': FieldLists.video_fields
     }

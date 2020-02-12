@@ -63,14 +63,14 @@ def get_all_publications(return_fields=[], return_type='list', ignore_exceptions
     # Perform the first query to get up to the first 100 groups
     query = f'{base_url}/publications'
     start_index = 0
-    publications = core.get_paginated_results(query, 'publications', start_index, return_fields=return_fields,
+    publications = core.get_paginated_results(query, 'publication', start_index, return_fields=return_fields,
                                               ignore_exceptions=ignore_exceptions)
     all_publications = core_utils.add_to_master_list(publications, all_publications)
 
     # Continue querying for groups until none are returned
     while len(publications) > 0:
         start_index += 100
-        publications = core.get_paginated_results(query, 'publications', start_index, return_fields=return_fields,
+        publications = core.get_paginated_results(query, 'publication', start_index, return_fields=return_fields,
                                                   ignore_exceptions=ignore_exceptions)
         all_publications = core_utils.add_to_master_list(publications, all_publications)
 
@@ -96,10 +96,10 @@ def get_publication(pub_id, return_fields=[], ignore_exceptions=False):
     verify_core_connection()
 
     # Retrieve the publication
-    publication = core.get_data('publications', pub_id, return_json=True, all_fields=True)
+    publication = core.get_data('publications', pub_id, return_json=False, all_fields=True)
     successful_response = errors.handlers.check_api_response(publication, ignore_exceptions=ignore_exceptions)
     if successful_response:
-        publication = core.get_fields_from_api_response(publication, 'publication', return_fields)
+        publication = core.get_fields_from_api_response(publication.json(), 'publication', return_fields)
     return publication
 
 
@@ -292,4 +292,63 @@ def update_publication(publication_id, payload):
     return response
 
 
-# TODO: Add functions relating to the /streams and /people/{id}/streams endpoints
+def get_stream(stream_id, return_fields=[], ignore_exceptions=False):
+    """This function retrieves the information on a single publication when supplied its ID.
+
+    :param stream_id: The ID of the stream to retrieve
+    :type stream_id: int, str
+    :param return_fields: Specific fields to return if not all of the default fields are needed (Optional)
+    :type return_fields: list
+    :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
+    :type ignore_exceptions: bool
+    :returns: A dictionary with the data for the publication
+    :raises: InvalidDatasetError, GETRequestError
+    """
+    # Verify that the core connection has been established
+    verify_core_connection()
+
+    # Retrieve the publication
+    stream = core.get_data('streams', stream_id, return_json=False, all_fields=True)
+    successful_response = errors.handlers.check_api_response(stream, ignore_exceptions=ignore_exceptions)
+    if successful_response:
+        stream = core.get_fields_from_api_response(stream.json(), 'stream', return_fields)
+    return stream
+
+
+def update_stream(stream_id, payload):
+    """This function updates a stream using the supplied JSON payload.
+
+    :param stream_id: The ID of the stream to be updated
+    :type stream_id: int, str
+    :param payload: The JSON payload with which the stream will be updated
+    :type payload: dict
+    :returns: The response from the API PUT request
+    """
+    # Verify that the core connection has been established
+    verify_core_connection()
+
+    # Perform the PUT request to update the publication
+    query = f"{base_url}/streams/{stream_id}"
+    response = core.put_request_with_retries(query, payload)
+    return response
+
+
+def delete_stream(stream_id, return_json=False):
+    """This function deletes a stream when given its ID.
+
+    :param stream_id: The ID of the stream
+    :type stream_id: int, str
+    :param return_json: Determines if the API response should be returned in JSON format (``False`` by default)
+    :type return_json: bool
+    :returns: The API response (optionally in JSON format)
+    """
+    # Verify that the core connection has been established
+    verify_core_connection()
+
+    # Delete the publication
+    stream_uri = f"{base_url}/streams/{stream_id}"
+    response = core.delete(stream_uri, return_json=return_json)
+    return response
+
+
+# TODO: Add functions relating to the /people/{id}/streams endpoint

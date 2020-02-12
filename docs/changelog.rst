@@ -6,7 +6,7 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ******
 v2.3.0
 ******
-**Release Date: TBD**
+**Release Date: 2020-02-11**
 
 Added
 =====
@@ -25,12 +25,16 @@ Additions to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khorosjx.news.get_subscriber_groups`
     * :py:func:`khorosjx.news.get_subscribers`
     * :py:func:`khorosjx.news.rebuild_publication`
+    * :py:func:`khorosjx.news.get_stream`
+    * :py:func:`khorosjx.news.update_stream`
+    * :py:func:`khorosjx.news.delete_stream`
 
 Supporting Modules
 ------------------
 Additions to the :doc:`supporting modules <supporting-modules>`.
 
-* Added the ``publications`` list to the :py:class:`khorosjx.utils.classes.FieldLists` class.
+* Added the ``publication_fields``, ``subscription_fields`` and ``stream_fields`` lists to the
+  :py:class:`khorosjx.utils.classes.FieldLists` class.
 * Added the :py:exc:`khorosjx.errors.exceptions.SubscriptionNotFoundError` exception class.
 
 Changed
