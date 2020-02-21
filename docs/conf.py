@@ -139,7 +139,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'khorosjx.tex', 'KhorosJX Python Library Documentation',
+    (master_doc, 'khorosjx.tex', 'Khoros JX Python Library Documentation',
      'Jeff Shurtliff', 'manual'),
 ]
 
@@ -149,7 +149,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'khorosjx', 'KhorosJX Python Library Documentation',
+    (master_doc, 'khorosjx', 'Khoros JX Python Library Documentation',
      [author], 1)
 ]
 
@@ -160,7 +160,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'khorosjx', 'KhorosJX Python Library Documentation',
+    (master_doc, 'khorosjx', 'Khoros JX Python Library Documentation',
      author, 'khorosjx', 'Collection of core functions and tools to work with the Jive Core API v3',
      'Miscellaneous'),
 ]
