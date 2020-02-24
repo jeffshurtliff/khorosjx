@@ -16,8 +16,7 @@ General
 * Adjusted the ``python_requires`` value in ``setup.py`` to reject version 3.8.1 and above as the ``numpy`` and
   ``pandas`` packages do not currently support that version.
 * Upgraded the `bleach <https://bleach.readthedocs.io/>`_ package to version ``3.1.1`` to mitigate a security alert
-  for a `mutation XSS <https://cure53.de/fp170.pdf>`_ vulnerability (Reference:
-  `https://bugzilla.mozilla.org/show_bug.cgi?id=1615315 <https://bugzilla.mozilla.org/show_bug.cgi?id=1615315>`_) and
+  for a `mutation XSS <https://github.com/mozilla/bleach/security/advisories/GHSA-q65m-pv3f-wr5r>`_ vulnerability and
   updated the ``requirements.txt`` file accordingly.
 
 |
