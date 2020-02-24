@@ -4,6 +4,25 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.3.1
+******
+**Release Date: 2020-02-24**
+
+Changed
+=======
+
+General
+-------
+* Adjusted the ``python_requires`` value in ``setup.py`` to reject version 3.8.1 and above as the ``numpy`` and
+  ``pandas`` packages do not currently support that version.
+* Upgraded the `bleach <https://bleach.readthedocs.io/>`_ package to version ``3.1.1`` to mitigate a security alert
+  for a `mutation XSS <https://cure53.de/fp170.pdf>`_ vulnerability (Reference:
+  `https://bugzilla.mozilla.org/show_bug.cgi?id=1615315 <https://bugzilla.mozilla.org/show_bug.cgi?id=1615315>`_) and
+  updated the ``requirements.txt`` file accordingly.
+
+|
+
+******
 v2.3.0
 ******
 **Release Date: 2020-02-11**

@@ -6,10 +6,10 @@
 :Example:           ``__version__ = version.get_full_version()``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     10 Feb 2020
+:Modified Date:     24 Feb 2020
 """
 
-__version__ = "2.3.0"
+__version__ = "2.3.1"
 
 
 def get_full_version():
