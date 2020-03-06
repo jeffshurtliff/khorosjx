@@ -6,11 +6,12 @@
 :Example:           ``content_id = ideas.get_content_id(url)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     05 Jan 2020
+:Modified Date:     04 Mar 2020
 """
 
 from .. import core
 from . import base
+from ..utils import core_utils
 
 
 # Define function to verify the connection in the core module
@@ -53,3 +54,27 @@ def get_content_id(url):
     """
     content_id = base.get_content_id(url, 'idea')
     return content_id
+
+
+def get_ideas_for_space(browse_id):
+    # Verify that the core connection has been established
+    verify_core_connection()
+
+    # Initialize the master list of ideas
+    all_ideas = []
+
+    # Perform the first query to get up to the first 100 ideas
+    start_index = 0
+    endpoint = f"places/{browse_id}/contents"
+    query_string = "filter=type(idea)"
+    ideas = base.get_paginated_content(endpoint, query_string, start_index, 'idea', all_fields=True,
+                                       ignore_exceptions=True)
+    all_ideas = core_utils.add_to_master_list(ideas, all_ideas)
+
+    # Continue querying for groups until none are returned
+    while len(ideas) > 0:
+        start_index += 100
+        ideas = base.get_paginated_content(endpoint, query_string, start_index, 'idea', all_fields=True,
+                                        ignore_exceptions=True)
+        all_ideas = core_utils.add_to_master_list(ideas, all_ideas)
+    

@@ -4,6 +4,42 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.3.2
+******
+**Release Date: TBD**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khorosjx.content.ideas.get_ideas_for_space` function.
+* Added the ``idea_fields`` list to the :py:class:`khorosjx.utils.classes.FieldLists` class.
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Introduced the ``all_fields`` argument into the 
+  :py:func:`khorosjx.content.base.get_paginated_content` function.
+* Updated the ``datasets`` dictionary in the :py:class:`khorosjx.utils.classes.Content` class
+  to include the ``idea`` key value pair.
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Fixed a minor syntax issue in the :py:func:`khorosjx.content.base.get_content_id` function.
+
+******
 v2.3.1
 ******
 **Release Date: 2020-02-24**

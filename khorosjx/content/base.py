@@ -6,7 +6,7 @@
 :Example:           ``content_id = content_core.get_content_id(url, 'document')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     22 Jan 2020
+:Modified Date:     04 Mar 2020
 """
 
 import re
@@ -74,7 +74,7 @@ def get_content_id(url, content_type="document"):
     elif content_type == "blog post":
         raise ValueError(f"The get_content_id function does not currently support blog posts.")
     else:
-        item_id = re.sub('^.*/', '', url)
+        item_id = re.sub(r'^.*/', '', url)
 
     # Construct the appropriate query URL
     if content_type in Content.content_types:
@@ -143,7 +143,7 @@ def __trim_attachments_info(_attachment_info):
     return _attachment_info
 
 
-def get_paginated_content(endpoint, query_string="", start_index=0, dataset="",
+def get_paginated_content(endpoint, query_string="", start_index=0, dataset="", all_fields=False,
                           return_fields=[], ignore_exceptions=False):
     """This function returns paginated content information. (Up to 100 records at a time)
 
@@ -155,6 +155,8 @@ def get_paginated_content(endpoint, query_string="", start_index=0, dataset="",
     :type start_index: int, str
     :param dataset: Defines the type of data returned in the API response (e.g. ``security_group``, ``people``, etc.)
     :type dataset: str
+    :param all_fields: Determines if the ``fields=@all`` parameter should be passed in the query
+    :type all_fields: bool
     :param return_fields: Specific fields to return if not all of the default fields are needed (Optional)
     :type return_fields: list
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
@@ -164,11 +166,18 @@ def get_paginated_content(endpoint, query_string="", start_index=0, dataset="",
     # Initialize the empty list for the group information
     content = []
 
+    # Identify if all fields should be captured
+    all_fields_options = {True: 'fields=@all&', False: ''}
+    if 'fields=@all' in query_string:
+        all_fields = False
+    all_fields = all_fields_options.get(all_fields)
+
     # Construct the API query
     start_index_delimiter = {True: '?', False: '&'}
     query_uri = f"{base_url}/{endpoint.replace('?', '')}?{query_string.replace('?', '')}"
     empty_query = True if query_string == "" else False
-    query_uri = f"{query_uri}{start_index_delimiter.get(empty_query)}startIndex={start_index}&count=100"
+    query_uri = f"{query_uri}{start_index_delimiter.get(empty_query)}" + \
+                f"{all_fields}startIndex={start_index}&count=100"
 
     # Perform the API query to retrieve the group information
     response = core.get_request_with_retries(query_uri)

@@ -5,7 +5,7 @@
 :Usage:          ``from khorosjx.utils.classes import Users``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  10 Feb 2020
+:Modified Date:  06 Mar 2020
 """
 
 
@@ -18,6 +18,10 @@ class FieldLists:
                        'parentVisible', 'parentContentVisible', 'restrictComments', 'editDisabled',
                        'version', 'attachments', 'helpfulCount', 'unhelpfulCount', 'type', 'typeCode',
                        'lastActivityDate']
+    idea_fields = ['id', 'subject', 'followerCount', 'replyCount', 'favoriteCount', 'viewCount', 'voteCount',
+                   'commentCount', 'published', 'updated', 'tags', 'contentID', 'author.id', 'author.name.formatted',
+                   'author.email.value', 'content.text', 'parent', 'status', 'visibleToExternalContributors',
+                   'type','typeCode','lastActivityDate','score','stage','authorshipPolicy']
     people_fields = ['id', 'followerCount', 'published', 'updated', 'displayName', 'mentionName',
                      'name.formatted', 'email.value', 'followingCount', 'directReportCount',
                      'initialLogin', 'jive.lastAuthenticated', 'jive.externalIdentities.identityType',
@@ -79,6 +83,7 @@ class Content:
         'document': FieldLists.document_fields,
         'group_admins': FieldLists.people_fields,
         'group_members': FieldLists.people_fields,
+        'idea': FieldLists.idea_fields,
         'people': FieldLists.people_fields,
         'place': FieldLists.place_fields,
         'publication': FieldLists.publication_fields,
