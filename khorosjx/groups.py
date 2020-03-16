@@ -9,14 +9,12 @@
 :Modified Date:  22 Jan 2020
 """
 
-import re
-
 import requests
 
 from . import core, users, errors
-from .utils import core_utils
 from .utils.classes import Groups
 from .utils.core_utils import eprint
+from .utils import core_utils, df_utils
 
 
 # Define function to verify the connection in the core module
@@ -143,7 +141,7 @@ def get_all_groups(return_fields=[], return_type='list', ignore_exceptions=False
 
     # Return the data as a master list of group dictionaries or a pandas dataframe
     if return_type == "dataframe":
-        all_groups = core_utils.convert_dict_list_to_dataframe(all_groups)
+        all_groups = df_utils.convert_dict_list_to_dataframe(all_groups)
     return all_groups
 
 

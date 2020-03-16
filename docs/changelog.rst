@@ -6,7 +6,7 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ******
 v2.3.2
 ******
-**Release Date: TBD**
+**Release Date: 2020-03-16**
 
 Added
 =====
@@ -29,6 +29,10 @@ Changes to the :doc:`primary modules <primary-modules>`.
   :py:func:`khorosjx.content.base.get_paginated_content` function.
 * Updated the ``datasets`` dictionary in the :py:class:`khorosjx.utils.classes.Content` class
   to include the ``idea`` key value pair.
+* Updated the :py:func:`khorosjx.groups.__get_paginated_groups` function to use the
+  :py:func:`khorosjx.utils.df_utils.convert_dict_list_to_dataframe` function instead of the deprecated
+  :py:func:`khorosjx.utils.core_utils.convert_dict_list_to_dataframe` function.
+* Removed obsolete ``import re`` statement from the :py:func:`khorosjx.groups.__get_paginated_groups` function.
 
 Fixed
 =====
