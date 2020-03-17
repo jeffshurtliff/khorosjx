@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-:Package:        khorosjx
-:Synopsis:       This package includes custom exceptions and a function to call them with specific error messages
-:Usage:          ``import khorosjx``
-:Example:        ``khorosjx.core.connect(base_url, credentials)``
-:Created By:     Jeff Shurtliff
-:Last Modified:  Jeff Shurtliff
-:Modified Date:  16 Jan 2020
+:Package:           khorosjx
+:Synopsis:          This package includes custom exceptions and a function to call them with specific error messages
+:Usage:             ``import khorosjx``
+:Example:           ``khorosjx.init_helper('/home/user/jxhelper.yml')``
+:Created By:        Jeff Shurtliff
+:Last Modified:     Jeff Shurtliff
+:Modified Date:     16 Mar 2020
 """
 
 from . import core, errors
@@ -124,3 +124,7 @@ def init_helper(file_path, file_type='yaml'):
     if len(helper_settings['modules_to_import']) > 0:
         init_module(helper_settings['modules_to_import'])
     return
+
+
+# Display a warning if the running version is not the latest stable version found on PyPI
+version.warn_when_not_latest()
