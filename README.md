@@ -132,7 +132,7 @@ The following packages are leveraged within the khorosjx package:
 * requests 2.22.0
 * urllib3 1.25.7
 
-The full requirements list can be foune in the [requirements.txt](https://github.com/jeffshurtliff/khorosjx/blob/master/requirements.txt) file.
+The full requirements list can be found in the [requirements.txt](https://github.com/jeffshurtliff/khorosjx/blob/master/requirements.txt) file.
 
 ## Documentation
 The documentation is located here: [https://khorosjx.readthedocs.io/en/latest/](https://khorosjx.readthedocs.io/en/latest/)
