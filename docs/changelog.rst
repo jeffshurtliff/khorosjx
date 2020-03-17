@@ -4,7 +4,7 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
-v2.3.2
+v2.4.0
 ******
 **Release Date: 2020-03-16**
 
@@ -17,6 +17,15 @@ Additions to the :doc:`primary modules <primary-modules>`.
 
 * Added the :py:func:`khorosjx.content.ideas.get_ideas_for_space` function.
 * Added the ``idea_fields`` list to the :py:class:`khorosjx.utils.classes.FieldLists` class.
+* Added the :py:func:`khorosjx.utils.version.warn_when_not_latest` function call in the main :py:mod:`khorosjx` module.
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:func:`khorosjx.utils.version.get_latest_stable` function.
+* Added the :py:func:`khorosjx.utils.version.latest_version` function.
+* Added the :py:func:`khorosjx.utils.version.warn_when_not_latest` function.
 
 Changed
 =======
@@ -42,6 +51,14 @@ Primary Modules
 Fixes to the :doc:`primary modules <primary-modules>`.
 
 * Fixed a minor syntax issue in the :py:func:`khorosjx.content.base.get_content_id` function.
+
+Documentation
+-------------
+Changes to the documentation.
+
+* Fixed a typo in the `README.md <https://github.com/jeffshurtliff/khorosjx/blob/master/README.md>`_ file.
+
+|
 
 ******
 v2.3.1
