@@ -105,7 +105,7 @@ This module contains nearly all classes utilized by other modules within the lib
 
 Errors Module (khorosjx.errors)
 -------------------------------
-This module contains all of the exception classes and error handling functions leveraged throughout hte library.
+This module contains all of the exception classes and error handling functions leveraged throughout the library.
 
 .. automodule:: khorosjx.errors
    :members:
