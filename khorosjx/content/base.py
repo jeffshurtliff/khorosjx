@@ -107,6 +107,10 @@ def __convert_lookup_value(_lookup_value, _lookup_type, _content_type="document"
     :returns: The properly formatted lookup value
     :raises: LookupMismatchError, InvalidLookupTypeError, CurrentlyUnsupportedError
     """
+    # Verify that the core connection has been established
+    verify_core_connection()
+
+    # Convert the lookup value as needed
     if _content_type == "document":
         # Get the Content ID if not supplied
         if _lookup_type == "doc_id" or _lookup_type == "url":

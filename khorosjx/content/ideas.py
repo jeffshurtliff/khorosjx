@@ -6,7 +6,7 @@
 :Example:           ``content_id = ideas.get_content_id(url)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     16 Mar 2020
+:Modified Date:     23 Mar 2020
 """
 
 from .. import core
@@ -57,6 +57,16 @@ def get_content_id(url):
 
 
 def get_ideas_for_space(browse_id, return_type='list', ignore_exceptions=False):
+    """This function retrieves ideas for a given space.
+
+    :param browse_id: The Browse ID of the space to be queried
+    :type browse_id: str, int
+    :param return_type: Determines if the data should be returned as a ``list`` (default) or a ``dataframe``
+    :type return_type: str
+    :param ignore_exceptions: Determines if exceptions encountered should be ignored (``False`` by default)
+    :type  ignore_exceptions: bool
+    :returns: The ideas for the given space in a list or a pandas dataframe
+    """
     # Verify that the core connection has been established
     verify_core_connection()
 

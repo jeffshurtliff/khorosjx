@@ -4,6 +4,24 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.4.1
+******
+**Release Date: 2020-03-23**
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the ``verify_core_connection()`` function call to the :py:func:`khorosjx.content.base.__convert_lookup_value`
+  function to resolve the ``NameError: name 'base_url' is not defined`` error.
+* Added missing docstrings to the :py:func:`khorosjx.content.ideas.get_ideas_for_space` function.
+
+|
+
+******
 v2.4.0
 ******
 **Release Date: 2020-03-16**
