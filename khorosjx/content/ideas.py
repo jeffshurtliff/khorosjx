@@ -6,7 +6,7 @@
 :Example:           ``content_id = ideas.get_content_id(url)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     23 Mar 2020
+:Modified Date:     24 Mar 2020
 """
 
 from .. import core
@@ -14,32 +14,34 @@ from . import base
 from ..utils import core_utils, df_utils
 
 
-# Define function to verify the connection in the core module
 def verify_core_connection():
     """This function verifies that the core connection information (Base URL and API credentials) has been defined.
 
     :returns: None
-    :raises: :py:exc:`NameError`, KhorosJXError, NoCredentialsError
+    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    def __get_info():
-        """This function initializes and defines the global variables for the connection information.
-
-        :returns: None
-        :raises: :py:exc:`NameError`, KhorosJXError, NoCredentialsError
-        """
-        # Initialize global variables
-        global base_url
-        global api_credentials
-
-        # Define the global variables at this module level
-        base_url, api_credentials = core.get_connection_info()
-        return
-
     try:
         base_url
         api_credentials
     except NameError:
-        __get_info()
+        retrieve_connection_info()
+    return
+
+
+def retrieve_connection_info():
+    """This function initializes and defines the global variables for the connection information.
+
+    :returns: None
+    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
+    """
+    # Initialize global variables
+    global base_url
+    global api_credentials
+
+    # Define the global variables at this module level
+    base_url, api_credentials = core.get_connection_info()
     return
 
 

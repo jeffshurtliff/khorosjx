@@ -6,7 +6,7 @@
 :Example:        Coming Soon
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  19 Nov 2019
+:Modified Date:  24 Mar 2020
 """
 
 from . import core
@@ -17,25 +17,28 @@ def verify_core_connection():
     """This function verifies that the core connection information (Base URL and API credentials) has been defined.
 
     :returns: None
-    :raises: NameError, KhorosJXError, NoCredentialsError
+    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    def get_info():
-        """This function initializes and defines the global variables for the connection information.
-
-        :returns: None
-        :raises: NameError, KhorosJXError, NoCredentialsError
-        """
-        # Initialize global variables
-        global base_url
-        global api_credentials
-
-        # Define the global variables at this module level
-        base_url, api_credentials = core.get_connection_info()
-        return
-
     try:
         base_url
         api_credentials
     except NameError:
-        get_info()
+        retrieve_connection_info()
+    return
+
+
+def retrieve_connection_info():
+    """This function initializes and defines the global variables for the connection information.
+
+    :returns: None
+    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
+    """
+    # Initialize global variables
+    global base_url
+    global api_credentials
+
+    # Define the global variables at this module level
+    base_url, api_credentials = core.get_connection_info()
     return

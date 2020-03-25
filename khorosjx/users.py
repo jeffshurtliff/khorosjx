@@ -6,7 +6,7 @@
 :Example:        ``user_info = khorosjx.users.get_people_followed(user_id)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  05 Dec 2019
+:Modified Date:  24 Mar 2020
 """
 
 import json
@@ -18,32 +18,34 @@ from .utils.classes import Users
 from .utils.core_utils import eprint
 
 
-# Define function to verify the connection in the core module
 def verify_core_connection():
     """This function verifies that the core connection information (Base URL and API credentials) has been defined.
 
     :returns: None
-    :raises: NameError, KhorosJXError, NoCredentialsError
+    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    def get_info():
-        """This function initializes and defines the global variables for the connection information.
-
-        :returns: None
-        :raises: NameError, KhorosJXError, NoCredentialsError
-        """
-        # Initialize global variables
-        global base_url
-        global api_credentials
-
-        # Define the global variables at this module level
-        base_url, api_credentials = core.get_connection_info()
-        return
-
     try:
         base_url
         api_credentials
     except NameError:
-        get_info()
+        retrieve_connection_info()
+    return
+
+
+def retrieve_connection_info():
+    """This function initializes and defines the global variables for the connection information.
+
+    :returns: None
+    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
+    """
+    # Initialize global variables
+    global base_url
+    global api_credentials
+
+    # Define the global variables at this module level
+    base_url, api_credentials = core.get_connection_info()
     return
 
 
@@ -56,7 +58,7 @@ def get_json_field(json_data, field_names):
     :param field_names: The field name along with any parent field paths
     :type field_names: tuple, list
     :returns: The value for the specific field in its original format
-    :raises: ValueError, TypeError, KeyError
+    :raises: :py:exc:`ValueError`, :py:exc:`TypeError`, :py:exc:`KeyError`
     """
     if type(field_names) == str:
         field_value = json_data[field_names]
@@ -118,7 +120,8 @@ def get_user_id(lookup_value, lookup_type='email'):
     :param lookup_type: Determines if the lookup value is an ``email`` or ``username`` (Default: ``email``)
     :type lookup_type: str
     :returns: User ID for the user
-    :raises: InvalidLookupTypeError, GETRequestError
+    :raises: :py:exc:`khorosjx.errors.exceptions.InvalidLookupTypeError`,
+             :py:exc:`khorosjx.errors.exceptions.GETRequestError`
     """
     lookup_type = __validate_lookup_type(lookup_type)
     if '@' not in lookup_value:
@@ -138,7 +141,7 @@ def __validate_lookup_type(_lookup_type, _retrieval_value='id'):
     :param _retrieval_value: Indicates the value which the primary function call will be retrieving
     :type _retrieval_value: str
     :returns: The validated lookup type
-    :raises: InvalidLookupTypeError
+    :raises: :py:exc:`khorosjx.errors.exceptions.InvalidLookupTypeError`
     """
     _accepted_lookup_values = {
         'id': ('email', 'username'),
@@ -171,7 +174,7 @@ def get_primary_email(lookup_value, lookup_type="id"):
     :param lookup_type: Determines if the User ID or username should be used to find the user (Default: ``id``)
     :type lookup_type: str
     :returns: The primary email address for the user
-    :raises: InvalidLookupTypeError
+    :raises: :py:exc:`khorosjx.errors.exceptions.InvalidLookupTypeError`
     """
     lookup_type = __validate_lookup_type(lookup_type, 'email')
     user_data = core.get_data('people', lookup_value, lookup_type, return_json=True)
@@ -213,6 +216,27 @@ def get_profile_url(lookup_value, lookup_type="id"):
     return profile_url
 
 
+def __get_paginated_content_count(_user_uri, _start_index, _count=100):
+    """This function identifies the content count for an individual REST API call.
+
+    :param _user_uri: The URI for the user using the ``people`` API endpoint
+    :type _user_uri: str
+    :param _start_index: The startIndex value in the REST API call
+    :type _start_index: int
+    :param _count:  The number of results to return from the API (Default: ``100``)
+    :type _count: int
+    :returns: The count of content found for the individual REST API call in integer format
+    """
+    _content_uri = f"{base_url}/contents?filter=author({_user_uri})&count={_count}&startIndex={_start_index}"
+    _response = core.get_request_with_retries(_content_uri)
+    if _response.status_code == 200:
+        _response_json = _response.json()
+        _content_count = len(_response_json['list'])
+    else:
+        _content_count = 0
+    return _content_count
+
+
 # Define function to get the count of content created by a user
 def get_user_content_count(user_id, start_index=0):
     """This function obtains the number of content items created by a particular user.
@@ -223,37 +247,18 @@ def get_user_content_count(user_id, start_index=0):
     :type start_index: int
     :returns: The count of content found for the user in integer format
     """
-    def __get_count(_user_uri, _start_index, _count=100):
-        """This function identifies the content count for an individual REST API call.
-        :param _user_uri: The URI for the user using the ``people`` API endpoint
-        :type _user_uri: str
-        :param _start_index: The startIndex value in the REST API call
-        :type _start_index: int
-        :param _count:  The number of results to return from the API (Default: ``100``)
-        :type _count: int
-        :returns: The count of content found for the individual REST API call in integer format
-        """
-        _content_uri = f"{base_url}/contents?filter=author({_user_uri})&count={_count}&startIndex={_start_index}"
-        _response = core.get_request_with_retries(_content_uri)
-        if _response.status_code == 200:
-            _response_json = _response.json()
-            _content_count = len(_response_json['list'])
-        else:
-            _content_count = 0
-        return _content_count
-
     # Define the variable to track the total content count and structure the user URI
     total_count = 0
     user_uri = f"{base_url}/people/{user_id}"
 
     # Get the content count for the first 100 results and increment the total count accordingly
-    content_count = __get_count(user_uri, start_index)
+    content_count = __get_paginated_content_count(user_uri, start_index)
     total_count += content_count
 
     # Continue rolling through the user content until all assets have been identified
     while content_count > 0:
         start_index += 100
-        content_count = __get_count(user_uri, start_index)
+        content_count = __get_paginated_content_count(user_uri, start_index)
         total_count += content_count
     return total_count
 

@@ -6,39 +6,41 @@
 :Example:        ``all_publication = khorosjx.news.get_all_publications()``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  11 Feb 2020
+:Modified Date:  24 Mar 2020
 """
 
 from . import core, errors
 from .utils import core_utils, df_utils
 
 
-# Define function to verify the connection in the core module
 def verify_core_connection():
     """This function verifies that the core connection information (Base URL and API credentials) has been defined.
 
     :returns: None
-    :raises: NameError, KhorosJXError, NoCredentialsError
+    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    def __get_info():
-        """This function initializes and defines the global variables for the connection information.
-
-        :returns: None
-        :raises: NameError, KhorosJXError, NoCredentialsError
-        """
-        # Initialize global variables
-        global base_url
-        global api_credentials
-
-        # Define the global variables at this module level
-        base_url, api_credentials = core.get_connection_info()
-        return
-
     try:
         base_url
         api_credentials
     except NameError:
-        __get_info()
+        retrieve_connection_info()
+    return
+
+
+def retrieve_connection_info():
+    """This function initializes and defines the global variables for the connection information.
+
+    :returns: None
+    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
+    """
+    # Initialize global variables
+    global base_url
+    global api_credentials
+
+    # Define the global variables at this module level
+    base_url, api_credentials = core.get_connection_info()
     return
 
 
@@ -52,7 +54,7 @@ def get_all_publications(return_fields=[], return_type='list', ignore_exceptions
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A list of dictionaries or a dataframe containing information for each publication
-    :raises: InvalidDatasetError
+    :raises: :py:exc:`khorosjx.errors.exceptions.InvalidDatasetError`
     """
     # Verify that the core connection has been established
     verify_core_connection()
@@ -90,7 +92,8 @@ def get_publication(pub_id, return_fields=[], ignore_exceptions=False):
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A dictionary with the data for the publication
-    :raises: InvalidDatasetError, GETRequestError
+    :raises: :py:exc:`khorosjx.errors.exceptions.InvalidDatasetError`,
+             :py:exc:`khorosjx.errors.exceptions.GETRequestError`
     """
     # Verify that the core connection has been established
     verify_core_connection()
@@ -138,7 +141,7 @@ def get_subscription_ids(pub_id, return_type='str'):
     :type pub_id: int, str
     :param return_type: Determines if the IDs should be returned in ``str`` (default) or ``int`` format
     :returns: A list of subscription IDs
-    :raises: ValueError
+    :raises: :py:exc:`ValueError`
     """
     # Verify that the core connection has been established
     verify_core_connection()
@@ -156,6 +159,22 @@ def get_subscription_ids(pub_id, return_type='str'):
     return subscription_ids
 
 
+def filter_subscriptions_by_id(sub_id, subscriptions):
+    """This function filters the returned IDs by a supplied subscription ID when applicable.
+
+    :param sub_id: The subscription ID to use as the filter
+    :type sub_id: str
+    :param subscriptions: A list of subscriptions
+    :type subscriptions: list
+    returns: The subscription that has the supplied subscription ID
+    :raises: :py:exc:`khorosjx.errors.exceptions.SubscriptionNotFoundError`
+    """
+    for subscription in subscriptions:
+        if subscription['id'] == sub_id:
+            return subscription
+    raise errors.exceptions.SubscriptionNotFoundError
+
+
 def get_subscriber_groups(publication_id, subscription_id='', full_uri=False):
     """This function identifies the subscriber groups for one or more subscriptions within a publication.
 
@@ -166,15 +185,8 @@ def get_subscriber_groups(publication_id, subscription_id='', full_uri=False):
     :param full_uri: Determines whether or not to return the full URI or just the Group ID (``False`` by default)
     :type full_uri: bool
     :returns: A dictionary mapping the subscription IDs to the respective subscriber groups
-    :raises: SubscriptionNotFoundError
+    :raises: :py:exc:`khorosjx.errors.exceptions.SubscriptionNotFoundError`
     """
-    def __filter_subscriptions_by_id(_sub_id, _subscriptions):
-        """This function filters the returned IDs by a supplied subscription ID when applicable."""
-        for _subscription in _subscriptions:
-            if _subscription['id'] == _sub_id:
-                return _subscription
-        raise errors.exceptions.SubscriptionNotFoundError
-
     # Verify that the core connection has been established
     verify_core_connection()
 
@@ -183,7 +195,7 @@ def get_subscriber_groups(publication_id, subscription_id='', full_uri=False):
 
     # Filter for a specific subscription if an ID is provided
     if subscription_id != '':
-        subscriptions = __filter_subscriptions_by_id(subscription_id, subscriptions)
+        subscriptions = filter_subscriptions_by_id(subscription_id, subscriptions)
 
     # Capture the subscriber groups
     subscriber_groups = {}
@@ -196,6 +208,19 @@ def get_subscriber_groups(publication_id, subscription_id='', full_uri=False):
                 subscribers.append(subscriber.split('securityGroups/')[1])
             subscriber_groups[subscription['id']] = subscribers
     return subscriber_groups
+
+
+def get_subscriber_ids(subscribers):
+    """This function pulls the subscriber IDs out of dictionaries and into a single list.
+
+    :param subscribers: A list of dictionaries containing subscriber information from which to extract the IDs
+    :type subscribers: list
+    :returns: A list of IDs for the supplied subscribers
+    """
+    subscriber_ids = []
+    for subscriber in subscribers:
+        subscriber_ids.append(subscriber['id'])
+    return subscriber_ids
 
 
 def get_subscribers(publication_id, subscription_id, return_type='list', only_id=True, return_fields=[],
@@ -216,13 +241,6 @@ def get_subscribers(publication_id, subscription_id, return_type='list', only_id
     :type ignore_exceptions: bool
     :returns: A list or pandas dataframe with the subscriber information
     """
-    def __get_subscriber_ids(_subscribers):
-        """This function pulls the subscriber IDs out of dictionaries and into a single list."""
-        _subscriber_ids = []
-        for _subscriber in _subscribers:
-            _subscriber_ids.append(_subscriber['id'])
-        return _subscriber_ids
-
     # Verify that the core connection has been established
     verify_core_connection()
 
@@ -239,7 +257,7 @@ def get_subscribers(publication_id, subscription_id, return_type='list', only_id
     subscribers = core.get_paginated_results(query, 'people', start_index, return_fields=return_fields,
                                              ignore_exceptions=ignore_exceptions)
     if only_id and return_type == 'list':
-        subscribers = __get_subscriber_ids(subscribers)
+        subscribers = get_subscriber_ids(subscribers)
     all_subscribers = core_utils.add_to_master_list(subscribers, all_subscribers)
 
     # Continue querying for groups until none are returned
@@ -248,7 +266,7 @@ def get_subscribers(publication_id, subscription_id, return_type='list', only_id
         subscribers = core.get_paginated_results(query, 'people', start_index, return_fields=return_fields,
                                                  ignore_exceptions=ignore_exceptions)
         if only_id and return_type == 'list':
-            subscribers = __get_subscriber_ids(subscribers)
+            subscribers = get_subscriber_ids(subscribers)
         all_subscribers = core_utils.add_to_master_list(subscribers, all_subscribers)
 
     # Return the data as a master list of publication dictionaries or a pandas dataframe
@@ -263,6 +281,7 @@ def rebuild_publication(publication_id):
     :param publication_id: The ID of the publication to be rebuilt
     :type publication_id: int, str
     :returns: The response from the API PUT request
+    :raises: :py:exc:`khorosjx.errors.exceptions.PUTRequestError`
     """
     # Verify that the core connection has been established
     verify_core_connection()
@@ -282,6 +301,7 @@ def update_publication(publication_id, payload):
     :param payload: The JSON payload with which the publication will be updated
     :type payload: dict
     :returns: The response from the API PUT request
+    :raises: :py:exc:`khorosjx.errors.exceptions.PUTRequestError`
     """
     # Verify that the core connection has been established
     verify_core_connection()
@@ -302,7 +322,8 @@ def get_stream(stream_id, return_fields=[], ignore_exceptions=False):
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A dictionary with the data for the publication
-    :raises: InvalidDatasetError, GETRequestError
+    :raises: :py:exc:`khorosjx.errors.exceptions.InvalidDatasetError`,
+             :py:exc:`khorosjx.errors.exceptions.GETRequestError`
     """
     # Verify that the core connection has been established
     verify_core_connection()
@@ -323,6 +344,7 @@ def update_stream(stream_id, payload):
     :param payload: The JSON payload with which the stream will be updated
     :type payload: dict
     :returns: The response from the API PUT request
+    :raises: :py:exc:`khorosjx.errors.exceptions.PUTRequestError`
     """
     # Verify that the core connection has been established
     verify_core_connection()

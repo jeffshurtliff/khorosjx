@@ -6,7 +6,7 @@
 :Example:           ``content_id = content_core.get_content_id(url, 'document')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     04 Mar 2020
+:Modified Date:     24 Mar 2020
 """
 
 import re
@@ -21,27 +21,30 @@ def verify_core_connection():
     """This function verifies that the core connection information (Base URL and API credentials) has been defined.
 
     :returns: None
-    :raises: NameError, KhorosJXError, NoCredentialsError
+    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    def __get_info():
-        """This function initializes and defines the global variables for the connection information.
-
-        :returns: None
-        :raises: NameError, KhorosJXError, NoCredentialsError
-        """
-        # Initialize global variables
-        global base_url
-        global api_credentials
-
-        # Define the global variables at this module level
-        base_url, api_credentials = core.get_connection_info()
-        return
-
     try:
         base_url
         api_credentials
     except NameError:
-        __get_info()
+        retrieve_connection_info()
+    return
+
+
+def retrieve_connection_info():
+    """This function initializes and defines the global variables for the connection information.
+
+    :returns: None
+    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
+    """
+    # Initialize global variables
+    global base_url
+    global api_credentials
+
+    # Define the global variables at this module level
+    base_url, api_credentials = core.get_connection_info()
     return
 
 
@@ -54,7 +57,7 @@ def get_content_id(url, content_type="document"):
     :param content_type: The content type for the URL for which to obtain the Content ID (Default: ``document``)
     :type content_type: str
     :returns: The Content ID for the content URL
-    :raises: ValueError, ContentNotFoundError
+    :raises: :py:exc:`ValueError`, :py:exc:`khorosjx.errors.exceptions.ContentNotFoundError`
     """
     # Verify that the core connection has been established
     verify_core_connection()
@@ -105,7 +108,9 @@ def __convert_lookup_value(_lookup_value, _lookup_type, _content_type="document"
     :param _content_type: The type of content associated with the lookup value and lookup type (Default: ``document``)
     :type _content_type: str
     :returns: The properly formatted lookup value
-    :raises: LookupMismatchError, InvalidLookupTypeError, CurrentlyUnsupportedError
+    :raises: :py:exc:`khorosjx.errors.exceptions.LookupMismatchError`,
+             :py:exc:`khorosjx.errors.exceptions.InvalidLookupTypeError`,
+             :py:exc:`khorosjx.errors.exceptions.CurrentlyUnsupportedError`
     """
     # Verify that the core connection has been established
     verify_core_connection()

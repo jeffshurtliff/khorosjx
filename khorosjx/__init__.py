@@ -6,7 +6,7 @@
 :Example:           ``khorosjx.init_helper('/home/user/jxhelper.yml')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     16 Mar 2020
+:Modified Date:     24 Mar 2020
 """
 
 from . import core, errors
@@ -26,7 +26,8 @@ def init_module(*args):
     :param args: One or more module names to import
     :type args: str, tuple
     :returns: None
-    :raises: ModuleNotFoundError, KhorosJXError, InvalidKhorosJXModuleError
+    :raises: :py:exc:`ModuleNotFoundError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.InvalidKhorosJXModuleError`
     """
     # Get any arguments supplied in the function
     import_all = ['admin', 'content', 'groups', 'news', 'places', 'users']
@@ -95,7 +96,10 @@ def init_helper(file_path, file_type='yaml'):
     :param file_type: The type of file utilized as the configuration file (Default: ``yaml``)
     :type file_type: str
     :returns: None (Defines global variables and establishes API connection)
-    :raises: FileNotFoundError, CredentialsUnpackingError, InvalidHelperArgumentsError, HelperFunctionNotFoundError
+    :raises: :py:exc:`FileNotFoundError`,
+             :py:exc:`khorosjx.errors.exceptions.CredentialsUnpackingError`,
+             :py:exc:`khorosjx.errors.exceptions.InvalidHelperArgumentsError`,
+             :py:exc:`khorosjx.errors.exceptions.HelperFunctionNotFoundError`
     """
     # Import the helper module
     from .utils import helper

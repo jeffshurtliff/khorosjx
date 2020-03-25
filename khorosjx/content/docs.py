@@ -6,7 +6,7 @@
 :Example:        ``content_id = docs.get_content_id(url)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  13 Jan 2020
+:Modified Date:  24 Mar 2020
 """
 
 import pandas as pd
@@ -22,27 +22,30 @@ def verify_core_connection():
     """This function verifies that the core connection information (Base URL and API credentials) has been defined.
 
     :returns: None
-    :raises: NameError, KhorosJXError, NoCredentialsError
+    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    def __get_info():
-        """This function initializes and defines the global variables for the connection information.
-
-        :returns: None
-        :raises: NameError, KhorosJXError, NoCredentialsError
-        """
-        # Initialize global variables
-        global base_url
-        global api_credentials
-
-        # Define the global variables at this module level
-        base_url, api_credentials = core.get_connection_info()
-        return
-
     try:
         base_url
         api_credentials
     except NameError:
-        __get_info()
+        retrieve_connection_info()
+    return
+
+
+def retrieve_connection_info():
+    """This function initializes and defines the global variables for the connection information.
+
+    :returns: None
+    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
+    """
+    # Initialize global variables
+    global base_url
+    global api_credentials
+
+    # Define the global variables at this module level
+    base_url, api_credentials = core.get_connection_info()
     return
 
 
@@ -55,7 +58,8 @@ def get_content_id(lookup_value, lookup_type='url'):
     :param lookup_type: The type of value is being used for lookup (``url`` by default)
     :type lookup_type: str
     :returns: The Content ID for the document
-    :raises: ValueError, InvalidLookupTypeError
+    :raises: :py:exc:`ValueError`, :py:exc:`khorosjx.errors.exceptions.ContentNotFoundError`,
+             :py:exc:`khorosjx.errors.exceptions.InvalidLookupTypeError`
     """
     acceptable_types = ['url', 'id', 'doc_id']
     if lookup_type not in acceptable_types:
@@ -72,7 +76,7 @@ def get_url_for_id(doc_id):
     :param doc_id: The Document ID with which to construct the URL
     :type doc_id: int, str
     :returns: The fully constructed URL for the document (e.g. https://community.example.com/docs/DOC-1234)
-    :raises: TypeError, ValueError
+    :raises: :py:exc:`TypeError`, :py:exc:`ValueError`
     """
     verify_core_connection()
     url = base_url.split('api/')[0]
@@ -94,7 +98,7 @@ def create_document(subject, body, place_id, categories=[], tags=[]):
     :param tags: Any tags associated with the document (none by default)
     :type tags: list
     :returns: The API response from the POST request for the document creation
-    :raises: POSTRequestError, TypeError
+    :raises: :py:exc:`TypeError`, :py:exc:`khorosjx.errors.exceptions.POSTRequestError`
     """
     # TODO: Allow the author to be specified
     verify_core_connection()
@@ -131,52 +135,9 @@ def overwrite_doc_body(url, body_html, minor_edit=True, ignore_exceptions=False)
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: The response of the PUT request used to update the document
-    :raises: ContentPublishError
+    :raises: :py:exc:`khorosjx.errors.exceptions.ContentPublishError`
     """
     # TODO: Verify and add the data type for the body_html argument in the docstring above and below
-    # Define function to perform the overwrite operation
-    def __perform_overwrite_operation(_url, _body_html, _minor_edit, _ignore_exceptions):
-        """This function performs the actual overwrite operation on the document.
-
-        :param _url: The URI for the API request
-        :type _url: str
-        :param _body_html: The new HTML body to replace the existing document body
-        :param _minor_edit: Determines whether the *Minor Edit* flag should be set (Default: ``True``)
-        :type _minor_edit: bool
-        :param _ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
-        :type _ignore_exceptions: bool
-        :returns: The response of the PUT request used to update the document
-        :raises: ContentPublishError
-        """
-        # Define the script name, Content ID and URI
-        _content_id = get_content_id(_url)
-        _content_url = f"{base_url}/contents/{_content_id}"
-
-        # Perform a GET request for the document to obtain its JSON
-        _response = core.get_data('contents', _content_id)
-
-        # Construct the payload from the new body HTML
-        _doc_body_payload = {'text': _body_html}
-
-        # Update the document JSON with the new body HTML
-        _doc_json = _response.json()
-        _doc_json['content'] = _doc_body_payload
-
-        # Flag the update as a "Minor Edit" to suppress email notifications if specified
-        if _minor_edit:
-            _doc_json['minor'] = 'true'
-
-        # Perform the PUT request with retry handling for timeouts
-        _put_response = core.put_request_with_retries(_content_url, _doc_json)
-        if _put_response.status_code != 200:
-            _error_msg = f"The attempt to update the document {_url} failed with " + \
-                        f"a {_put_response.status_code} status code."
-            if _ignore_exceptions:
-                print(_error_msg)
-            else:
-                raise errors.exceptions.ContentPublishError(_error_msg)
-        return _put_response
-
     # Verify that the core connection has been established
     verify_core_connection()
 
@@ -194,6 +155,50 @@ def overwrite_doc_body(url, body_html, minor_edit=True, ignore_exceptions=False)
     return put_response
 
 
+# Define function to perform the overwrite operation
+def __perform_overwrite_operation(_url, _body_html, _minor_edit, _ignore_exceptions):
+    """This function performs the actual overwrite operation on the document.
+
+    :param _url: The URI for the API request
+    :type _url: str
+    :param _body_html: The new HTML body to replace the existing document body
+    :param _minor_edit: Determines whether the *Minor Edit* flag should be set (Default: ``True``)
+    :type _minor_edit: bool
+    :param _ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
+    :type _ignore_exceptions: bool
+    :returns: The response of the PUT request used to update the document
+    :raises: :py:exc:`khorosjx.errors.exceptions.ContentPublishError`
+    """
+    # Define the script name, Content ID and URI
+    _content_id = get_content_id(_url)
+    _content_url = f"{base_url}/contents/{_content_id}"
+
+    # Perform a GET request for the document to obtain its JSON
+    _response = core.get_data('contents', _content_id)
+
+    # Construct the payload from the new body HTML
+    _doc_body_payload = {'text': _body_html}
+
+    # Update the document JSON with the new body HTML
+    _doc_json = _response.json()
+    _doc_json['content'] = _doc_body_payload
+
+    # Flag the update as a "Minor Edit" to suppress email notifications if specified
+    if _minor_edit:
+        _doc_json['minor'] = 'true'
+
+    # Perform the PUT request with retry handling for timeouts
+    _put_response = core.put_request_with_retries(_content_url, _doc_json)
+    if _put_response.status_code != 200:
+        _error_msg = f"The attempt to update the document {_url} failed with " + \
+                    f"a {_put_response.status_code} status code."
+        if _ignore_exceptions:
+            print(_error_msg)
+        else:
+            raise errors.exceptions.ContentPublishError(_error_msg)
+    return _put_response
+
+
 # Define function to get basic group information for a particular Group ID
 def get_document_info(lookup_value, lookup_type='doc_id', return_fields=[], ignore_exceptions=False):
     """This function obtains the group information for a given document.
@@ -207,7 +212,10 @@ def get_document_info(lookup_value, lookup_type='doc_id', return_fields=[], igno
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A dictionary with the group information
-    :raises: GETRequestError, InvalidDatasetError, InvalidLookupTypeError, LookupMismatchError
+    :raises: :py:exc:`khorosjx.errors.exceptions.GETRequestError`,
+             :py:exc:`khorosjx.errors.exceptions.InvalidDatasetError`,
+             :py:exc:`khorosjx.errors.exceptions.InvalidLookupTypeError`,
+             :py:exc:`khorosjx.errors.exceptions.LookupMismatchError`
     """
     # Verify that the core connection has been established
     verify_core_connection()
@@ -244,7 +252,10 @@ def get_document_attachments(lookup_value, lookup_type='doc_id', return_datafram
     :param return_dataframe: Determines whether or not a pandas dataframe should be returned
     :type return_dataframe: bool
     :returns: A list, dictionary or pandas dataframe depending on the number of attachments and/or function arguments
-    :raises: GETRequestError, InvalidDatasetError, InvalidLookupTypeError, LookupMismatchError
+    :raises: :py:exc:`khorosjx.errors.exceptions.GETRequestError`,
+             :py:exc:`khorosjx.errors.exceptions.InvalidDatasetError`,
+             :py:exc:`khorosjx.errors.exceptions.InvalidLookupTypeError`,
+             :py:exc:`khorosjx.errors.exceptions.LookupMismatchError`
     """
     # Verify that the core connection has been established
     verify_core_connection()
@@ -285,7 +296,7 @@ def delete_document(lookup_value, lookup_type='content_id', return_json=False):
     :param return_json: Determines if the API response should be returned in JSON format (``False`` by default)
     :type return_json: bool
     :returns: The API response for the DELETE request
-    :raises: InvalidLookupTypeError
+    :raises: :py:exc:`khorosjx.errors.exceptions.InvalidLookupTypeError`
     """
     accepted_types = ['content_id', 'doc_id', 'url']
     if lookup_type not in accepted_types:

@@ -4,6 +4,166 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.5.0
+******
+**Release Date: 2020-03-25**
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Updated the :py:func:`khorosjx.core.get_request_with_retries` function to raise the custom
+  :py:exc:`khorosjx.errors.exceptions.APIConnectionError` exception class rather than the built-in
+  :py:exc:`ConnectionError` exception class.
+* Removed the ``import warnings`` line from the :py:mod:`khorosjx.core` module as it was not being used.
+* Moved the :py:func:`khorosjx.admin.verify_core_connection.get_info` function to the module level as
+  :py:func:`khorosjx.admin.retrieve_connection_info`.
+* Moved the :py:func:`khorosjx.content.base.verify_core_connection.get_info` function to the module level as
+  :py:func:`khorosjx.content.base.retrieve_connection_info`.
+* Moved the :py:func:`khorosjx.content.docs.verify_core_connection.get_info` function to the module level as
+  :py:func:`khorosjx.content.docs.retrieve_connection_info`.
+* Moved the :py:func:`khorosjx.content.docs.__perform_overwrite_operation` function to be at the module level
+  instead of within the :py:func:`khorosjx.content.docs.overwrite_doc_body` function.
+* Moved the :py:func:`khorosjx.content.events.verify_core_connection.get_info` function to the module level as
+  :py:func:`khorosjx.content.events.retrieve_connection_info`.
+* Moved the :py:func:`khorosjx.content.ideas.verify_core_connection.get_info` function to the module level as
+  :py:func:`khorosjx.content.ideas.retrieve_connection_info`.
+* Moved the :py:func:`khorosjx.content.threads.verify_core_connection.get_info` function to the module level as
+  :py:func:`khorosjx.content.threads.retrieve_connection_info`.
+* Moved the :py:func:`khorosjx.content.videos.verify_core_connection.get_info` function to the module level as
+  :py:func:`khorosjx.content.videos.retrieve_connection_info`.
+* Moved the :py:func:`khorosjx.content.videos.__append_videos` function to be at the module level
+  instead of within the :py:func:`khorosjx.content.videos.get_native_videos_for_space` function.
+* Moved the :py:func:`khorosjx.groups.verify_core_connection.get_info` function to the module level as
+  :py:func:`khorosjx.groups.retrieve_connection_info`.
+* Moved the :py:func:`khorosjx.groups.__add_paginated_members` function to be at the module level
+  instead of within the :py:func:`khorosjx.groups.get_group_memberships` function.
+* Moved the :py:func:`khorosjx.groups.__get_paginated_groups` function to be at the module level
+  instead of within the :py:func:`khorosjx.groups.get_all_groups` function.
+* Updated the :py:func:`khorosjx.groups.get_group_memberships` function to leverage the
+  :py:func:`khorosjx.utils.df_utils.convert_dict_list_to_dataframe` function rather than the deprecated
+  :py:func:`khorosjx.utils.core_utils.convert_dict_list_to_dataframe` function.
+* Moved the :py:func:`khorosjx.news.verify_core_connection.get_info` function to the module level as
+  :py:func:`khorosjx.news.retrieve_connection_info`.
+* Moved the :py:func:`khorosjx.news.get_subscriber_groups.__filter_subscriptions_by_id` function to the
+  module level as :py:func:`khorosjx.news.filter_subscriptions_by_id`.
+* Moved the :py:func:`khorosjx.news.get_subscriber_groups.__get_subscriber_ids` function to the
+  module level as :py:func:`khorosjx.news.get_subscriber_ids`.
+* Moved the :py:func:`khorosjx.users.verify_core_connection.get_info` function to the module level as
+  :py:func:`khorosjx.users.retrieve_connection_info`.
+* Moved the :py:func:`khorosjx.users.get_user_content_count.__get_count` function to the module level as
+  :py:func:`khorosjx.users.__get_paginated_content_count`.
+
+Documentation
+-------------
+Changes  to the documentation.
+
+* Updated the exception class references within docstrings to be hyperlinks to the class details in these functions:
+    * :py:func:`khorosjx.init_module`
+    * :py:func:`khorosjx.init_helper`
+    * :py:func:`khorosjx.admin.retrieve_connection_info`
+    * :py:func:`khorosjx.admin.verify_core_connection`
+    * :py:func:`khorosjx.core.get_data`
+    * :py:func:`khorosjx.core.get_fields_from_api_response`
+    * :py:func:`khorosjx.core.get_paginated_results`
+    * :py:func:`khorosjx.core.get_request_with_retries`
+    * :py:func:`khorosjx.core.post_request_with_retries`
+    * :py:func:`khorosjx.core.put_request_with_retries`
+    * :py:func:`khorosjx.core.set_credentials`
+    * :py:func:`khorosjx.core.set_base_url`
+    * :py:func:`khorosjx.core.verify_connection`
+    * :py:func:`khorosjx.core.__api_request_with_payload`
+    * :py:func:`khorosjx.content.get_content_id`
+    * :py:func:`khorosjx.content.get_document_attachments`
+    * :py:func:`khorosjx.content.get_document_info`
+    * :py:func:`khorosjx.content.overwrite_doc_body`
+    * :py:func:`khorosjx.content.__convert_lookup_value`
+    * :py:func:`khorosjx.content.base.get_content_id`
+    * :py:func:`khorosjx.content.base.retrieve_connection_info`
+    * :py:func:`khorosjx.content.base.verify_core_connection`
+    * :py:func:`khorosjx.content.base.__convert_lookup_value`
+    * :py:func:`khorosjx.content.docs.create_document`
+    * :py:func:`khorosjx.content.docs.delete_document`
+    * :py:func:`khorosjx.content.docs.get_content_id`
+    * :py:func:`khorosjx.content.docs.get_document_attachments`
+    * :py:func:`khorosjx.content.docs.get_document_info`
+    * :py:func:`khorosjx.content.docs.get_url_for_id`
+    * :py:func:`khorosjx.content.docs.overwrite_doc_body`
+    * :py:func:`khorosjx.content.docs.retrieve_connection_info`
+    * :py:func:`khorosjx.content.docs.verify_core_connection`
+    * :py:func:`khorosjx.content.docs.__perform_overwrite_operation`
+    * :py:func:`khorosjx.content.events.get_content_id`
+    * :py:func:`khorosjx.content.events.retrieve_connection_info`
+    * :py:func:`khorosjx.content.events.verify_core_connection`
+    * :py:func:`khorosjx.content.ideas.retrieve_connection_info`
+    * :py:func:`khorosjx.content.ideas.verify_core_connection`
+    * :py:func:`khorosjx.content.threads.get_content_id`
+    * :py:func:`khorosjx.content.threads.retrieve_connection_info`
+    * :py:func:`khorosjx.content.threads.verify_core_connection`
+    * :py:func:`khorosjx.content.videos.check_if_embedded`
+    * :py:func:`khorosjx.content.videos.get_content_id`
+    * :py:func:`khorosjx.content.videos.get_native_videos_for_space`
+    * :py:func:`khorosjx.content.videos.get_video_dimensions`
+    * :py:func:`khorosjx.content.videos.get_video_id`
+    * :py:func:`khorosjx.content.videos.get_video_info`
+    * :py:func:`khorosjx.content.videos.retrieve_connection_info`
+    * :py:func:`khorosjx.content.videos.verify_core_connection`
+    * :py:func:`khorosjx.groups.add_user_to_group`
+    * :py:func:`khorosjx.groups.check_user_membership`
+    * :py:func:`khorosjx.groups.get_all_groups`
+    * :py:func:`khorosjx.groups.get_group_info`
+    * :py:func:`khorosjx.groups.get_group_memberships`
+    * :py:func:`khorosjx.groups.get_user_memberships`
+    * :py:func:`khorosjx.groups.retrieve_connection_info`
+    * :py:func:`khorosjx.groups.verify_core_connection`
+    * :py:func:`khorosjx.news.filter_subscriptions_by_id`
+    * :py:func:`khorosjx.news.get_all_publications`
+    * :py:func:`khorosjx.news.get_publication`
+    * :py:func:`khorosjx.news.get_stream`
+    * :py:func:`khorosjx.news.get_subscriber_groups`
+    * :py:func:`khorosjx.news.get_subscription_ids`
+    * :py:func:`khorosjx.news.rebuild_publication`
+    * :py:func:`khorosjx.news.retrieve_connection_info`
+    * :py:func:`khorosjx.news.update_publication`
+    * :py:func:`khorosjx.news.update_stream`
+    * :py:func:`khorosjx.news.verify_core_connection`
+    * :py:func:`khorosjx.spaces.get_browse_id`
+    * :py:func:`khorosjx.spaces.get_permitted_content_types`
+    * :py:func:`khorosjx.spaces.get_space_info`
+    * :py:func:`khorosjx.spaces.get_space_permissions`
+    * :py:func:`khorosjx.spaces.get_spaces_list_from_file`
+    * :py:func:`khorosjx.users.get_json_field`
+    * :py:func:`khorosjx.users.get_primary_email`
+    * :py:func:`khorosjx.users.get_user_id`
+    * :py:func:`khorosjx.users.retrieve_connection_info`
+    * :py:func:`khorosjx.users.verify_core_connection`
+    * :py:func:`khorosjx.users.__get_paginated_content_count`
+    * :py:func:`khorosjx.users.__validate_lookup_type`
+
+
+Fixed
+=====
+
+Security
+--------
+Fixes relating to security vulnerabilities.
+
+* Updated the version of the ``bleach`` package in
+  `requirements.txt <https://github.com/jeffshurtliff/khorosjx/blob/master/requirements.txt>`_ to be ``3.1.2`` to
+  mitigate an identified `mutation XSS vulnerability <https://cure53.de/fp170.pdf>`_ that was reported by GitHub.
+
+Documentation
+-------------
+Fixes to the documentation.
+
+* Corrected a typo in the docstring for the :py:func:`khorosjx.core.get_base_url` function.
+
+|
+
+******
 v2.4.1
 ******
 **Release Date: 2020-03-23**

@@ -6,7 +6,7 @@
 :Example:           ``content_id = videos.get_content_id(url)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     22 Jan 2020
+:Modified Date:     24 Mar 2020
 """
 
 import os.path
@@ -16,32 +16,34 @@ from . import base
 from ..utils import core_utils
 
 
-# Define function to verify the connection in the core module
 def verify_core_connection():
     """This function verifies that the core connection information (Base URL and API credentials) has been defined.
 
     :returns: None
-    :raises: NameError, KhorosJXError, NoCredentialsError
+    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    def __get_info():
-        """This function initializes and defines the global variables for the connection information.
-
-        :returns: None
-        :raises: NameError, KhorosJXError, NoCredentialsError
-        """
-        # Initialize global variables
-        global base_url
-        global api_credentials
-
-        # Define the global variables at this module level
-        base_url, api_credentials = core.get_connection_info()
-        return
-
     try:
         base_url
         api_credentials
     except NameError:
-        __get_info()
+        retrieve_connection_info()
+    return
+
+
+def retrieve_connection_info():
+    """This function initializes and defines the global variables for the connection information.
+
+    :returns: None
+    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
+    """
+    # Initialize global variables
+    global base_url
+    global api_credentials
+
+    # Define the global variables at this module level
+    base_url, api_credentials = core.get_connection_info()
     return
 
 
@@ -53,7 +55,7 @@ def get_video_id(lookup_value, lookup_type='url'):
     :param lookup_type: Defines the type of value given to identify the video as ``url`` (default) or ``content_id``
     :type lookup_type: str
     :returns: The Video ID for the video
-    :raises: InvalidLookupTypeError
+    :raises: :py:exc:`khorosjx.errors.exceptions.InvalidLookupTypeError`
     """
     if lookup_type == 'url':
         video_id = lookup_value.split('videos/')[1]
@@ -78,7 +80,7 @@ def get_content_id(lookup_value, lookup_type='url'):
     :type lookup_value: str, int
     :param lookup_type: Defines the type of value given to identify the video as ``url`` (default) or ``id``
     :returns: The Content ID for the video
-    :raises: ValueError, InvalidLookupTypeError
+    :raises: :py:exc:`ValueError`, :py:exc:`khorosjx.errors.exceptions.InvalidLookupTypeError`
     """
     accepted_lookup_types = ['url', 'id', 'video_id']
     if lookup_type not in accepted_lookup_types:
@@ -123,6 +125,14 @@ def download_video(video_url, output_path, output_name="", default_type="mp4", v
     return
 
 
+def __append_videos(_all_videos, _query, _start_index, _return_fields, _ignore_exceptions):
+    """This function retrieves paginated results and appends them to a master list."""
+    _videos = core.get_paginated_results(_query, 'video', _start_index, filter_info=('type', 'video'),
+                                         return_fields=_return_fields, ignore_exceptions=_ignore_exceptions)
+    _all_videos = core_utils.add_to_master_list(_videos, _all_videos)
+    return _all_videos, len(_videos)
+
+
 def get_native_videos_for_space(browse_id, return_fields=[], return_type='list', ignore_exceptions=False):
     """This function returns information on all native (i.e. non-attachment and not third party) for a given space.
 
@@ -135,15 +145,8 @@ def get_native_videos_for_space(browse_id, return_fields=[], return_type='list',
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A list of dictionaries or a dataframe containing information for each group
-    :raises: InvalidDatasetError
+    :raises: :py:exc:`khorosjx.errors.exceptions.InvalidDatasetError`
     """
-    def __append_videos(_all_videos, _query, _start_index, _return_fields, _ignore_exceptions):
-        """This function retrieves paginated results and appends them to a master list."""
-        _videos = core.get_paginated_results(_query, 'video', _start_index, filter_info=('type', 'video'),
-                                             return_fields=_return_fields, ignore_exceptions=_ignore_exceptions)
-        _all_videos = core_utils.add_to_master_list(_videos, _all_videos)
-        return _all_videos, len(_videos)
-        
     # Initialize the master list that will contain all of the video data
     all_videos = []
 
@@ -188,6 +191,7 @@ def get_video_info(lookup_value, lookup_type='content_id'):
     :param lookup_type: Defines whether the lookup value is a ``content_id`` (default), ``video_id`` or ``url``
     :type lookup_type: str
     :returns: The video information in JSON format
+    :raises: :py:exc:`khorosjx.errors.exceptions.InvalidLookupTypeError`
     """
     accepted_lookup_types = ['url', 'content_id', 'video_id']
     if lookup_type not in accepted_lookup_types:
@@ -207,7 +211,7 @@ def check_if_embedded(lookup_value, lookup_type='content_id'):
     :param lookup_type: Defines if the lookup value is a ``content_id`` (default), ``video_id`` or ``url``
     :type lookup_type: str
     :returns: A Boolean value indicating whether or not the video is embedded
-    :raises: InvalidLookupTypeError
+    :raises: :py:exc:`khorosjx.errors.exceptions.InvalidLookupTypeError`
     """
     video_json = get_video_info(lookup_value, lookup_type)
     return video_json['embedded']
@@ -221,7 +225,7 @@ def get_video_dimensions(lookup_value, lookup_type='content_id'):
     :param lookup_type: Defines if the lookup value is a ``content_id`` (default), ``video_id`` or ``url``
     :type lookup_type: str
     :returns: The video dimensions in string format
-    :raises: InvalidLookupTypeError
+    :raises: :py:exc:`khorosjx.errors.exceptions.InvalidLookupTypeError`
     """
     video_json = get_video_info(lookup_value, lookup_type)
     dimensions = f"{video_json['width']}x{video_json['height']}"

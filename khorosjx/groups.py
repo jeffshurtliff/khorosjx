@@ -6,7 +6,7 @@
 :Example:        ``group_info = groups.get_group_info(1051)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  22 Jan 2020
+:Modified Date:  24 Mar 2020
 """
 
 import requests
@@ -17,32 +17,34 @@ from .utils.core_utils import eprint
 from .utils import core_utils, df_utils
 
 
-# Define function to verify the connection in the core module
 def verify_core_connection():
     """This function verifies that the core connection information (Base URL and API credentials) has been defined.
 
     :returns: None
-    :raises: NameError, KhorosJXError, NoCredentialsError
+    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    def __get_info():
-        """This function initializes and defines the global variables for the connection information.
-
-        :returns: None
-        :raises: NameError, KhorosJXError, NoCredentialsError
-        """
-        # Initialize global variables
-        global base_url
-        global api_credentials
-
-        # Define the global variables at this module level
-        base_url, api_credentials = core.get_connection_info()
-        return
-
     try:
         base_url
         api_credentials
     except NameError:
-        __get_info()
+        retrieve_connection_info()
+    return
+
+
+def retrieve_connection_info():
+    """This function initializes and defines the global variables for the connection information.
+
+    :returns: None
+    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
+    """
+    # Initialize global variables
+    global base_url
+    global api_credentials
+
+    # Define the global variables at this module level
+    base_url, api_credentials = core.get_connection_info()
     return
 
 
@@ -57,7 +59,8 @@ def get_group_info(group_id, return_fields=[], ignore_exceptions=False):
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A dictionary with the group information
-    :raises: GETRequestError, InvalidDatasetError
+    :raises: :py:exc:`khorosjx.errors.exceptions.GETRequestError`,
+             :py:exc:`khorosjx.errors.exceptions.InvalidDatasetError`
     """
     # Verify that the core connection has been established
     verify_core_connection()
@@ -80,6 +83,36 @@ def get_group_info(group_id, return_fields=[], ignore_exceptions=False):
     return group_info
 
 
+def __get_paginated_groups(_return_fields, _ignore_exceptions, _start_index):
+    """This function returns paginated group information. (Up to 100 records at a time)
+
+    :param _return_fields: Specific fields to return if not all of the default fields are needed (Optional)
+    :type _return_fields: list
+    :param _ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
+    :type _ignore_exceptions: bool
+    :param _start_index: The startIndex API value
+    :type _start_index: int, str
+    :returns: A list of dictionaries containing information for each group in the paginated query
+    """
+    # Initialize the empty list for the group information
+    _groups = []
+
+    # Perform the API query to retrieve the group information
+    _query_uri = f"{base_url}/securityGroups?fields=@all&count=100&startIndex={_start_index}"
+    _response = core.get_request_with_retries(_query_uri)
+
+    # Verify that the query was successful
+    successful_response = errors.handlers.check_api_response(_response, ignore_exceptions=_ignore_exceptions)
+
+    if successful_response:
+        # Get the response data in JSON format
+        _paginated_group_data = _response.json()
+        for _group_data in _paginated_group_data['list']:
+            _parsed_data = core.get_fields_from_api_response(_group_data, 'security_group', _return_fields)
+            _groups.append(_parsed_data)
+    return _groups
+
+
 # Define function to get information on all security groups
 def get_all_groups(return_fields=[], return_type='list', ignore_exceptions=False):
     """This function returns information on all security groups found within the environment.
@@ -91,37 +124,8 @@ def get_all_groups(return_fields=[], return_type='list', ignore_exceptions=False
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A list of dictionaries or a dataframe containing information for each group
-    :raises: InvalidDatasetError
+    :raises: :py:exc:`khorosjx.errors.exceptions.InvalidDatasetError`
     """
-    def __get_paginated_groups(_return_fields, _ignore_exceptions, _start_index):
-        """This function returns paginated group information. (Up to 100 records at a time)
-
-        :param _return_fields: Specific fields to return if not all of the default fields are needed (Optional)
-        :type _return_fields: list
-        :param _ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
-        :type _ignore_exceptions: bool
-        :param _start_index: The startIndex API value
-        :type _start_index: int, str
-        :returns: A list of dictionaries containing information for each group in the paginated query
-        """
-        # Initialize the empty list for the group information
-        _groups = []
-
-        # Perform the API query to retrieve the group information
-        _query_uri = f"{base_url}/securityGroups?fields=@all&count=100&startIndex={_start_index}"
-        _response = core.get_request_with_retries(_query_uri)
-
-        # Verify that the query was successful
-        successful_response = errors.handlers.check_api_response(_response, ignore_exceptions=_ignore_exceptions)
-
-        if successful_response:
-            # Get the response data in JSON format
-            _paginated_group_data = _response.json()
-            for _group_data in _paginated_group_data['list']:
-                _parsed_data = core.get_fields_from_api_response(_group_data, 'security_group', _return_fields)
-                _groups.append(_parsed_data)
-        return _groups
-
     # Verify that the core connection has been established
     verify_core_connection()
 
@@ -156,7 +160,7 @@ def get_user_memberships(user_lookup, return_values='name', ignore_exceptions=Fa
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A list of group memberships for the user
-    :raises: UserQueryError
+    :raises: :py:exc:`khorosjx.errors.exceptions.UserQueryError`
     """
     # Verify that the core connection has been established
     verify_core_connection()
@@ -219,7 +223,7 @@ def check_user_membership(user_memberships, groups_to_check, scope='any', ignore
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: Returns a Boolean value for ``any`` and ``all`` scopes, or a list of Boolean values for ``each``
-    :raises: InvalidScopeError
+    :raises: :py:exc:`khorosjx.errors.exceptions.InvalidScopeError`
     """
     # Convert the groups_to_check argument to a tuple if a string was provided
     if type(groups_to_check) == str:
@@ -283,7 +287,7 @@ def add_user_to_group(group_id, user_value, lookup_type="id", return_mode="none"
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``True``)
     :type ignore_exceptions: bool
     :returns: The resulting status code, a Boolean value indicating the success of the operation, or nothing
-    :raises: POSTRequestError
+    :raises: :py:exc:`khorosjx.errors.exceptions.POSTRequestError`
     """
     # Verify that the core connection has been established
     verify_core_connection()
@@ -338,6 +342,16 @@ def add_user_to_group(group_id, user_value, lookup_type="id", return_mode="none"
         return
 
 
+def __add_paginated_members(_base_query_uri, _response_data_type, _start_index,
+                            _ignore_exceptions, _return_fields, _all_users):
+    """This function for a paginated list of users and then add them to the master list."""
+    _paginated_users = core.get_paginated_results(_base_query_uri, _response_data_type, _start_index,
+                                                  ignore_exceptions=_ignore_exceptions,
+                                                  return_fields=_return_fields)
+    _all_users = core_utils.add_to_master_list(_paginated_users, _all_users)
+    return _all_users, len(_paginated_users)
+
+
 # Define function to get the members (or admins) of a security group
 def get_group_memberships(group_id, user_type="member", only_id=True, return_type="list", ignore_exceptions=False):
     """This function gets the memberships (including administrator membership) for a specific security group.
@@ -353,17 +367,8 @@ def get_group_memberships(group_id, user_type="member", only_id=True, return_typ
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``True``)
     :type ignore_exceptions: bool
     :returns: A list or dataframe of security group memberships
-    :raises: ValueError
+    :raises: :py:exc:`ValueError`
     """
-    # Define internal function to query for a paginated list of users and then add them to the master list
-    def __add_paginated_members(_base_query_uri, _response_data_type, _start_index,
-                                _ignore_exceptions, _return_fields, _all_users):
-        _paginated_users = core.get_paginated_results(_base_query_uri, _response_data_type, _start_index,
-                                                      ignore_exceptions=_ignore_exceptions,
-                                                      return_fields=_return_fields)
-        _all_users = core_utils.add_to_master_list(_paginated_users, _all_users)
-        return _all_users, len(_paginated_users)
-
     # Verify that the core connection has been established
     verify_core_connection()
 
@@ -397,7 +402,7 @@ def get_group_memberships(group_id, user_type="member", only_id=True, return_typ
 
     # Return the data as a master list of group dictionaries or a pandas dataframe
     if return_type == "dataframe":
-        all_users = core_utils.convert_dict_list_to_dataframe(all_users)
+        all_users = df_utils.convert_dict_list_to_dataframe(all_users)
     elif return_type == "list" and only_id is True:
         all_users = core_utils.convert_single_pair_dict_list(all_users)
     return all_users

@@ -6,7 +6,7 @@
 :Example:           ``content_id = content.base.get_content_id(url, 'document')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     14 Jan 2020
+:Modified Date:     24 Mar 2020
 """
 
 import warnings
@@ -28,7 +28,7 @@ def get_content_id(url, content_type="document"):
     :param content_type: The content type for the URL for which to obtain the Content ID (Default: ``document``)
     :type content_type: str
     :returns: The Content ID for the content URL
-    :raises: ValueError
+    :raises: :py:exc:`ValueError`
     """
     warnings.warn(
         "The khorosjx.content.get_content_id function is deprecated and will be removed in v3.0.0. Use " +
@@ -54,7 +54,7 @@ def overwrite_doc_body(url, body_html, minor_edit=True, ignore_exceptions=False)
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: The response of the PUT request used to update the document
-    :raises: ContentPublishError
+    :raises: :py:exc:`khorosjx.errors.exceptions.ContentPublishError`
     """
     warnings.warn(
         "The khorosjx.content.overwrite_doc_body function is deprecated and will be removed in v3.0.0. Use " +
@@ -79,7 +79,9 @@ def __convert_lookup_value(_lookup_value, _lookup_type, _content_type="document"
     :param _content_type: The type of content associated with the lookup value and lookup type (Default: ``document``)
     :type _content_type: str
     :returns: The properly formatted lookup value
-    :raises: LookupMismatchError, InvalidLookupTypeError, CurrentlyUnsupportedError
+    :raises: :py:exc:`khorosjx.errors.exceptions.LookupMismatchError`,
+             :py:exc:`khorosjx.errors.exceptions.InvalidLookupTypeError`,
+             :py:exc:`khorosjx.errors.exceptions.CurrentlyUnsupportedError`
     """
     warnings.warn(
         "The khorosjx.content.__convert_lookup_value function is deprecated and will be removed in v3.0.0. Use " +
@@ -106,7 +108,10 @@ def get_document_info(lookup_value, lookup_type='doc_id', return_fields=[], igno
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A dictionary with the group information
-    :raises: GETRequestError, InvalidDatasetError, InvalidLookupTypeError, LookupMismatchError
+    :raises: :py:exc:`khorosjx.errors.exceptions.GETRequestError`,
+             :py:exc:`khorosjx.errors.exceptions.InvalidDatasetError`,
+             :py:exc:`khorosjx.errors.exceptions.InvalidLookupTypeError`,
+             :py:exc:`khorosjx.errors.exceptions.LookupMismatchError`
     """
     warnings.warn(
         "The khorosjx.content.get_document_info function is deprecated and will be removed in v3.0.0. Use " +
@@ -151,7 +156,10 @@ def get_document_attachments(lookup_value, lookup_type='doc_id', return_datafram
     :param return_dataframe: Determines whether or not a pandas dataframe should be returned
     :type return_dataframe: bool
     :returns: A list, dictionary or pandas dataframe depending on the number of attachments and/or function arguments
-    :raises: GETRequestError, InvalidDatasetError, InvalidLookupTypeError, LookupMismatchError
+    :raises: :py:exc:`khorosjx.errors.exceptions.GETRequestError`,
+             :py:exc:`khorosjx.errors.exceptions.InvalidDatasetError`,
+             :py:exc:`khorosjx.errors.exceptions.InvalidLookupTypeError`,
+             :py:exc:`khorosjx.errors.exceptions.LookupMismatchError`
     """
     warnings.warn(
         "The khorosjx.content.get_document_attachments function is deprecated and will be removed in v3.0.0. Use " +

@@ -6,12 +6,11 @@
 :Example:           ``user_info = khorosjx.core.get_data('people', 'john.doe@example.com', 'email')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     22 Jan 2020
+:Modified Date:     24 Mar 2020
 """
 
 import re
 import json
-import warnings
 
 import requests
 
@@ -31,7 +30,7 @@ def set_base_url(domain_url, version=3, protocol='https'):
     :param protocol: The protocol to leverage for the domain prefix if not already supplied (Default: ``https``)
     :type protocol: str
     :returns: The base URL for API calls in string format (e.g. ``https://community.example.com/api/core/v3``)
-    :raises: TypeError, ValueError
+    :raises: :py:exc:`TypeError`, :py:exc:`ValueError`
     """
     # Define global variable and dictionaries
     global base_url
@@ -63,6 +62,9 @@ def set_credentials(credentials):
     :param credentials: The username and password for the account that will be utilizing the Core API
     :type credentials: tuple
     :returns: None
+    :raises: :py:exc:`khorosjx.errors.exceptions.IncompleteCredentialsError`,
+             :py:exc:`khorosjx.errors.exceptions.CredentialsUnpackingError`,
+             :py:exc:`khorosjx.errors.exceptions.WrongCredentialTypeError`
     """
     # Initialize the global variable
     global api_credentials
@@ -99,7 +101,8 @@ def verify_connection():
     """This function verifies that the base URL and API credentials have been defined.
 
     :returns: None
-    :raises: NameError, KhorosJXError, NoCredentialsError
+    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
     try:
         base_url
@@ -212,7 +215,7 @@ def get_request_with_retries(query_url, return_json=False):
     :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``False``)
     :type return_json: bool
     :returns: The API response from the GET request (optionally in JSON format)
-    :raises: ValueError, TypeError, ConnectionError
+    :raises: :py:exc:`ValueError`, :py:exc:`TypeError`, :py:exc:`khorosjx.errors.exceptions.APIConnectionError`
     """
     # Verify that the connection has been established
     verify_connection()
@@ -232,7 +235,7 @@ def get_request_with_retries(query_url, return_json=False):
     if retries == 6:
         failure_msg = "The API call was unable to complete successfully after five consecutive API timeouts " + \
                       "and/or failures. Please call the function again or contact Khoros Support."
-        raise ConnectionError(failure_msg)
+        raise errors.exceptions.APIConnectionError(failure_msg)
 
     # Convert to JSON if specified
     if return_json:
@@ -241,7 +244,7 @@ def get_request_with_retries(query_url, return_json=False):
 
 
 def get_base_url(api_base=True):
-    """This function returns the base URL of the environment with or withut the ``/api/core/v3/`` path appended.
+    """This function returns the base URL of the environment with or without the ``/api/core/v3/`` path appended.
 
     :param api_base: Determines if the ``/api/core/v3/`` path should be appended (``True`` by default)
     :type api_base: bool
@@ -300,7 +303,7 @@ def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_
     :param all_fields: Determines whether or not the ``fields=@all`` query should be included (Default: ``False``)
     :type all_fields: bool
     :returns: The API response either as a requests response or in JSON format depending on the ``return_json`` value
-    :raises: GETRequestError
+    :raises: :py:exc:`khorosjx.errors.exceptions.GETRequestError`
     """
     # Verify that the connection has been established
     verify_connection()
@@ -367,7 +370,18 @@ def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_
 
 # Define internal function to perform API requests (PUT or POST) with JSON payload
 def __api_request_with_payload(_url, _json_payload, _request_type):
-    """This function performs an API request while supplying a JSON payload."""
+    """This function performs an API request while supplying a JSON payload.
+
+    :param _url: The query URL to be leveraged in the API call
+    :type _url: str
+    :param _json_payload: The payload for the API call in JSON format
+    :type _json_payload: dict
+    :param _request_type: Defines if the API call will be a ``put`` or ``post`` request
+    :type _request_type: str
+    :returns: The API response
+    :raises: :py:exc:`khorosjx.errors.exceptions.InvalidRequestTypeError`,
+             :py:exc:`khorosjx.errors.exceptions.APIConnectionError`
+    """
     _retries = 0
     while _retries <= 5:
         try:
@@ -403,7 +417,8 @@ def post_request_with_retries(url, json_payload):
     :param json_payload: The payload for the POST request in JSON format
     :type json_payload: dict
     :returns: The API response from the POST request
-    :raises: ValueError, APIConnectionError, POSTRequestError
+    :raises: :py:exc:`ValueError`, :py:exc:`khorosjx.errors.exceptions.APIConnectionError`,
+             :py:exc:`khorosjx.errors.exceptions.POSTRequestError`
     """
     response = __api_request_with_payload(url, json_payload, 'post')
     return response
@@ -418,7 +433,8 @@ def put_request_with_retries(url, json_payload):
     :param json_payload: The payload for the PUT request in JSON format
     :type json_payload: dict
     :returns: The API response from the PUT request
-    :raises: ValueError, APIConnectionError, PUTRequestError
+    :raises: :py:exc:`ValueError`, :py:exc:`khorosjx.errors.exceptions.APIConnectionError`,
+             :py:exc:`khorosjx.errors.exceptions.PUTRequestError`
     """
     response = __api_request_with_payload(url, json_payload, 'put')
     return response
@@ -451,7 +467,7 @@ def get_fields_from_api_response(json_data, dataset, return_fields=[]):
     :param return_fields: The fields that should be returned from the API response (Default: all fields in dataset)
     :type return_fields: list
     :returns: A dictionary with the field names and corresponding values
-    :raises: InvalidDatasetError
+    :raises: :py:exc:`khorosjx.errors.exceptions.InvalidDatasetError`
     """
     # Define the empty dictionary for data to return
     fields_data = {}
@@ -492,6 +508,7 @@ def get_fields_from_api_response(json_data, dataset, return_fields=[]):
 
 
 def __get_filter_syntax(_filter_info, _prefix=True):
+    # TODO: Add a docstring
     if type(_filter_info) != tuple and type(_filter_info) != list:
         raise TypeError("Filter information must be provided as a tuple (element, criteria) or a list of tuples.")
     elif type(_filter_info) == tuple:
@@ -526,7 +543,7 @@ def get_paginated_results(query, response_data_type, start_index=0, filter_info=
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: The queried data as a list comprised of dictionaries
-    :raises: GETRequestError
+    :raises: :py:exc:`khorosjx.errors.exceptions.GETRequestError`
     """
     # Initialize the empty list for the aggregate data
     aggregate_data = []

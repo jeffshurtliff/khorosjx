@@ -6,7 +6,7 @@
 :Example:           ``space_info = khorosjx.spaces.get_space_info(1234)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     07 Jan 2020
+:Modified Date:     24 Mar 2020
 """
 
 import warnings
@@ -29,7 +29,8 @@ def get_space_info(place_id, return_fields=[], ignore_exceptions=False):
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A dictionary with the space information
-    :raises: GETRequestError, InvalidDatasetError
+    :raises: :py:exc:`khorosjx.errors.exceptions.GETRequestError`,
+             :py:exc:`khorosjx.errors.exceptions.InvalidDatasetError`
     """
     warnings.warn(
         "The khorosjx.spaces.get_space_info function is deprecated and will be removed in v3.0.0. Use " +
@@ -75,7 +76,7 @@ def get_browse_id(space_id, return_type='str'):
     :param return_type: Determines whether to return the value as a ``str`` or an ``int`` (Default: ``str``)
     :type return_type: str
     :returns: The Browse ID (aka Place ID) for the space
-    :raises: GETRequestError
+    :raises: :py:exc:`khorosjx.errors.exceptions.GETRequestError`
     """
     warnings.warn(
         "The khorosjx.spaces.get_browse_id function is deprecated and will be removed in v3.0.0. Use " +
@@ -123,7 +124,7 @@ def get_spaces_list_from_file(full_path, file_type='csv', has_headers=True,
     :param filter_info: Dictionary used to apply any filter to the imported data if necessary (Null by default)
     :type filter_info: dict
     :returns: A list of space identifiers
-    :raises: InvalidFileTypeError
+    :raises: :py:exc:`khorosjx.errors.exceptions.InvalidFileTypeError`
     """
     warnings.warn(
         "The khorosjx.spaces.get_spaces_list_from_file function is deprecated and will be removed in v3.0.0. Use " +
@@ -149,7 +150,8 @@ def get_permitted_content_types(id_value, id_type='browse_id', return_type='list
     :param return_type: Determines if the result should be returned in ``list`` (Default), ``tuple`` or ``str`` format
     :type return_type: str
     :returns: The permitted content types in list, tuple or string format
-    :raises: SpaceNotFountError, GETRequestError
+    :raises: :py:exc:`khorosjx.errors.exceptions.SpaceNotFountError`,
+             :py:exc:`khorosjx.errors.exceptions.GETRequestError`
     """
     warnings.warn(
         "The khorosjx.spaces.get_permitted_content_types function is deprecated and will be removed in v3.0.0. Use " +
@@ -174,7 +176,8 @@ def get_space_permissions(id_value, id_type='browse_id', return_type='list'):
     :param return_type: Determines if the result should be returned as a ``list`` (Default) or pandas ``dataframe``
     :type return_type: str
     :returns: The list or dataframe with the space permissions
-    :raises: SpaceNotFoundError, GETRequestError
+    :raises: :py:exc:`khorosjx.errors.exceptions.SpaceNotFountError`,
+             :py:exc:`khorosjx.errors.exceptions.GETRequestError`
     """
     warnings.warn(
         "The khorosjx.spaces.get_space_permissions function is deprecated and will be removed in v3.0.0. Use " +
