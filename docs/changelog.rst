@@ -4,6 +4,22 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.5.2
+******
+**Release Date: 2020-04-29**
+
+Fixed
+=====
+
+Supporting Modules
+------------------
+Fixes to the :doc:`supporting modules <supporting-modules>`.
+
+* Fixed the :py:func:`khorosjx.utils.helper._convert_yaml_to_bool` function to only perform its
+  operations if the passed value is not a Boolean value to prevent the following :py:exc:`AttributeError`
+  exception from occurring: ``AttributeError: 'bool' object has no attribute 'lower'``
+
+******
 v2.5.1
 ******
 **Release Date: 2020-04-29**

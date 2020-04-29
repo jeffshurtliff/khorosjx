@@ -51,13 +51,18 @@ def parse_helper_cfg(helper_cfg, file_type='yaml'):
 
 # Define function to covert a YAML Boolean value to a Python Boolean value
 def _convert_yaml_to_bool(_yaml_bool_value):
-    """This function converts the 'yes' and 'no' YAML values to traditional Boolean values."""
-    true_values = ['yes', 'true']
-    if _yaml_bool_value.lower() in true_values:
-        _bool_value = True
-    else:
-        _bool_value = False
-    return _bool_value
+    """This function converts the 'yes' and 'no' YAML values to traditional Boolean values.
+
+    .. versionchanged:: 2.5.2
+       A conversion is now only attempted if the value is not already in Boolean format.
+    """
+    if type(_yaml_bool_value) != bool:
+        true_values = ['yes', 'true']
+        if _yaml_bool_value.lower() in true_values:
+            _yaml_bool_value = True
+        else:
+            _yaml_bool_value = False
+    return _yaml_bool_value
 
 
 # Define function to parse the function arguments if present
