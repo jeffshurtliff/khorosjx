@@ -6,7 +6,7 @@
 :Example:        ``group_info = groups.get_group_info(1051)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  24 Mar 2020
+:Modified Date:  29 Apr 2020
 """
 
 import requests
@@ -83,7 +83,7 @@ def get_group_info(group_id, return_fields=[], ignore_exceptions=False):
     return group_info
 
 
-def __get_paginated_groups(_return_fields, _ignore_exceptions, _start_index):
+def _get_paginated_groups(_return_fields, _ignore_exceptions, _start_index):
     """This function returns paginated group information. (Up to 100 records at a time)
 
     :param _return_fields: Specific fields to return if not all of the default fields are needed (Optional)
@@ -134,13 +134,13 @@ def get_all_groups(return_fields=[], return_type='list', ignore_exceptions=False
 
     # Perform the first query to get up to the first 100 groups
     start_index = 0
-    groups = __get_paginated_groups(return_fields, ignore_exceptions, start_index)
+    groups = _get_paginated_groups(return_fields, ignore_exceptions, start_index)
     all_groups = core_utils.add_to_master_list(groups, all_groups)
 
     # Continue querying for groups until none are returned
     while len(groups) > 0:
         start_index += 100
-        groups = __get_paginated_groups(return_fields, ignore_exceptions, start_index)
+        groups = _get_paginated_groups(return_fields, ignore_exceptions, start_index)
         all_groups = core_utils.add_to_master_list(groups, all_groups)
 
     # Return the data as a master list of group dictionaries or a pandas dataframe
@@ -342,8 +342,8 @@ def add_user_to_group(group_id, user_value, lookup_type="id", return_mode="none"
         return
 
 
-def __add_paginated_members(_base_query_uri, _response_data_type, _start_index,
-                            _ignore_exceptions, _return_fields, _all_users):
+def _add_paginated_members(_base_query_uri, _response_data_type, _start_index,
+                           _ignore_exceptions, _return_fields, _all_users):
     """This function for a paginated list of users and then add them to the master list."""
     _paginated_users = core.get_paginated_results(_base_query_uri, _response_data_type, _start_index,
                                                   ignore_exceptions=_ignore_exceptions,
@@ -355,6 +355,9 @@ def __add_paginated_members(_base_query_uri, _response_data_type, _start_index,
 # Define function to get the members (or admins) of a security group
 def get_group_memberships(group_id, user_type="member", only_id=True, return_type="list", ignore_exceptions=False):
     """This function gets the memberships (including administrator membership) for a specific security group.
+
+    .. versionchanged:: 2.5.1
+       The ``?fields=@all`` query string was added to the API URI to ensure all fields are retrieved.
 
     :param group_id: The Group ID for the security group
     :type group_id: int, str
@@ -378,7 +381,7 @@ def get_group_memberships(group_id, user_type="member", only_id=True, return_typ
 
     # Define the base query URI
     if user_type in Groups.membership_types:
-        base_query_uri = f"{base_url}/securityGroups/{group_id}/{Groups.membership_types.get(user_type)}"
+        base_query_uri = f"{base_url}/securityGroups/{group_id}/{Groups.membership_types.get(user_type)}?fields=@all"
     else:
         raise ValueError(f"The '{user_type}' value is not a valid user type.")
 
@@ -391,13 +394,13 @@ def get_group_memberships(group_id, user_type="member", only_id=True, return_typ
 
     # Perform the first query to get up to the first 100 members or admins
     start_index = 0
-    all_users, users_returned = __add_paginated_members(base_query_uri, response_data_type, start_index,
+    all_users, users_returned = _add_paginated_members(base_query_uri, response_data_type, start_index,
                                                         ignore_exceptions, return_fields, all_users)
 
     # Continue querying for groups until none are returned
     while users_returned > 0:
         start_index += 100
-        all_users, users_returned = __add_paginated_members(base_query_uri, response_data_type, start_index,
+        all_users, users_returned = _add_paginated_members(base_query_uri, response_data_type, start_index,
                                                             ignore_exceptions, return_fields, all_users)
 
     # Return the data as a master list of group dictionaries or a pandas dataframe

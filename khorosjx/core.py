@@ -484,25 +484,31 @@ def get_fields_from_api_response(json_data, dataset, return_fields=[]):
 
     # Get and return the fields and corresponding values
     for field in fields_to_return:
-        if field in json_data:
-            fields_data[field] = json_data[field]
-        elif field == "emails.value":
-            fields_data[field] = json_data['emails'][0]['value']
-        elif field == "name.formatted":
-            fields_data[field] = json_data['name']['formatted']
-        elif field == "jive.lastAuthenticated":
-            fields_data[field] = json_data['jive']['lastAuthenticated']
-        elif field == "jive.externalIdentities.identityType":
-            fields_data[field] = json_data['jive']['externalIdentities'][0]['identityType']
-        elif field == "jive.externalIdentities.identity":
-            fields_data[field] = json_data['jive']['externalIdentities'][0]['identity']
-        elif field == "jive.username":
-            fields_data[field] = json_data['jive']['username']
-        elif field == "jive.status":
-            fields_data[field] = json_data['jive']['status']
-        elif field == "resources.html.ref":
-            fields_data[field] = json_data['resources']['html']['ref']
-        else:
+        field_not_found = False
+        try:
+            if field in json_data:
+                fields_data[field] = json_data[field]
+            elif field == "emails.value":
+                fields_data[field] = json_data['emails'][0]['value']
+            elif field == "name.formatted":
+                fields_data[field] = json_data['name']['formatted']
+            elif field == "jive.lastAuthenticated":
+                fields_data[field] = json_data['jive']['lastAuthenticated']
+            elif field == "jive.externalIdentities.identityType":
+                fields_data[field] = json_data['jive']['externalIdentities'][0]['identityType']
+            elif field == "jive.externalIdentities.identity":
+                fields_data[field] = json_data['jive']['externalIdentities'][0]['identity']
+            elif field == "jive.username":
+                fields_data[field] = json_data['jive']['username']
+            elif field == "jive.status":
+                fields_data[field] = json_data['jive']['status']
+            elif field == "resources.html.ref":
+                fields_data[field] = json_data['resources']['html']['ref']
+            else:
+                field_not_found = True
+        except (IndexError, KeyError):
+            field_not_found = True
+        if field_not_found:
             eprint(f"Unable to locate the '{field}' field in the API response data.")
     return fields_data
 

@@ -176,6 +176,23 @@ def print_if_verbose(msg, verbose_enabled=False):
     return
 
 
+def remove_comment_wrappers_from_html(html_string):
+    """This function removes comment wrappers (i.e. ``<!--`` and ``-->``) from an HTML string.
+
+    .. versionadded:: 2.5.1
+
+    :param html_string: The HTML string from which to remove comment wrappers
+    :type html_string: str
+    :returns: The HTML string with comment wrappers removed
+    """
+    start_comment_position = html_string.find("<!--")
+    end_comment_position = html_string.find("-->")
+    last_start_comment_position = html_string.rfind("<!--")
+    last_end_comment_position = html_string.rfind("-->")
+    return html_string.replace(html_string[start_comment_position:end_comment_position + 3], "").replace(
+        html_string[last_start_comment_position:last_end_comment_position + 3], "")
+
+
 def identify_dataset(query_uri):
     """This function identifies the appropriate field dataset by examining a query URI.
 

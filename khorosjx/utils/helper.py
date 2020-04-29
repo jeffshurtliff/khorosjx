@@ -6,7 +6,7 @@
 :Example:        ``helper_cfg = helper.import_yaml_file('/path/to/jxhelper.yml')``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  14 Jan 2020
+:Modified Date:  29 Apr 2020
 """
 
 import importlib
@@ -21,13 +21,16 @@ from ..errors import exceptions
 def import_yaml_file(file_path):
     """This function imports a YAML (.yml) helper config file.
 
+    .. versionchanged:: 2.5.1
+       Changed the name and replaced the ``yaml.load`` function call with ``yaml.safe_load`` to be more secure.
+
     :param file_path: The file path to the YAML file
     :type file_path: str
     :returns: The parsed configuration data
     :raises: FileNotFoundError
     """
     with open(file_path, 'r') as yml_file:
-        helper_cfg = yaml.load(yml_file, Loader=yaml.BaseLoader)
+        helper_cfg = yaml.safe_load(yml_file)
     return helper_cfg
 
 
@@ -40,14 +43,14 @@ def parse_helper_cfg(helper_cfg, file_type='yaml'):
     :returns: None (Defines global variables)
     :raises: CredentialsUnpackingError, InvalidHelperArgumentsError, HelperFunctionNotFoundError
     """
-    __get_connection_info(helper_cfg, file_type)
-    __get_console_color_settings(helper_cfg, file_type)
-    __get_modules_to_import(helper_cfg, file_type)
+    _get_connection_info(helper_cfg, file_type)
+    _get_console_color_settings(helper_cfg, file_type)
+    _get_modules_to_import(helper_cfg, file_type)
     return
 
 
 # Define function to covert a YAML Boolean value to a Python Boolean value
-def __convert_yaml_to_bool(_yaml_bool_value):
+def _convert_yaml_to_bool(_yaml_bool_value):
     """This function converts the 'yes' and 'no' YAML values to traditional Boolean values."""
     true_values = ['yes', 'true']
     if _yaml_bool_value.lower() in true_values:
@@ -58,7 +61,7 @@ def __convert_yaml_to_bool(_yaml_bool_value):
 
 
 # Define function to parse the function arguments if present
-def __parse_function_arguments(_function_args_string):
+def _parse_function_arguments(_function_args_string):
     if len(_function_args_string) == 0:
         _parsed_arguments = {}
     else:
@@ -72,33 +75,33 @@ def __parse_function_arguments(_function_args_string):
             if ("\"" in _arg_value) or ("'" in _arg_value):
                 _arg_value = str(_arg_value.replace("\"", "").replace("'", ""))
             elif _arg_value.lower() == "true" or _arg_value.lower() == "false":
-                _arg_value = __convert_yaml_to_bool(_arg_value)
+                _arg_value = _convert_yaml_to_bool(_arg_value)
             elif _arg_value.isdigit():
                 _arg_value = int(_arg_value)
             _parsed_arguments[_arg_key] = _arg_value
     return _parsed_arguments
 
 
-# Define function to get the connection information
-def __get_connection_info(_helper_cfg, _file_type='yaml'):
+def _get_connection_info(_helper_cfg, _file_type='yaml'):
+    """This function retrieves the connection information from the helper configuration file."""
     # Define the base URL as a global string variable
     global helper_base_url
     helper_base_url = _helper_cfg['connection']['base_url']
 
     # Define the API credentials as a global tuple variable
     global helper_api_credentials
-    _use_script = __convert_yaml_to_bool(_helper_cfg['connection']['credentials']['use_script'])
+    _use_script = _convert_yaml_to_bool(_helper_cfg['connection']['credentials']['use_script'])
     if _use_script is False:
         _helper_username = _helper_cfg['connection']['credentials']['username']
         _helper_password = _helper_cfg['connection']['credentials']['password']
     else:
-        _helper_username, _helper_password = __get_credentials_from_module(_helper_cfg)
+        _helper_username, _helper_password = _get_credentials_from_module(_helper_cfg)
     helper_api_credentials = (_helper_username, _helper_password)
     return
 
 
 # Define function to get the API credentials from a module and function
-def __get_credentials_from_module(_helper_cfg):
+def _get_credentials_from_module(_helper_cfg):
     # Define the module and function information
     _module_name = _helper_cfg['connection']['credentials']['module_name']
     _function_name = _helper_cfg['connection']['credentials']['function_name']
@@ -112,7 +115,7 @@ def __get_credentials_from_module(_helper_cfg):
         raise exceptions.HelperFunctionNotFoundError
 
     # Parse the function arguments
-    _arguments = __parse_function_arguments(_function_kwargs)
+    _arguments = _parse_function_arguments(_function_kwargs)
 
     # Retrieve the credentials using the module and function
     try:
@@ -124,11 +127,11 @@ def __get_credentials_from_module(_helper_cfg):
 
 
 # Define function to get the modules to import
-def __get_modules_to_import(_helper_cfg, _file_type='yaml'):
+def _get_modules_to_import(_helper_cfg, _file_type='yaml'):
     global modules_to_import
     modules_to_import = []
     if 'import_all' in _helper_cfg['modules'].keys():
-        if __convert_yaml_to_bool(_helper_cfg['modules']['import_all']) is True:
+        if _convert_yaml_to_bool(_helper_cfg['modules']['import_all']) is True:
             modules_to_import.append('all')
             return
     for _mod_name, _import_val in _helper_cfg['modules'].items():
@@ -143,13 +146,13 @@ def __get_modules_to_import(_helper_cfg, _file_type='yaml'):
                          f"'{_mod_name}' setting. The entry will be ignored."
             eprint(_error_msg)
         else:
-            if __convert_yaml_to_bool(_helper_cfg['modules'][_import_val]) is True:
+            if _convert_yaml_to_bool(_helper_cfg['modules'][_import_val]) is True:
                 modules_to_import.append(_mod_name)
     return
 
 
 # Define function to get console color settings
-def __get_console_color_settings(_helper_cfg, _file_type='yaml'):
+def _get_console_color_settings(_helper_cfg, _file_type='yaml'):
     # Define the console colors setting as a Boolean global variable
     global helper_console_colors
     _cfg_val = _helper_cfg['styling']['use_console_colors']

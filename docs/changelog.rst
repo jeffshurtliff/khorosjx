@@ -6,15 +6,82 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ******
 v2.5.1
 ******
-**Release Date: TBD**
+**Release Date: 2020-04-29**
 
 Added
 =====
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:func:`khorosjx.utils.core_utils.remove_comment_wrappers_from_html` function.
 
 General
 -------
 * Added *PyCharm Python Security Scanner* to the
   `pythonpackage.yml <https://github.com/jeffshurtliff/khorosjx/blob/master/.github/workflows/pythonpackage.yml>`_ file.
+* Updated to `bleach v3.1.4 <https://github.com/mozilla/bleach/releases/tag/v3.1.4>`_ as
+  `recommended by GitHub <https://github.com/jeffshurtliff/khorosjx/commit/702819ea09f63635804f820fb365de42a8efdc2e>`_
+  to include some security fixes.
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Renamed the :py:func:`khorosjx.places.spaces.get_space_permissions` function to be
+  :py:func:`khorosjx.places.spaces.get_space_content_permissions` instead and added a :py:exc:`DeprecationWarning` to
+  the original.
+* Moved the :py:func:`khorosjx.places.spaces.__get_paginated_content_permissions` function from within the
+  :py:func:`khorosjx.places.spaces.get_space_permissions` function to the module level.
+* Moved the :py:func:`khorosjx.places.spaces.verify_core_connection.__get_info` function to the module level as
+  :py:func:`khorosjx.places.spaces.retrieve_connection_info`.
+* Renamed the :py:func:`khorosjx.groups.__add_paginated_members` function to be
+  :py:func:`khorosjx.groups._add_paginated_members` instead.
+* Renamed the :py:func:`khorosjx.groups.__get_paginated_groups` function to be
+  :py:func:`khorosjx.groups._get_paginated_groups` instead.
+* Added the ``?fields=@all`` query string to the API URI in the :py:func:`khorosjx.groups.get_group_members`
+  function to ensure all fields are retrieved.
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Replaced the ``yaml.load()`` function call with ``yaml.safe_load()`` in
+  :py:func:`khoros.utils.helper.import_yaml_file` as it is a better security practice.
+* Renamed the :py:func:`khorosjx.utils.helper.__get_connection_info` function to be
+  :py:func:`khorosjx.utils.helper._get_connection_info` instead.
+* Renamed the :py:func:`khorosjx.utils.helper.__get_credentials_from_module` function to be
+  :py:func:`khorosjx.utils.helper._get_credentials_from_module` instead.
+* Renamed the :py:func:`khorosjx.utils.helper.__parse_function_arguments` function to be
+  :py:func:`khorosjx.utils.helper._parse_function_arguments` instead.
+* Renamed the :py:func:`khorosjx.utils.helper.__get_console_color_settings` function to be
+  :py:func:`khorosjx.utils.helper._get_console_color_settings` instead.
+* Renamed the :py:func:`khorosjx.utils.helper.__get_modules_to_import` function to be
+  :py:func:`khorosjx.utils.helper._get_modules_to_import` instead.
+* Renamed the :py:func:`khorosjx.utils.helper.__convert_yaml_to_bool` function to be
+  :py:func:`khorosjx.utils.helper._convert_yaml_to_bool` instead.
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Added error handling to the :py:func:`khorosjx.core.get_fields_from_api_response` function to
+  prevent it from failing with an :py:exc:`IndexError` exception.
+
+Documentation
+-------------
+Fixes to the documentation.
+
+* Fixed a typo and added hyperlinks to raised exceptions in the
+  :py:func:`khorosjx.places.spaces.get_permitted_content_types` function docstring.
+* Fixed a typo in the docstring for the :py:func:`khorosjx.news.filter_subscriptions_by_id` function.
 
 |
 

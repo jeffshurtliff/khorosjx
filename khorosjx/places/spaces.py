@@ -6,36 +6,42 @@
 :Example:           ``space_info = khorosjx.places.spaces.get_space_info(browse_id)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     04 Jan 2020
+:Modified Date:     29 Apr 2020
 """
+
+import warnings
 
 from .. import core, errors
 from . import base as places_core
 from ..utils import core_utils, df_utils
 
 
-# Define function to verify the connection in the core module
 def verify_core_connection():
     """This function verifies that the core connection information (Base URL and API credentials) has been defined.
 
     :returns: None
-    :raises: NameError, KhorosJXError, NoCredentialsError
+    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    def __get_info():
-        """This function initializes and defines the global variables for the connection information."""
-        # Initialize global variables
-        global base_url
-        global api_credentials
-
-        # Define the global variables at this module level
-        base_url, api_credentials = core.get_connection_info()
-        return
-
     try:
         base_url
         api_credentials
     except NameError:
-        __get_info()
+        retrieve_connection_info()
+    return
+
+
+def retrieve_connection_info():
+    """This function initializes and defines the global variables for the connection information.
+
+    :returns: None
+    """
+    # Initialize global variables
+    global base_url
+    global api_credentials
+
+    # Define the global variables at this module level
+    base_url, api_credentials = core.get_connection_info()
     return
 
 
@@ -50,7 +56,8 @@ def get_space_info(place_id, return_fields=[], ignore_exceptions=False):
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A dictionary with the space information
-    :raises: GETRequestError, InvalidDatasetError
+    :raises: :py:exc:`khorosjx.errors.exceptions.GETRequestError`,
+             :py:exc:`khorosjx.errors.exceptions.InvalidDatasetError`
     """
     # Verify that the core connection has been established
     verify_core_connection()
@@ -71,7 +78,8 @@ def get_permitted_content_types(id_value, id_type='browse_id', return_type='list
     :param return_type: Determines if the result should be returned in ``list`` (Default), ``tuple`` or ``str`` format
     :type return_type: str
     :returns: The permitted content types in list, tuple or string format
-    :raises: SpaceNotFountError, GETRequestError
+    :raises: :py:exc:`khorosjx.errors.exceptions.SpaceNotFoundError`,
+             :py:exc:`khorosjx.errors.exceptions.GETRequestError`
     """
     # Verify that the core connection has been established
     verify_core_connection()
@@ -95,8 +103,46 @@ def get_permitted_content_types(id_value, id_type='browse_id', return_type='list
     return content_types
 
 
-# Define function to get space permissions for a space
+def __get_paginated_content_permissions(_browse_id, _start_index):
+    """This function returns a single page of permissions results for a given space.
+
+    :param _browse_id: The Browse ID of the space to be queried
+    :type _browse_id: int, str
+    :param _start_index: The ``startIndex`` value to be used in the API query string
+    :returns: A list of JSON dictionaries with the API query results
+    :raises: :py:exc:`khorosjx.errors.exceptions.GETRequestError`
+    """
+    _query_uri = f"{base_url}/places/{_browse_id}/appliedEntitlements?fields=@all&count=100&" + \
+                 f"startIndex={_start_index}"
+    _permissions_json = core.get_request_with_retries(_query_uri, return_json=True)
+    errors.handlers.check_json_for_error(_permissions_json, 'space')
+    _permissions_list = _permissions_json['list']
+    return _permissions_list
+
+
 def get_space_permissions(id_value, id_type='browse_id', return_type='list'):
+    """This **deprecated** function returns all of the defined permissions (aka ``appliedEntitlements``) for a space.
+
+    .. deprecated:: 2.6.0
+       The function has been renamed to be :py:func:`khorosjx.places.spaces.get_space_content_permissions`.
+
+    :param id_value: The space identifier as a Browse ID (default), Place ID or Space ID
+    :type id_value: int, str
+    :param id_type: Determines if the ``id_value`` is a ``browse_id`` (Default), ``place_id`` or ``space_id``
+    :type id_type: str
+    :param return_type: Determines if the result should be returned as a ``list`` (Default) or pandas ``dataframe``
+    :type return_type: str
+    :returns: The list or dataframe with the space permissions
+    :raises: :py:exc:`khorosjx.errors.exceptions.SpaceNotFoundError`,
+             :py:exc:`khorosjx.errors.exceptions.GETRequestError`
+    """
+    warnings.warn("The 'khorosjx.content.spaces.get_space_permissions' function has been renamed to be " +
+                  "'khorosjx.content.spaces.get_space_content_permissions' in version 2.6.0 and will be removed " +
+                  "in version 2.7.0.", DeprecationWarning)
+    return get_space_content_permissions(id_value, id_type, return_type)
+
+
+def get_space_content_permissions(id_value, id_type='browse_id', return_type='list'):
     """This function returns all of the defined permissions (aka ``appliedEntitlements``) for a specific space.
 
     :param id_value: The space identifier as a Browse ID (default), Place ID or Space ID
@@ -106,16 +152,9 @@ def get_space_permissions(id_value, id_type='browse_id', return_type='list'):
     :param return_type: Determines if the result should be returned as a ``list`` (Default) or pandas ``dataframe``
     :type return_type: str
     :returns: The list or dataframe with the space permissions
-    :raises: SpaceNotFoundError, GETRequestError
+    :raises: :py:exc:`khorosjx.errors.exceptions.SpaceNotFoundError`,
+             :py:exc:`khorosjx.errors.exceptions.GETRequestError`
     """
-    def __get_paginated_permissions(_browse_id, _start_index):
-        _query_uri = f"{base_url}/places/{_browse_id}/appliedEntitlements?fields=@all&count=100&" + \
-                     f"startIndex={_start_index}"
-        _permissions_json = core.get_request_with_retries(_query_uri, return_json=True)
-        errors.handlers.check_json_for_error(_permissions_json, 'space')
-        _permissions_list = _permissions_json['list']
-        return _permissions_list
-
     # Verify that the core connection has been established
     verify_core_connection()
 
@@ -127,13 +166,13 @@ def get_space_permissions(id_value, id_type='browse_id', return_type='list'):
 
     # Perform the first query to get up to the first 100 groups
     start_index = 0
-    permissions = __get_paginated_permissions(id_value, start_index)
+    permissions = __get_paginated_content_permissions(id_value, start_index)
     all_permissions = core_utils.add_to_master_list(permissions, all_permissions)
 
     # Continue querying for groups until none are returned
     while len(permissions) > 0:
         start_index += 100
-        permissions = __get_paginated_permissions(id_value, start_index)
+        permissions = __get_paginated_content_permissions(id_value, start_index)
         all_permissions = core_utils.add_to_master_list(permissions, all_permissions)
 
     # Return the data as a master list of group dictionaries or a pandas dataframe

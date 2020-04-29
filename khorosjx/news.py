@@ -6,7 +6,7 @@
 :Example:        ``all_publication = khorosjx.news.get_all_publications()``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  24 Mar 2020
+:Modified Date:  29 Apr 2020
 """
 
 from . import core, errors
@@ -166,7 +166,7 @@ def filter_subscriptions_by_id(sub_id, subscriptions):
     :type sub_id: str
     :param subscriptions: A list of subscriptions
     :type subscriptions: list
-    returns: The subscription that has the supplied subscription ID
+    :returns: The subscription that has the supplied subscription ID
     :raises: :py:exc:`khorosjx.errors.exceptions.SubscriptionNotFoundError`
     """
     for subscription in subscriptions:
