@@ -6,7 +6,7 @@
 :Example:           ``user_info = khorosjx.core.get_data('people', 'john.doe@example.com', 'email')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     24 Mar 2020
+:Modified Date:     01 May 2020
 """
 
 import re
@@ -19,7 +19,6 @@ from .utils.core_utils import eprint, convert_dict_to_json
 from .utils.classes import Platform, Content
 
 
-# Define function to get the base API URL
 def set_base_url(domain_url, version=3, protocol='https'):
     """This function gets the base URL for API calls when supplied with a domain URL. (e.g. ``community.example.com``)
 
@@ -55,7 +54,6 @@ def set_base_url(domain_url, version=3, protocol='https'):
     return base_url
 
 
-# Define function to define the Core API credentials as global variables
 def set_credentials(credentials):
     """This function defines the Core API credentials as global variables and validates them.
 
@@ -81,7 +79,6 @@ def set_credentials(credentials):
     return
 
 
-# Define function to set up connection to the Core API
 def connect(base_api_url, credentials):
     """This function establishes the connection information for performing Core API queries.
 
@@ -96,7 +93,6 @@ def connect(base_api_url, credentials):
     return
 
 
-# Define function to check if the API credentials have been defined and raise an exception if not
 def verify_connection():
     """This function verifies that the base URL and API credentials have been defined.
 
@@ -112,7 +108,6 @@ def verify_connection():
     return
 
 
-# Define function to get the connection information
 def get_connection_info():
     """This function returns the connection information (Base URL and API credentials) to use in other modules.
 
@@ -123,7 +118,6 @@ def get_connection_info():
     return base_url, api_credentials
 
 
-# Define function to get the current API version information
 def get_api_info(api_filter="none"):
     """This function obtains the API version information for a Jive environment.
 
@@ -166,7 +160,6 @@ def get_api_info(api_filter="none"):
     return api_data
 
 
-# Define function to get the current Core API version
 def get_api_version(api_name="v3"):
     """This function obtains, parses and returns the current version of one of the Jive Core APIs.
 
@@ -192,7 +185,6 @@ def get_api_version(api_name="v3"):
     return api_version
 
 
-# Define function to get the current Core API version
 def get_platform_version():
     """This function obtains the current Khoros JX (or Jive) version for an environment.
 
@@ -206,7 +198,6 @@ def get_platform_version():
     return platform_version
 
 
-# Define function to perform a GET request with retries
 def get_request_with_retries(query_url, return_json=False):
     """This function performs a GET request with a total of 5 retries in case of timeouts or connection issues.
 
@@ -286,7 +277,6 @@ def get_query_url(pre_endpoint, asset_id="", post_endpoint=""):
     return query_url
 
 
-# Define function to perform a general GET request
 def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_exceptions=False, all_fields=False):
     """This function returns data for a specific API endpoint.
 
@@ -368,8 +358,7 @@ def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_
     return response
 
 
-# Define internal function to perform API requests (PUT or POST) with JSON payload
-def __api_request_with_payload(_url, _json_payload, _request_type):
+def _api_request_with_payload(_url, _json_payload, _request_type):
     """This function performs an API request while supplying a JSON payload.
 
     :param _url: The query URL to be leveraged in the API call
@@ -408,7 +397,6 @@ def __api_request_with_payload(_url, _json_payload, _request_type):
     return _response
 
 
-# Define function to perform a POST request with supplied JSON data
 def post_request_with_retries(url, json_payload):
     """This function performs a POST request with a total of 5 retries in case of timeouts or connection issues.
 
@@ -420,11 +408,10 @@ def post_request_with_retries(url, json_payload):
     :raises: :py:exc:`ValueError`, :py:exc:`khorosjx.errors.exceptions.APIConnectionError`,
              :py:exc:`khorosjx.errors.exceptions.POSTRequestError`
     """
-    response = __api_request_with_payload(url, json_payload, 'post')
+    response = _api_request_with_payload(url, json_payload, 'post')
     return response
 
 
-# Define function to perform a PUT request with supplied JSON data
 def put_request_with_retries(url, json_payload):
     """This function performs a PUT request with a total of 5 retries in case of timeouts or connection issues.
 
@@ -436,11 +423,10 @@ def put_request_with_retries(url, json_payload):
     :raises: :py:exc:`ValueError`, :py:exc:`khorosjx.errors.exceptions.APIConnectionError`,
              :py:exc:`khorosjx.errors.exceptions.PUTRequestError`
     """
-    response = __api_request_with_payload(url, json_payload, 'put')
+    response = _api_request_with_payload(url, json_payload, 'put')
     return response
 
 
-# Define function to perform a DELETE request against the API
 def delete(uri, return_json=False):
     """This function performs a DELETE request against the Core API.
 
@@ -456,9 +442,11 @@ def delete(uri, return_json=False):
     return response
 
 
-# Define function to get fields from API responses
-def get_fields_from_api_response(json_data, dataset, return_fields=[]):
+def get_fields_from_api_response(json_data, dataset, return_fields=[], quiet=False):
     """This function parses and retrieves fields from an API response from a specific dataset.
+
+    .. versionchanged:: 2.5.3
+       Fixed the ``email.value`` filter and added the optional ``quiet`` argument
 
     :param json_data: The JSON data from an API response
     :type json_data: dict
@@ -466,6 +454,8 @@ def get_fields_from_api_response(json_data, dataset, return_fields=[]):
     :type dataset: str
     :param return_fields: The fields that should be returned from the API response (Default: all fields in dataset)
     :type return_fields: list
+    :param quiet: Silences any errors about being unable to locate API fields (``False`` by default)
+    :type quiet: bool
     :returns: A dictionary with the field names and corresponding values
     :raises: :py:exc:`khorosjx.errors.exceptions.InvalidDatasetError`
     """
@@ -488,7 +478,7 @@ def get_fields_from_api_response(json_data, dataset, return_fields=[]):
         try:
             if field in json_data:
                 fields_data[field] = json_data[field]
-            elif field == "emails.value":
+            elif field == "email.value":
                 fields_data[field] = json_data['emails'][0]['value']
             elif field == "name.formatted":
                 fields_data[field] = json_data['name']['formatted']
@@ -513,8 +503,8 @@ def get_fields_from_api_response(json_data, dataset, return_fields=[]):
     return fields_data
 
 
-def __get_filter_syntax(_filter_info, _prefix=True):
-    # TODO: Add a docstring
+def _get_filter_syntax(_filter_info, _prefix=True):
+    """This function retrieves the proper filter syntax for an API call."""
     if type(_filter_info) != tuple and type(_filter_info) != list:
         raise TypeError("Filter information must be provided as a tuple (element, criteria) or a list of tuples.")
     elif type(_filter_info) == tuple:
@@ -530,15 +520,15 @@ def __get_filter_syntax(_filter_info, _prefix=True):
     return _syntax
 
 
-def get_paginated_results(query, response_data_type, start_index=0, filter_info=(),
-                          query_all=True, return_fields=[], ignore_exceptions=False):
+def get_paginated_results(query, response_data_type, start_index=0, filter_info=(), query_all=True,
+                          return_fields=[], ignore_exceptions=False, quiet=False):
     """This function performs a GET request for a single paginated response up to 100 records.
 
     :param query: The API query without the query string
     :type query: str
     :param response_data_type: The dataset of fields that will be in the API response (e.g. ``group_members``)
     :type response_data_type: str
-    :param start_index: The startIndex value in the API query string
+    :param start_index: The startIndex value in the API query string (``0`` by default)
     :type start_index: int, str
     :param filter_info: A tuple of list of tuples containing the filter element and criteria (Optional)
     :type filter_info: tuple, list
@@ -548,6 +538,8 @@ def get_paginated_results(query, response_data_type, start_index=0, filter_info=
     :type return_fields: list
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
+    :param quiet: Silences any errors about being unable to locate API fields (``False`` by default)
+    :type quiet: bool
     :returns: The queried data as a list comprised of dictionaries
     :raises: :py:exc:`khorosjx.errors.exceptions.GETRequestError`
     """
@@ -561,7 +553,7 @@ def get_paginated_results(query, response_data_type, start_index=0, filter_info=
     if '?' in query:
         # Strip out the query string if present to prevent interference with the query string to be added
         query = query.split("?")[0]
-    other_filters = __get_filter_syntax(filter_info, _prefix=True)
+    other_filters = _get_filter_syntax(filter_info, _prefix=True)
     full_query = f"{query}?{fields_filter}count=100&startIndex={start_index}{other_filters}"
 
     # Perform the API query to retrieve the information
@@ -574,6 +566,6 @@ def get_paginated_results(query, response_data_type, start_index=0, filter_info=
         paginated_data = response.json()
         for data in paginated_data['list']:
             # Parse and append the data
-            parsed_data = get_fields_from_api_response(data, response_data_type, return_fields)
+            parsed_data = get_fields_from_api_response(data, response_data_type, return_fields, quiet)
             aggregate_data.append(parsed_data)
     return aggregate_data

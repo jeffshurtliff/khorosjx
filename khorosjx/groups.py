@@ -292,9 +292,6 @@ def add_user_to_group(group_id, user_value, lookup_type="id", return_mode="none"
     # Verify that the core connection has been established
     verify_core_connection()
 
-    # Define the default Boolean return value
-    added_to_group = False
-
     # Obtain the Jive ID if an email address is provided for the user information
     valid_lookup_types = ('id', 'email')
     if lookup_type not in valid_lookup_types:
@@ -343,18 +340,42 @@ def add_user_to_group(group_id, user_value, lookup_type="id", return_mode="none"
 
 
 def _add_paginated_members(_base_query_uri, _response_data_type, _start_index,
-                           _ignore_exceptions, _return_fields, _all_users):
-    """This function for a paginated list of users and then add them to the master list."""
+                           _ignore_exceptions, _return_fields, _all_users, _quiet=False):
+    """This function retrieves a paginated list of users and then adds them to a master list.
+
+    .. versionchanged:: 2.5.3
+       Added the optional ``_quiet`` argument to silence missing API field errors.
+
+    :param _base_query_uri: The API query without the query string
+    :type _base_query_uri: str
+    :param _response_data_type: The dataset of fields that will be in the API response (e.g. ``group_members``)
+    :type _response_data_type: str
+    :param _start_index: The startIndex value in the API query string (``0`` by default)
+    :type _start_index: int, str
+    :param _ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
+    :type _ignore_exceptions: bool
+    :param _return_fields: The fields that should be returned from the API response (Default: all fields in dataset)
+    :type _return_fields: list
+    :param _all_users: The master list of group members
+    :type _all_users: list
+    :param _quiet: Silences any errors about being unable to locate API fields (``False`` by default)
+    :type _quiet: bool
+    :returns: The master list of group members and the number of members found during this API call
+    :raises: :py:exc:`khorosjx.errors.exceptions.GETRequestError`
+    """
     _paginated_users = core.get_paginated_results(_base_query_uri, _response_data_type, _start_index,
                                                   ignore_exceptions=_ignore_exceptions,
-                                                  return_fields=_return_fields)
+                                                  return_fields=_return_fields, quiet=_quiet)
     _all_users = core_utils.add_to_master_list(_paginated_users, _all_users)
     return _all_users, len(_paginated_users)
 
 
-# Define function to get the members (or admins) of a security group
-def get_group_memberships(group_id, user_type="member", only_id=True, return_type="list", ignore_exceptions=False):
+def get_group_memberships(group_id, user_type="member", only_id=True, return_type="list",
+                          ignore_exceptions=False, quiet=False):
     """This function gets the memberships (including administrator membership) for a specific security group.
+
+    .. versionchanged:: 2.5.3
+       Added the optional ``_quiet`` argument to silence missing API field errors.
 
     .. versionchanged:: 2.5.1
        The ``?fields=@all`` query string was added to the API URI to ensure all fields are retrieved.
@@ -369,6 +390,8 @@ def get_group_memberships(group_id, user_type="member", only_id=True, return_typ
     :type return_type: str
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``True``)
     :type ignore_exceptions: bool
+    :param quiet: Silences any errors about being unable to locate API fields (``False`` by default)
+    :type quiet: bool
     :returns: A list or dataframe of security group memberships
     :raises: :py:exc:`ValueError`
     """
@@ -395,13 +418,13 @@ def get_group_memberships(group_id, user_type="member", only_id=True, return_typ
     # Perform the first query to get up to the first 100 members or admins
     start_index = 0
     all_users, users_returned = _add_paginated_members(base_query_uri, response_data_type, start_index,
-                                                        ignore_exceptions, return_fields, all_users)
+                                                       ignore_exceptions, return_fields, all_users, quiet)
 
     # Continue querying for groups until none are returned
     while users_returned > 0:
         start_index += 100
         all_users, users_returned = _add_paginated_members(base_query_uri, response_data_type, start_index,
-                                                            ignore_exceptions, return_fields, all_users)
+                                                           ignore_exceptions, return_fields, all_users, quiet)
 
     # Return the data as a master list of group dictionaries or a pandas dataframe
     if return_type == "dataframe":

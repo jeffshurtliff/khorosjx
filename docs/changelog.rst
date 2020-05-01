@@ -4,6 +4,51 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.5.3
+******
+**Release Date: 2020-05-01**
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Added the optional ``quiet`` argument to the :py:func:`khorosjx.core.get_fields_from_api_response`
+  function which silences any errors for being unable to locate API fields.
+* Added the optional ``quiet`` argument to the :py:func:`khorosjx.core.get_paginated_results`
+  function which silences any errors for being unable to locate API fields.
+* Added the optional ``quiet`` argument to the :py:func:`khorosjx.groups.get_group_memberships`
+  function which silences any errors for being unable to locate API fields.
+* Added the optional ``quiet`` argument to the :py:func:`khorosjx.groups._add_paginated_members`
+  function which silences any errors for being unable to locate API fields.
+* Removed the unnecessary variable definition of ``added_to_group`` within the
+  :py:func:`khorosjx.groups.add_user_to_group` function.
+* Renamed the :py:func:`khorosjx.core.__get_filter_syntax` function to be
+  :py:func:`khorosjx.core._get_filter_syntax` instead.
+* Renamed the :py:func:`khorosjx.core.__api_request_with_payload` function to be
+  :py:func:`khorosjx.core._api_request_with_payload` instead.
+
+Documentation
+-------------
+Changes to the documentation.
+
+* Added a docstring to the :py:func:`khorosjx.core._get_filter_syntax` function.
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes to the :doc:`primary modules <primary-modules>`.
+
+* Changed the filter string ``emails.value`` to be ``email.value`` in the
+  :py:func:`khorosjx.core.get_fields_from_api_response` function.
+
+|
+
+******
 v2.5.2
 ******
 **Release Date: 2020-04-29**
