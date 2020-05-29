@@ -6,7 +6,7 @@
 :Example:           ``user_info = khorosjx.core.get_data('people', 'john.doe@example.com', 'email')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     01 May 2020
+:Modified Date:     28 May 2020
 """
 
 import re
@@ -118,11 +118,16 @@ def get_connection_info():
     return base_url, api_credentials
 
 
-def get_api_info(api_filter="none"):
+def get_api_info(api_filter="none", verify_ssl=True):
     """This function obtains the API version information for a Jive environment.
+
+    .. versionchanged:: 2.6.0
+       Added the ``verify_ssl`` argument.
 
     :param api_filter: A filter to return a subset of API data (e.g. ``v3``, ``platform``, ``sso``, etc.)
     :type api_filter: str
+    :param verify_ssl: Determines if API calls should verify SSL certificates (``True`` by default)
+    :type verify_ssl: bool
     :returns: API information in JSON, string or list format depending on the filter
     """
     # Verify that the connection has been established
@@ -132,7 +137,7 @@ def get_api_info(api_filter="none"):
     query_url = f"{base_url.split('/api')[0]}/api/version"
 
     # Perform GET request to obtain the version information
-    response = requests.get(query_url)
+    response = requests.get(query_url, verify=verify_ssl)
     api_data = response.json()
 
     # Define the return filters
@@ -160,11 +165,16 @@ def get_api_info(api_filter="none"):
     return api_data
 
 
-def get_api_version(api_name="v3"):
+def get_api_version(api_name="v3", verify_ssl=True):
     """This function obtains, parses and returns the current version of one of the Jive Core APIs.
+
+    .. versionchanged:: 2.6.0
+       Added the ``verify_ssl`` argument.
 
     :param api_name: The name of the API for which the version should be returned (Default: ``v3``)
     :type api_name: str
+    :param verify_ssl: Determines if API calls should verify SSL certificates (``True`` by default)
+    :type verify_ssl: bool
     :returns: The API version in major.minor notation (e.g. 3.15) in string format
     """
     # Verify that the connection has been established
@@ -178,33 +188,43 @@ def get_api_version(api_name="v3"):
         api_name = "v3"
 
     # Obtain the API information
-    api_data = get_api_info(api_name)
+    api_data = get_api_info(api_name, verify_ssl)
 
     # Parse and return the API version number
     api_version = f"{api_data['version']}.{api_data['revision']}"
     return api_version
 
 
-def get_platform_version():
+def get_platform_version(verify_ssl=True):
     """This function obtains the current Khoros JX (or Jive) version for an environment.
 
+    .. versionchanged:: 2.6.0
+       Added the ``verify_ssl`` argument.
+
+    :param verify_ssl: Determines if API calls should verify SSL certificates (``True`` by default)
+    :type verify_ssl: bool
     :returns: The full platform version in string format (e.g. ``2018.22.0.0_jx``)
     """
     # Verify that the connection has been established
     verify_connection()
 
     # Obtain and return the platform version
-    platform_version = get_api_info('platform')
+    platform_version = get_api_info('platform', verify_ssl)
     return platform_version
 
 
-def get_request_with_retries(query_url, return_json=False):
+def get_request_with_retries(query_url, return_json=False, verify_ssl=True):
     """This function performs a GET request with a total of 5 retries in case of timeouts or connection issues.
+
+    .. versionchanged:: 2.6.0
+       Added the ``verify_ssl`` argument.
 
     :param query_url: The URI to be queried
     :type query_url: str
     :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``False``)
     :type return_json: bool
+    :param verify_ssl: Determines if API calls should verify SSL certificates (``True`` by default)
+    :type verify_ssl: bool
     :returns: The API response from the GET request (optionally in JSON format)
     :raises: :py:exc:`ValueError`, :py:exc:`TypeError`, :py:exc:`khorosjx.errors.exceptions.APIConnectionError`
     """
@@ -215,7 +235,7 @@ def get_request_with_retries(query_url, return_json=False):
     retries = 0
     while retries <= 5:
         try:
-            response = requests.get(query_url, auth=api_credentials)
+            response = requests.get(query_url, auth=api_credentials, verify=verify_ssl)
             break
         except Exception as e:
             current_attempt = f"(Attempt {retries} of 5)"
@@ -277,8 +297,12 @@ def get_query_url(pre_endpoint, asset_id="", post_endpoint=""):
     return query_url
 
 
-def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_exceptions=False, all_fields=False):
+def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_exceptions=False,
+             all_fields=False, verify_ssl=True):
     """This function returns data for a specific API endpoint.
+
+    .. versionchanged:: 2.6.0
+       Added the ``verify_ssl`` argument.
 
     :param endpoint: The API endpoint against which to request data (e.g. ``people``, ``contents``, etc.)
     :type endpoint: str
@@ -292,6 +316,8 @@ def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_
     :type ignore_exceptions: bool
     :param all_fields: Determines whether or not the ``fields=@all`` query should be included (Default: ``False``)
     :type all_fields: bool
+    :param verify_ssl: Determines if API calls should verify SSL certificates (``True`` by default)
+    :type verify_ssl: bool
     :returns: The API response either as a requests response or in JSON format depending on the ``return_json`` value
     :raises: :py:exc:`khorosjx.errors.exceptions.GETRequestError`
     """
@@ -312,7 +338,7 @@ def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_
     if endpoint in available_endpoints:
         endpoint_url = f"{base_url}/{endpoint}"
     else:
-        raise errors.exceptions.InvalidEndpointError
+        raise errors.exceptions.InvalidEndpointError()
 
     # Define the identifier type for the lookup value
     if identifier == "id":
@@ -340,7 +366,7 @@ def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_
         query_url = f"{query_url}?fields=@all"
 
     # Perform the GET request with retries to account for any timeouts
-    response = get_request_with_retries(query_url)
+    response = get_request_with_retries(query_url, verify_ssl=verify_ssl)
 
     # Error out if the response isn't successful
     if response.status_code != 200:
@@ -358,8 +384,11 @@ def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_
     return response
 
 
-def _api_request_with_payload(_url, _json_payload, _request_type):
+def _api_request_with_payload(_url, _json_payload, _request_type, _verify_ssl=True):
     """This function performs an API request while supplying a JSON payload.
+
+    .. versionchanged:: 2.6.0
+       Added the ``_verify_ssl`` argument.
 
     :param _url: The query URL to be leveraged in the API call
     :type _url: str
@@ -367,6 +396,8 @@ def _api_request_with_payload(_url, _json_payload, _request_type):
     :type _json_payload: dict
     :param _request_type: Defines if the API call will be a ``put`` or ``post`` request
     :type _request_type: str
+    :param _verify_ssl: Determines if API calls should verify SSL certificates (``True`` by default)
+    :type _verify_ssl: bool
     :returns: The API response
     :raises: :py:exc:`khorosjx.errors.exceptions.InvalidRequestTypeError`,
              :py:exc:`khorosjx.errors.exceptions.APIConnectionError`
@@ -374,14 +405,15 @@ def _api_request_with_payload(_url, _json_payload, _request_type):
     _retries = 0
     while _retries <= 5:
         try:
+            _headers = {"Content-Type": "application/json", "Accept": "application/json"}
             if _request_type.lower() == "put":
                 _response = requests.put(_url, data=json.dumps(_json_payload, default=str), auth=api_credentials,
-                                         headers={"Content-Type": "application/json", "Accept": "application/json"})
+                                         headers=_headers, verify=_verify_ssl)
             elif _request_type.lower() == "post":
                 _response = requests.post(_url, data=json.dumps(_json_payload, default=str), auth=api_credentials,
-                                          headers={"Content-Type": "application/json", "Accept": "application/json"})
+                                          headers=_headers, verify=_verify_ssl)
             else:
-                raise errors.exceptions.InvalidRequestTypeError
+                raise errors.exceptions.InvalidRequestTypeError()
             break
         except Exception as _api_exception:
             _current_attempt = f"(Attempt {_retries} of 5)"
@@ -397,46 +429,61 @@ def _api_request_with_payload(_url, _json_payload, _request_type):
     return _response
 
 
-def post_request_with_retries(url, json_payload):
+def post_request_with_retries(url, json_payload, verify_ssl=True):
     """This function performs a POST request with a total of 5 retries in case of timeouts or connection issues.
+
+    .. versionchanged:: 2.6.0
+       Added the ``verify_ssl`` argument.
 
     :param url: The URI to be queried
     :type url: str
     :param json_payload: The payload for the POST request in JSON format
     :type json_payload: dict
+    :param verify_ssl: Determines if API calls should verify SSL certificates (``True`` by default)
+    :type verify_ssl: bool
     :returns: The API response from the POST request
     :raises: :py:exc:`ValueError`, :py:exc:`khorosjx.errors.exceptions.APIConnectionError`,
              :py:exc:`khorosjx.errors.exceptions.POSTRequestError`
     """
-    response = _api_request_with_payload(url, json_payload, 'post')
+    response = _api_request_with_payload(url, json_payload, 'post', verify_ssl)
     return response
 
 
-def put_request_with_retries(url, json_payload):
+def put_request_with_retries(url, json_payload, verify_ssl=True):
     """This function performs a PUT request with a total of 5 retries in case of timeouts or connection issues.
+
+    .. versionchanged:: 2.6.0
+       Added the ``verify_ssl`` argument.
 
     :param url: The URI to be queried
     :type url: str
     :param json_payload: The payload for the PUT request in JSON format
     :type json_payload: dict
+    :param verify_ssl: Determines if API calls should verify SSL certificates (``True`` by default)
+    :type verify_ssl: bool
     :returns: The API response from the PUT request
     :raises: :py:exc:`ValueError`, :py:exc:`khorosjx.errors.exceptions.APIConnectionError`,
              :py:exc:`khorosjx.errors.exceptions.PUTRequestError`
     """
-    response = _api_request_with_payload(url, json_payload, 'put')
+    response = _api_request_with_payload(url, json_payload, 'put', verify_ssl)
     return response
 
 
-def delete(uri, return_json=False):
+def delete(uri, return_json=False, verify_ssl=True):
     """This function performs a DELETE request against the Core API.
+
+    .. versionchanged:: 2.6.0
+       Added the ``verify_ssl`` argument.
 
     :param uri: The URI against which the DELETE request will be issued
     :type uri: str
     :param return_json: Determines whether or not the response should be returned in JSON format (Default: ``False``)
     :type return_json: bool
+    :param verify_ssl: Determines if API calls should verify SSL certificates (``True`` by default)
+    :type verify_ssl: bool
     :returns: The API response from the DELETE request (optionally in JSON format)
     """
-    response = requests.delete(uri, auth=api_credentials)
+    response = requests.delete(uri, auth=api_credentials, verify=verify_ssl)
     if return_json:
         response = response.json()
     return response
@@ -445,8 +492,11 @@ def delete(uri, return_json=False):
 def get_fields_from_api_response(json_data, dataset, return_fields=[], quiet=False):
     """This function parses and retrieves fields from an API response from a specific dataset.
 
+    .. versionchanged:: 2.6.0
+       Added conditional to ensure ``quiet`` is ``False`` before calling the ``stderr`` print statement.
+
     .. versionchanged:: 2.5.3
-       Fixed the ``email.value`` filter and added the optional ``quiet`` argument
+       Fixed the ``email.value`` filter and added the optional ``quiet`` argument.
 
     :param json_data: The JSON data from an API response
     :type json_data: dict
@@ -498,7 +548,7 @@ def get_fields_from_api_response(json_data, dataset, return_fields=[], quiet=Fal
                 field_not_found = True
         except (IndexError, KeyError):
             field_not_found = True
-        if field_not_found:
+        if field_not_found and not quiet:
             eprint(f"Unable to locate the '{field}' field in the API response data.")
     return fields_data
 
@@ -521,8 +571,11 @@ def _get_filter_syntax(_filter_info, _prefix=True):
 
 
 def get_paginated_results(query, response_data_type, start_index=0, filter_info=(), query_all=True,
-                          return_fields=[], ignore_exceptions=False, quiet=False):
+                          return_fields=[], ignore_exceptions=False, quiet=False, verify_ssl=True):
     """This function performs a GET request for a single paginated response up to 100 records.
+
+    .. versionchanged:: 2.6.0
+       Added the ``verify_ssl`` argument.
 
     :param query: The API query without the query string
     :type query: str
@@ -540,6 +593,8 @@ def get_paginated_results(query, response_data_type, start_index=0, filter_info=
     :type ignore_exceptions: bool
     :param quiet: Silences any errors about being unable to locate API fields (``False`` by default)
     :type quiet: bool
+    :param verify_ssl: Determines if API calls should verify SSL certificates (``True`` by default)
+    :type verify_ssl: bool
     :returns: The queried data as a list comprised of dictionaries
     :raises: :py:exc:`khorosjx.errors.exceptions.GETRequestError`
     """
@@ -557,7 +612,7 @@ def get_paginated_results(query, response_data_type, start_index=0, filter_info=
     full_query = f"{query}?{fields_filter}count=100&startIndex={start_index}{other_filters}"
 
     # Perform the API query to retrieve the information
-    response = get_request_with_retries(full_query)
+    response = get_request_with_retries(full_query, verify_ssl=verify_ssl)
 
     # Verify that the query was successful
     successful_response = errors.handlers.check_api_response(response, ignore_exceptions=ignore_exceptions)

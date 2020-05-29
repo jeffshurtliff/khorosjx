@@ -4,6 +4,42 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v2.6.0
+******
+**Release Date: 2020-05-28**
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Added the ``verify_ssl`` argument to the following functions:
+    * :py:func:`khorosjx.core.get_api_info`
+    * :py:func:`khorosjx.core.get_api_version`
+    * :py:func:`khorosjx.core.get_platform_version`
+    * :py:func:`khorosjx.core.get_data`
+    * :py:func:`khorosjx.core.get_request_with_retries`
+    * :py:func:`khorosjx.core._api_request_with_payload`
+    * :py:func:`khorosjx.core.post_request_with_retries`
+    * :py:func:`khorosjx.core.put_request_with_retries`
+    * :py:func:`khorosjx.core.delete`
+    * :py:func:`khorosjx.core.get_paginated_results`
+    * :py:func:`khorosjx.content.docs.create_document`
+    * :py:func:`khorosjx.content.docs.overwrite_doc_body`
+    * :py:func:`khorosjx.content.docs._perform_overwrite_operation`
+    * :py:func:`khorosjx.content.docs.get_document_info`
+    * :py:func:`khorosjx.content.docs.get_content_id`
+    * :py:func:`khorosjx.content.base.get_content_id`
+* Added a conditional in :py:func:`khorosjx.core.get_fields_from_api_response` to ensure
+  ``quiet`` is ``False`` before calling the ``stderr`` print statement.
+* Renamed the :py:func:`khorosjx.content.docs.__perform_overwrite_operation` to be
+  :py:func:`khorosjx.content.docs._perform_overwrite_operation` instead.
+
+|
+
+******
 v2.5.3
 ******
 **Release Date: 2020-05-01**

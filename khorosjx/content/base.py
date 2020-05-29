@@ -49,13 +49,18 @@ def retrieve_connection_info():
 
 
 # Define function to get the content ID from a URL
-def get_content_id(url, content_type="document"):
+def get_content_id(url, content_type="document", verify_ssl=True):
     """This function obtains the Content ID for a particular content asset. (Supports all but blog posts)
+
+    .. versionchanged:: 2.6.0
+       Added the ``verify_ssl`` argument.
 
     :param url: The URL to the content
     :type url: str
     :param content_type: The content type for the URL for which to obtain the Content ID (Default: ``document``)
     :type content_type: str
+    :param verify_ssl: Determines if API calls should verify SSL certificates (``True`` by default)
+    :type verify_ssl: bool
     :returns: The Content ID for the content URL
     :raises: :py:exc:`ValueError`, :py:exc:`khorosjx.errors.exceptions.ContentNotFoundError`
     """
@@ -89,11 +94,11 @@ def get_content_id(url, content_type="document"):
 
     # Query the API to get the content ID
     try:
-        response = core.get_request_with_retries(query_url)
+        response = core.get_request_with_retries(query_url, verify_ssl=verify_ssl)
         content_data = response.json()
         content_id = content_data['list'][0]['contentID']
     except KeyError:
-        raise errors.exceptions.ContentNotFoundError
+        raise errors.exceptions.ContentNotFoundError()
     return content_id
 
 
