@@ -6,7 +6,7 @@
 :Example:           ``content_id = content_core.get_content_id(url, 'document')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     24 Mar 2020
+:Modified Date:     28 May 2020
 """
 
 import re
