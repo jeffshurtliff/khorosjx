@@ -8,6 +8,15 @@ v3.0.0
 ******
 **Release Date: 2021-09-20**
 
+Added
+=====
+
+General
+-------
+* Added the ``codeql-analysis.yml`` workflow.
+* Merged dependabot pull requests to mitigate security vulnerabilities with
+  :py:mod:`twine` dependency packages.
+
 Changed
 =======
 
