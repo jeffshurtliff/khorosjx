@@ -18,6 +18,11 @@ from . import errors
 from .utils.core_utils import eprint, convert_dict_to_json
 from .utils.classes import Platform, Content
 
+# Define global variables
+base_url, api_credentials = None, None
+
+
+
 
 def set_base_url(domain_url, version=3, protocol='https'):
     """This function gets the base URL for API calls when supplied with a domain URL. (e.g. ``community.example.com``)
@@ -96,15 +101,16 @@ def connect(base_api_url, credentials):
 def verify_connection():
     """This function verifies that the base URL and API credentials have been defined.
 
+    .. versionchanged:: 3.1.0
+       Refactored the function to be more pythonic and to avoid depending on a try/except block.
+
     :returns: None
-    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+    :raises: :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
              :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    try:
-        base_url
-        api_credentials
-    except NameError:
-        raise errors.exceptions.NoCredentialsError
+    global base_url, api_credentials
+    if not base_url or not api_credentials:
+        raise errors.exceptions.NoCredentialsError()
     return
 
 

@@ -4,6 +4,21 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v3.1.0
+******
+**Release Date: TBD**
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Refactored the :py:func:`khorosjx.core.verify_connection` function to be more pythonic
+  and to avoid depending on a try/except block.
+
+******
 v3.0.0
 ******
 **Release Date: 2021-09-20**
