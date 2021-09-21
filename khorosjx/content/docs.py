@@ -6,7 +6,7 @@
 :Example:        ``content_id = docs.get_content_id(url)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  24 Mar 2020
+:Modified Date:  28 May 2020
 """
 
 import pandas as pd
@@ -50,23 +50,28 @@ def retrieve_connection_info():
 
 
 # Define function to get the content ID from a URL
-def get_content_id(lookup_value, lookup_type='url'):
+def get_content_id(lookup_value, lookup_type='url', verify_ssl=True):
     """This function obtains the Content ID for a particular document.
+
+    .. versionchanged:: 2.6.0
+       Added the ``verify_ssl`` argument.
 
     :param lookup_value: The URL of the document
     :type lookup_value: str
     :param lookup_type: The type of value is being used for lookup (``url`` by default)
     :type lookup_type: str
+    :param verify_ssl: Determines if API calls should verify SSL certificates (``True`` by default)
+    :type verify_ssl: bool
     :returns: The Content ID for the document
     :raises: :py:exc:`ValueError`, :py:exc:`khorosjx.errors.exceptions.ContentNotFoundError`,
              :py:exc:`khorosjx.errors.exceptions.InvalidLookupTypeError`
     """
     acceptable_types = ['url', 'id', 'doc_id']
     if lookup_type not in acceptable_types:
-        raise errors.exceptions.InvalidLookupTypeError
+        raise errors.exceptions.InvalidLookupTypeError()
     if lookup_type != 'url':
         lookup_value = get_url_for_id(lookup_value)
-    content_id = base.get_content_id(lookup_value, 'document')
+    content_id = base.get_content_id(lookup_value, 'document', verify_ssl)
     return content_id
 
 
@@ -84,8 +89,11 @@ def get_url_for_id(doc_id):
     return url
 
 
-def create_document(subject, body, place_id, categories=[], tags=[]):
+def create_document(subject, body, place_id, categories=[], tags=[], verify_ssl=True):
     """This function creates a new document.
+
+    .. versionchanged:: 2.6.0
+       Added the ``verify_ssl`` argument.
 
     :param subject: The title/subject of the document
     :type subject: str
@@ -97,6 +105,8 @@ def create_document(subject, body, place_id, categories=[], tags=[]):
     :type categories: list
     :param tags: Any tags associated with the document (none by default)
     :type tags: list
+    :param verify_ssl: Determines if API calls should verify SSL certificates (``True`` by default)
+    :type verify_ssl: bool
     :returns: The API response from the POST request for the document creation
     :raises: :py:exc:`TypeError`, :py:exc:`khorosjx.errors.exceptions.POSTRequestError`
     """
@@ -119,13 +129,16 @@ def create_document(subject, body, place_id, categories=[], tags=[]):
         full_dict["tags"] = tags
     payload = core_utils.convert_dict_to_json(full_dict)
     content_uri = f"{base_url}/contents"
-    response = core.post_request_with_retries(content_uri, payload)
+    response = core.post_request_with_retries(content_uri, payload, verify_ssl)
     return response
 
 
 # Define function to overwrite the body of a document
-def overwrite_doc_body(url, body_html, minor_edit=True, ignore_exceptions=False):
+def overwrite_doc_body(url, body_html, minor_edit=True, ignore_exceptions=False, verify_ssl=True):
     """This function overwrites the body of a document with new HTML content.
+
+    .. versionchanged:: 2.6.0
+       Added the ``verify_ssl`` argument.
 
     :param url: THe URL of the document to be updated
     :type url: str
@@ -134,6 +147,8 @@ def overwrite_doc_body(url, body_html, minor_edit=True, ignore_exceptions=False)
     :type minor_edit: bool
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
+    :param verify_ssl: Determines if API calls should verify SSL certificates (``True`` by default)
+    :type verify_ssl: bool
     :returns: The response of the PUT request used to update the document
     :raises: :py:exc:`khorosjx.errors.exceptions.ContentPublishError`
     """
@@ -142,22 +157,25 @@ def overwrite_doc_body(url, body_html, minor_edit=True, ignore_exceptions=False)
     verify_core_connection()
 
     # Perform the overwrite operation
-    put_response = __perform_overwrite_operation(url, body_html, minor_edit, ignore_exceptions)
+    put_response = _perform_overwrite_operation(url, body_html, minor_edit, ignore_exceptions, verify_ssl)
 
     # Check for any 502 errors and try the function one more time if found
     if put_response.status_code == 502:
         retry_msg = "Performing the overwrite operation again in an attempt to overcome the 502 " + \
                     "Bad Gateway / Service Temporarily Unavailable issue that was encountered."
         print(retry_msg)
-        put_response = __perform_overwrite_operation(url, body_html, minor_edit, ignore_exceptions)
+        put_response = _perform_overwrite_operation(url, body_html, minor_edit, ignore_exceptions, verify_ssl)
 
     # Return the response from the PUT query
     return put_response
 
 
 # Define function to perform the overwrite operation
-def __perform_overwrite_operation(_url, _body_html, _minor_edit, _ignore_exceptions):
+def _perform_overwrite_operation(_url, _body_html, _minor_edit, _ignore_exceptions, _verify_ssl):
     """This function performs the actual overwrite operation on the document.
+
+    .. versionchanged:: 2.6.0
+       Added the ``_verify_ssl`` argument and renamed the function to only have one underscore prefix.
 
     :param _url: The URI for the API request
     :type _url: str
@@ -166,11 +184,13 @@ def __perform_overwrite_operation(_url, _body_html, _minor_edit, _ignore_excepti
     :type _minor_edit: bool
     :param _ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type _ignore_exceptions: bool
+    :param _verify_ssl: Determines if API calls should verify SSL certificates (``True`` by default)
+    :type _verify_ssl: bool
     :returns: The response of the PUT request used to update the document
     :raises: :py:exc:`khorosjx.errors.exceptions.ContentPublishError`
     """
     # Define the script name, Content ID and URI
-    _content_id = get_content_id(_url)
+    _content_id = get_content_id(_url, verify_ssl=_verify_ssl)
     _content_url = f"{base_url}/contents/{_content_id}"
 
     # Perform a GET request for the document to obtain its JSON
@@ -188,7 +208,7 @@ def __perform_overwrite_operation(_url, _body_html, _minor_edit, _ignore_excepti
         _doc_json['minor'] = 'true'
 
     # Perform the PUT request with retry handling for timeouts
-    _put_response = core.put_request_with_retries(_content_url, _doc_json)
+    _put_response = core.put_request_with_retries(_content_url, _doc_json, _verify_ssl)
     if _put_response.status_code != 200:
         _error_msg = f"The attempt to update the document {_url} failed with " + \
                     f"a {_put_response.status_code} status code."
@@ -200,8 +220,11 @@ def __perform_overwrite_operation(_url, _body_html, _minor_edit, _ignore_excepti
 
 
 # Define function to get basic group information for a particular Group ID
-def get_document_info(lookup_value, lookup_type='doc_id', return_fields=[], ignore_exceptions=False):
+def get_document_info(lookup_value, lookup_type='doc_id', return_fields=[], ignore_exceptions=False, verify_ssl=True):
     """This function obtains the group information for a given document.
+
+    .. versionchanged:: 2.6.0
+       Added the ``verify_ssl`` argument.
 
     :param lookup_value: The value with which to look up the document
     :type lookup_value: int, str
@@ -211,6 +234,8 @@ def get_document_info(lookup_value, lookup_type='doc_id', return_fields=[], igno
     :type return_fields: list
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
+    :param verify_ssl: Determines if API calls should verify SSL certificates (``True`` by default)
+    :type verify_ssl: bool
     :returns: A dictionary with the group information
     :raises: :py:exc:`khorosjx.errors.exceptions.GETRequestError`,
              :py:exc:`khorosjx.errors.exceptions.InvalidDatasetError`,
@@ -228,7 +253,7 @@ def get_document_info(lookup_value, lookup_type='doc_id', return_fields=[], igno
 
     # Perform the API query to retrieve the group information
     query_uri = f"{base_url}/contents/{lookup_value}?fields=@all"
-    response = core.get_request_with_retries(query_uri)
+    response = core.get_request_with_retries(query_uri, verify_ssl=verify_ssl)
 
     # Verify that the query was successful
     successful_response = errors.handlers.check_api_response(response, ignore_exceptions=ignore_exceptions)
