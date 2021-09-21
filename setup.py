@@ -37,8 +37,10 @@ setuptools.setup(
     ],
     python_requires='>=3.6',
     install_requires=[
-        "PyYAML>=5.3.1",
+        "PyYAML>=5.4.1",
         "urllib3>=1.26.6",
         "requests>=2.26.0",
+        "pandas>=1.3.3",
+        "python-dateutil>=2.8.2",
     ],
 )
