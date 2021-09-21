@@ -40,6 +40,6 @@ modules:
     users: no
     videos: no
 
-# Define whether or not to color-code the function output
+# Define whether to color-code the function output
 styling:
     use_console_colors: no
