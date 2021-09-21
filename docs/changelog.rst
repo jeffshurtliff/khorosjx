@@ -15,8 +15,38 @@ Primary Modules
 ---------------
 Changes to the :doc:`primary modules <primary-modules>`.
 
-* Refactored the :py:func:`khorosjx.core.verify_connection` function to be more pythonic
-  and to avoid depending on a try/except block.
+* Refactored the following functions to be more pythonic and to avoid depending on
+  a try/except block, and to define the related global variables at the module level:
+    * :py:func:`khorosjx.core.verify_connection`
+    * :py:func:`khorosjx.admin.verify_connection`
+    * :py:func:`khorosjx.groups.verify_connection`
+* Refactored the following functions  to be more efficient and removed one of the
+  exception references in the docstring:
+    * :py:func:`khorosjx.admin.retrieve_connection_info`
+    * :py:func:`khorosjx.groups.retrieve_connection_info`
+* Changed the default ``return_fields`` value to ``None`` and made related adjustments in
+  the following functions:
+    * :py:func:`khorosjx.core.get_fields_from_api_response`
+    * :py:func:`khorosjx.core.get_paginated_results`
+    * :py:func:`khorosjx.groups.get_group_info`
+    * :py:func:`khorosjx.groups.get_all_groups`
+
+Fixed
+=====
+
+Primary Modules
+---------------
+Fixes in the :doc:`primary modules <primary-modules>`.
+
+* Fixed how the ``query_url`` variable is defined in the :py:func:`khorosjx.core.get_data`
+  function to proactively avoid raising any :py:exc:`NameError` exceptions.
+* Adjusted a dictionary lookup in the :py:func:`khorosjx.groups._get_paginated_groups`
+  function to proactively avoid raising a :py:exc:`KeyError` exception.
+* Added parenthesis to the exception classes in the following functions:
+    * :py:func:`khorosjx.core.set_credentials`
+    * :py:func:`khorosjx.groups.check_user_membership`
+
+|
 
 ******
 v3.0.0

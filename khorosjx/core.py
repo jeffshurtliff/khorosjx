@@ -6,7 +6,7 @@
 :Example:           ``user_info = khorosjx.core.get_data('people', 'john.doe@example.com', 'email')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     28 May 2020
+:Modified Date:     21 Sep 2021
 """
 
 import re
@@ -20,8 +20,6 @@ from .utils.classes import Platform, Content
 
 # Define global variables
 base_url, api_credentials = None, None
-
-
 
 
 def set_base_url(domain_url, version=3, protocol='https'):
@@ -62,6 +60,9 @@ def set_base_url(domain_url, version=3, protocol='https'):
 def set_credentials(credentials):
     """This function defines the Core API credentials as global variables and validates them.
 
+    .. versionchanged:: 3.1.0
+       Parenthesis were added to the exception classes.
+
     :param credentials: The username and password for the account that will be utilizing the Core API
     :type credentials: tuple
     :returns: None
@@ -75,11 +76,11 @@ def set_credentials(credentials):
     # Ensure the supplied data can be leveraged and then define the global variable
     if len(credentials) != 2:
         if len(credentials) == 1:
-            raise errors.exceptions.IncompleteCredentialsError
+            raise errors.exceptions.IncompleteCredentialsError()
         else:
-            raise errors.exceptions.CredentialsUnpackingError
+            raise errors.exceptions.CredentialsUnpackingError()
     elif (type(credentials[0]) != str) or (type(credentials[1]) != str):
-        raise errors.exceptions.WrongCredentialTypeError
+        raise errors.exceptions.WrongCredentialTypeError()
     api_credentials = credentials
     return
 
@@ -108,7 +109,6 @@ def verify_connection():
     :raises: :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
              :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    global base_url, api_credentials
     if not base_url or not api_credentials:
         raise errors.exceptions.NoCredentialsError()
     return
@@ -303,9 +303,12 @@ def get_query_url(pre_endpoint, asset_id="", post_endpoint=""):
     return query_url
 
 
-def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_exceptions=False,
-             all_fields=False, verify_ssl=True):
+def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_exceptions=False, all_fields=False,
+             verify_ssl=True):
     """This function returns data for a specific API endpoint.
+
+    .. versionchanged:: 3.1.0
+       Fixed how the ``query_url`` variable is defined to proactively avoid raising any :py:exc:`NameError` exceptions.
 
     .. versionchanged:: 2.6.0
        Added the ``verify_ssl`` argument.
@@ -341,23 +344,22 @@ def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_
                            'streamEntries', 'streams', 'tags', 'tileDefs', 'tiles', 'urls', 'versions', 'videos',
                            'vitals', 'votes', 'webhooks'
                            ]
-    if endpoint in available_endpoints:
-        endpoint_url = f"{base_url}/{endpoint}"
-    else:
+    query_url = f"{base_url}/{endpoint}" if endpoint in available_endpoints else None
+    if not query_url:
         raise errors.exceptions.InvalidEndpointError()
 
     # Define the identifier type for the lookup value
     if identifier == "id":
-        query_url = f"{endpoint_url}/{lookup_value}"
+        query_url += f"/{lookup_value}"
     elif identifier == "email" or identifier == "username":
         invalid_endpoint_msg = f"The identifier '{identifier}' is only accepted with the people endpoint."
         if endpoint != "people":
             raise errors.exceptions.InvalidLookupTypeError(invalid_endpoint_msg)
         else:
             if identifier == "email":
-                query_url = f"{endpoint_url}/email/{lookup_value}"
+                query_url += f"/email/{lookup_value}"
             elif identifier == "username":
-                query_url = f"{endpoint_url}/username/{lookup_value}"
+                query_url += f"/username/{lookup_value}"
     else:
         unrecognized_endpoint_msg = f"The identifier '{identifier}' is unrecognized."
         if not ignore_exceptions:
@@ -365,11 +367,10 @@ def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_
         unrecognized_endpoint_retry_msg = f"{unrecognized_endpoint_msg} " + \
                                           "The function will attempt to use the default 'id' identifier."
         eprint(unrecognized_endpoint_retry_msg)
-        query_url = f"{endpoint_url}/{lookup_value}"
+        query_url += f"/{lookup_value}"
 
     # Append the fields=@all query if requested
-    if all_fields:
-        query_url = f"{query_url}?fields=@all"
+    query_url += "?fields=@all" if all_fields else query_url
 
     # Perform the GET request with retries to account for any timeouts
     response = get_request_with_retries(query_url, verify_ssl=verify_ssl)
@@ -385,8 +386,7 @@ def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_
                 response = convert_dict_to_json(empty_json)
         else:
             raise errors.exceptions.GETRequestError(error_msg)
-    if return_json:
-        response = response.json()
+    response = response.json() if return_json else response
     return response
 
 
@@ -408,7 +408,7 @@ def _api_request_with_payload(_url, _json_payload, _request_type, _verify_ssl=Tr
     :raises: :py:exc:`khorosjx.errors.exceptions.InvalidRequestTypeError`,
              :py:exc:`khorosjx.errors.exceptions.APIConnectionError`
     """
-    _retries = 0
+    _retries, _response = 0, None
     while _retries <= 5:
         try:
             _headers = {"Content-Type": "application/json", "Accept": "application/json"}
@@ -495,8 +495,11 @@ def delete(uri, return_json=False, verify_ssl=True):
     return response
 
 
-def get_fields_from_api_response(json_data, dataset, return_fields=[], quiet=False):
+def get_fields_from_api_response(json_data, dataset, return_fields=None, quiet=False):
     """This function parses and retrieves fields from an API response from a specific dataset.
+
+    .. versionchanged:: 3.1.0
+       Changed the default ``return_fields`` value to ``None`` and adjusted the function accordingly.
 
     .. versionchanged:: 2.6.0
        Added conditional to ensure ``quiet`` is ``False`` before calling the ``stderr`` print statement.
@@ -509,7 +512,7 @@ def get_fields_from_api_response(json_data, dataset, return_fields=[], quiet=Fal
     :param dataset: The nickname of a dataset from which fields should be retrieved (e.g. ``people``, ``group_admins``)
     :type dataset: str
     :param return_fields: The fields that should be returned from the API response (Default: all fields in dataset)
-    :type return_fields: list
+    :type return_fields: list, None
     :param quiet: Silences any errors about being unable to locate API fields (``False`` by default)
     :type quiet: bool
     :returns: A dictionary with the field names and corresponding values
@@ -519,9 +522,8 @@ def get_fields_from_api_response(json_data, dataset, return_fields=[], quiet=Fal
     fields_data = {}
 
     # Define the fields that should be returned for the data
-    if len(return_fields) > 0:
-        fields_to_return = return_fields
-    else:
+    fields_to_return = return_fields if return_fields else []
+    if not fields_to_return:
         # Get the default return fields for the dataset
         if dataset not in Content.datasets:
             error_msg = f"The supplied value '{dataset}' is not a valid dataset."
@@ -577,8 +579,11 @@ def _get_filter_syntax(_filter_info, _prefix=True):
 
 
 def get_paginated_results(query, response_data_type, start_index=0, filter_info=(), query_all=True,
-                          return_fields=[], ignore_exceptions=False, quiet=False, verify_ssl=True):
+                          return_fields=None, ignore_exceptions=False, quiet=False, verify_ssl=True):
     """This function performs a GET request for a single paginated response up to 100 records.
+
+    .. versionchanged:: 3.1.0
+       Changed the default ``return_fields`` value to ``None`` and adjusted the function accordingly.
 
     .. versionchanged:: 2.6.0
        Added the ``verify_ssl`` argument.
@@ -594,7 +599,7 @@ def get_paginated_results(query, response_data_type, start_index=0, filter_info=
     :param query_all: Determines if ``fields=@all`` filter should be included in the query string (Default: ``True``)
     :type query_all: bool
     :param return_fields: The fields that should be returned from the API response (Default: all fields in dataset)
-    :type return_fields: list
+    :type return_fields: list, None
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :param quiet: Silences any errors about being unable to locate API fields (``False`` by default)

@@ -6,7 +6,7 @@
 :Example:        ``group_info = groups.get_group_info(1051)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  29 Apr 2020
+:Modified Date:  21 Sep 2021
 """
 
 import requests
@@ -16,18 +16,22 @@ from .utils.classes import Groups
 from .utils.core_utils import eprint
 from .utils import core_utils, df_utils
 
+# Define global variables
+base_url, api_credentials = None, None
 
+
+# Define function to verify the connection in the core module
 def verify_core_connection():
     """This function verifies that the core connection information (Base URL and API credentials) has been defined.
 
+    .. versionchanged:: 3.1.0
+       Refactored the function to be more pythonic and to avoid depending on a try/except block.
+
     :returns: None
-    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+    :raises: :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
              :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    try:
-        base_url
-        api_credentials
-    except NameError:
+    if not base_url or not api_credentials:
         retrieve_connection_info()
     return
 
@@ -35,27 +39,31 @@ def verify_core_connection():
 def retrieve_connection_info():
     """This function initializes and defines the global variables for the connection information.
 
+    .. versionchanged:: 3.1.0
+       Refactored the function to be more efficient.
+
     :returns: None
-    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+    :raises: :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
              :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    # Initialize global variables
+    # Define the global variables at this module level
     global base_url
     global api_credentials
-
-    # Define the global variables at this module level
     base_url, api_credentials = core.get_connection_info()
     return
 
 
 # Define function to get basic group information for a particular Group ID
-def get_group_info(group_id, return_fields=[], ignore_exceptions=False):
+def get_group_info(group_id, return_fields=None, ignore_exceptions=False):
     """This function obtains the group information for a given Group ID.
+
+    .. versionchanged:: 3.1.0
+       Changed the default ``return_fields`` value to ``None`` and adjusted the function accordingly.
 
     :param group_id: The Group ID of the group whose information will be requested
     :type group_id: int,str
     :param return_fields: Specific fields to return if not all of the default fields are needed (Optional)
-    :type return_fields: list
+    :type return_fields: list, None
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A dictionary with the group information
@@ -86,8 +94,11 @@ def get_group_info(group_id, return_fields=[], ignore_exceptions=False):
 def _get_paginated_groups(_return_fields, _ignore_exceptions, _start_index):
     """This function returns paginated group information. (Up to 100 records at a time)
 
+    .. versionchanged:: 3.1.0
+       Adjusted a dictionary lookup to proactively avoid raising a :py:exc:`KeyError` exception.
+
     :param _return_fields: Specific fields to return if not all of the default fields are needed (Optional)
-    :type _return_fields: list
+    :type _return_fields: list, None
     :param _ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type _ignore_exceptions: bool
     :param _start_index: The startIndex API value
@@ -107,18 +118,21 @@ def _get_paginated_groups(_return_fields, _ignore_exceptions, _start_index):
     if successful_response:
         # Get the response data in JSON format
         _paginated_group_data = _response.json()
-        for _group_data in _paginated_group_data['list']:
+        for _group_data in _paginated_group_data.get('list'):
             _parsed_data = core.get_fields_from_api_response(_group_data, 'security_group', _return_fields)
             _groups.append(_parsed_data)
     return _groups
 
 
 # Define function to get information on all security groups
-def get_all_groups(return_fields=[], return_type='list', ignore_exceptions=False):
+def get_all_groups(return_fields=None, return_type='list', ignore_exceptions=False):
     """This function returns information on all security groups found within the environment.
 
+    .. versionchanged:: 3.1.0
+       Changed the default ``return_fields`` value to ``None`` and adjusted the function accordingly.
+
     :param return_fields: Specific fields to return if not all of the default fields are needed (Optional)
-    :type return_fields: list
+    :type return_fields: list, None
     :param return_type: Determines if the data should be returned in a list or a pandas dataframe (Default: ``list``)
     :type return_type: str
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
@@ -191,7 +205,7 @@ def get_user_memberships(user_lookup, return_values='name', ignore_exceptions=Fa
             print(error_msg)
         else:
             raise errors.exceptions.UserQueryError(error_msg)
-        
+
     else:
         groups = (response.json())['list']
 
@@ -213,6 +227,9 @@ def get_user_memberships(user_lookup, return_values='name', ignore_exceptions=Fa
 
 def check_user_membership(user_memberships, groups_to_check, scope='any', ignore_exceptions=False):
     """This function checks if a user belongs to one or more security groups.
+
+    .. versionchanged:: 3.1.0
+       Parenthesis were added to the exception classes.
 
     :param user_memberships: A list of security groups to which the user belongs
     :type user_memberships: list, tuple
@@ -244,7 +261,7 @@ def check_user_membership(user_memberships, groups_to_check, scope='any', ignore
             error_msg = f"The supplied scope '{scope}' is not recognized and the default scope of 'any' will be used."
             eprint(error_msg)
         else:
-            raise errors.exceptions.InvalidScopeError
+            raise errors.exceptions.InvalidScopeError()
 
     # Check the groups supplied against the list of memberships
     groups_found = []
