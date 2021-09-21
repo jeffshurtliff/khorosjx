@@ -36,4 +36,9 @@ setuptools.setup(
         "Topic :: Internet :: WWW/HTTP :: Site Management"
     ],
     python_requires='>=3.6',
+    install_requires=[
+        "PyYAML>=5.3.1",
+        "urllib3>=1.26.6",
+        "requests>=2.26.0",
+    ],
 )
