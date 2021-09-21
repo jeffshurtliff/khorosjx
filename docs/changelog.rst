@@ -4,6 +4,30 @@ Change Log
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
 ******
+v3.0.0
+******
+**Release Date: TBD**
+
+Changed
+=======
+
+General
+-------
+* Started over with the ``requirements.txt`` file and renamed the original file
+  to be ``original-requirements.txt``.
+* Added the ``install_requires`` configuration to the ``setup.py`` file.
+* Added Python version 3.9 to ``pythonpackage.yml``.
+
+Fixed
+=====
+
+General
+-------
+* Fixed a minor grammatical error in the ``examples/khorosjx_helper.yml`` file.
+
+|
+
+******
 v2.5.3
 ******
 **Release Date: 2020-05-01**
@@ -63,6 +87,8 @@ Fixes to the :doc:`supporting modules <supporting-modules>`.
 * Fixed the :py:func:`khorosjx.utils.helper._convert_yaml_to_bool` function to only perform its
   operations if the passed value is not a Boolean value to prevent the following :py:exc:`AttributeError`
   exception from occurring: ``AttributeError: 'bool' object has no attribute 'lower'``
+
+|
 
 ******
 v2.5.1
@@ -286,7 +312,6 @@ Changes  to the documentation.
     * :py:func:`khorosjx.users.__get_paginated_content_count`
     * :py:func:`khorosjx.users.__validate_lookup_type`
 
-
 Fixed
 =====
 
@@ -355,7 +380,7 @@ Primary Modules
 ---------------
 Changes to the :doc:`primary modules <primary-modules>`.
 
-* Introduced the ``all_fields`` argument into the 
+* Introduced the ``all_fields`` argument into the
   :py:func:`khorosjx.content.base.get_paginated_content` function.
 * Updated the ``datasets`` dictionary in the :py:class:`khorosjx.utils.classes.Content` class
   to include the ``idea`` key value pair.
