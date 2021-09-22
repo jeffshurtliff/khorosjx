@@ -23,12 +23,14 @@ Changes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khorosjx.users.verify_connection`
     * :py:func:`khorosjx.content.base.verify_connection`
     * :py:func:`khorosjx.content.docs.verify_connection`
+    * :py:func:`khorosjx.content.threads.verify_connection`
 * Refactored the following functions to be more efficient and removed one of the
   exception references in the docstring:
     * :py:func:`khorosjx.admin.retrieve_connection_info`
     * :py:func:`khorosjx.groups.retrieve_connection_info`
     * :py:func:`khorosjx.content.base.retrieve_connection_info`
     * :py:func:`khorosjx.content.docs.retrieve_connection_info`
+    * :py:func:`khorosjx.content.threads.retrieve_connection_info`
 * Refactored the following functions to be more efficient:
     * :py:func:`khorosjx.core.get_query_url`
     * :py:func:`khorosjx.core.get_request_with_retries`

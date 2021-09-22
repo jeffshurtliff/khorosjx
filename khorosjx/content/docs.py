@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-:Module:         khorosjx.content.docs
-:Synopsis:       Collection of functions relating to documents (e.g. https://community.example.com/docs/DOC-1234)
-:Usage:          ``from khorosjx.content import docs``
-:Example:        ``content_id = docs.get_content_id(url)``
-:Created By:     Jeff Shurtliff
-:Last Modified:  Jeff Shurtliff
-:Modified Date:  22 Sep 2021
+:Module:            khorosjx.content.docs
+:Synopsis:          Collection of functions relating to documents (e.g. https://community.example.com/docs/DOC-1234)
+:Usage:             ``from khorosjx.content import docs``
+:Example:           ``content_id = docs.get_content_id(url)``
+:Created By:        Jeff Shurtliff
+:Last Modified:     Jeff Shurtliff
+:Modified Date:     22 Sep 2021
 """
 
 import pandas as pd
@@ -20,7 +20,6 @@ from ..places import base as places_core
 base_url, api_credentials = '', None
 
 
-# Define function to verify the connection in the core module
 def verify_core_connection():
     """This function verifies that the core connection information (Base URL and API credentials) has been defined.
 
