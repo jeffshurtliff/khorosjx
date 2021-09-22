@@ -6,46 +6,58 @@
 :Example:           ``place_info = khorosjx.spaces.core.get_place_info(browse_id)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     07 Jan 2020
+:Modified Date:     22 Sep 2021
 """
 
 from .. import core, errors
 from ..utils import core_utils, df_utils
 
+# Define global variables
+base_url, api_credentials = '', None
 
-# Define function to verify the connection in the core module
+
 def verify_core_connection():
     """This function verifies that the core connection information (Base URL and API credentials) has been defined.
 
+    .. versionchanged:: 3.1.0
+       Refactored the function to be more pythonic and to avoid depending on a try/except block.
+
     :returns: None
-    :raises: NameError, KhorosJXError, NoCredentialsError
+    :raises: :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    def __get_info():
-        """This function initializes and defines the global variables for the connection information."""
-        # Initialize global variables
-        global base_url
-        global api_credentials
+    if not base_url or not api_credentials:
+        retrieve_connection_info()
+    return
 
-        # Define the global variables at this module level
-        base_url, api_credentials = core.get_connection_info()
-        return
 
-    try:
-        base_url
-        api_credentials
-    except NameError:
-        __get_info()
+def retrieve_connection_info():
+    """This function initializes and defines the global variables for the connection information.
+
+    .. versionadded:: 3.1.0
+
+    :returns: None
+    :raises: :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
+    """
+    # Define the global variables at this module level
+    global base_url
+    global api_credentials
+    base_url, api_credentials = core.get_connection_info()
     return
 
 
 # Define function to get basic place information for a particular Place ID
-def get_place_info(place_id, return_fields=[], ignore_exceptions=False):
+def get_place_info(place_id, return_fields=None, ignore_exceptions=False):
     """This function obtains the place information for a given Place ID. (aka Browse ID)
+
+    .. versionchanged:: 3.1.0
+       Changed the default ``return_fields`` value to ``None`` and adjusted the function accordingly.
 
     :param place_id: The Place ID (aka Browse ID) of the place whose information will be requested
     :type place_id: int, str
     :param return_fields: Specific fields to return if not all of the default fields are needed (Optional)
-    :type return_fields: list
+    :type return_fields: list, None
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A dictionary with the place information
@@ -76,6 +88,9 @@ def get_place_info(place_id, return_fields=[], ignore_exceptions=False):
 def get_place_id(container_id, return_type='str'):
     """This function retrieves the Place ID (aka Browse ID) for a place given its Container ID.
 
+    .. versionchanged:: 3.1.0
+       Made improvements to proactively avoid raising any :py:exc:`NameError` exceptions.
+
     :param container_id: The Container ID for the space to query
     :type container_id: int, str
     :param return_type: Determines whether to return the value as a ``str`` or an ``int`` (Default: ``str``)
@@ -98,8 +113,9 @@ def get_place_id(container_id, return_type='str'):
         place_json = response.json()
         place_dict = core.get_fields_from_api_response(place_json['list'][0], 'place', ['placeID'])
         place_id = place_dict.get('placeID')
-    if return_type == 'int':
-        place_id = int(place_id)
+    else:
+        place_id = ''
+    place_id = int(place_id) if place_id and return_type == 'int' else place_id
     return place_id
 
 
@@ -120,6 +136,7 @@ def get_browse_id(container_id, return_type='str'):
 
 def __verify_browse_id(_id_value, _id_type):
     """This function checks for a Browse ID and converts another value to get it if necessary."""
+    # TODO: Rename this function to only have one underscore prefix
     _accepted_id_types = ['browse_id', 'place_id', 'space_id', 'blog_id', 'container_id']
     if _id_type in _accepted_id_types:
         if _id_type != "browse_id" and _id_type != "place_id":
@@ -134,7 +151,7 @@ def __verify_browse_id(_id_value, _id_type):
 def get_uri_for_id(destination_id, browse_id=True):
     """This function generates the full URI for a place given an identifier.
 
-    :param desination_id: A Jive ID or Place ID (aka Browse ID) for a place
+    :param destination_id: A Jive ID or Place ID (aka Browse ID) for a place
     :type destination_id: int, str
     :param browse_id: Defines whether or not the identifier provided is a Browse ID (``True`` by default)
     :type browse_id: bool
@@ -149,7 +166,7 @@ def get_uri_for_id(destination_id, browse_id=True):
 
 # Define function to get a list of places from a CSV or Excel file
 def get_places_list_from_file(full_path, file_type='csv', has_headers=True,
-                              id_column='', id_type='browse_id', excel_sheet_name='', filter_info={}):
+                              id_column='', id_type='browse_id', excel_sheet_name='', filter_info=None):
     """This function retrieves a list of place identifiers from a file.
 
     :param full_path: The full path to the file to import
@@ -160,11 +177,14 @@ def get_places_list_from_file(full_path, file_type='csv', has_headers=True,
     :param id_column: Defines the column name (if applicable) which contains the place identifier (Null by default)
     :type id_column: str
     :param id_type: Defines if the ID type is a ``browse_id`` (Default) or ``container_id``
+
+                    .. todo:: Add functionality for this parameter within the function
+
     :type id_type: str
     :param excel_sheet_name: The sheet name to retrieve if an Excel file is supplied (First sheet imported by default)
     :type excel_sheet_name: str
     :param filter_info: Dictionary used to apply any filter to the imported data if necessary (Null by default)
-    :type filter_info: dict
+    :type filter_info: dict, None
     :returns: A list of place identifiers
     :raises: InvalidFileTypeError
     """
@@ -177,7 +197,8 @@ def get_places_list_from_file(full_path, file_type='csv', has_headers=True,
 
     # Ensure that any filter columns are returned
     return_cols = [id_column]
-    if len(filter_info) > 0:
+    filter_info = {} if not filter_info else filter_info
+    if filter_info:
         for filter_col in filter_info.keys():
             return_cols.append(str(filter_col))
 
@@ -189,10 +210,10 @@ def get_places_list_from_file(full_path, file_type='csv', has_headers=True,
         dataframe = df_utils.import_excel(full_path, excel_sheet_name, use_first_sheet=use_first_sheet,
                                           columns_to_return=return_cols, has_headers=has_headers)
     else:
-        raise errors.exceptions.InvalidFileTypeError
+        raise errors.exceptions.InvalidFileTypeError()
 
     # Apply any given filters
-    if len(filter_info) > 0:
+    if filter_info:
         for filter_key, filter_val in filter_info.items():
             dataframe = dataframe.loc[dataframe[filter_key] == filter_val]
 
