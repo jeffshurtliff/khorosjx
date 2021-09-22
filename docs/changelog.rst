@@ -20,6 +20,7 @@ Changes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khorosjx.core.verify_connection`
     * :py:func:`khorosjx.admin.verify_connection`
     * :py:func:`khorosjx.groups.verify_connection`
+    * :py:func:`khorosjx.users.verify_connection`
 * Refactored the following functions to be more efficient and removed one of the
   exception references in the docstring:
     * :py:func:`khorosjx.admin.retrieve_connection_info`
@@ -30,6 +31,9 @@ Changes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khorosjx.core.get_api_version`
     * :py:func:`khorosjx.groups.check_user_membership`
     * :py:func:`khorosjx.groups.add_user_to_group`
+    * :py:func:`khorosjx.users.retrieve_connection_info`
+    * :py:func:`khorosjx.users.get_json_field`
+    * :py:func:`khorosjx.users.parse_user_fields`
 * Changed the default ``return_fields`` value to ``None`` and made related adjustments in
   the following functions:
     * :py:func:`khorosjx.core.get_fields_from_api_response`
@@ -38,6 +42,19 @@ Changes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khorosjx.groups.get_all_groups`
 * The name of the raised exception was added to the error message in the
   :py:func:`khorosjx.core._api_request_with_payload` function.
+* Renamed the :py:func:`khorosjx.users.__validate_lookup_type` function to be
+  :py:func:`khorosjx.users._validate_lookup_type` instead. (Single underscore prefix)
+* Renamed the :py:func:`khorosjx.users.__get_paginated_content_count` function to be
+  :py:func:`khorosjx.users._get_paginated_content_count` instead. (Single underscore prefix)
+* Renamed the :py:func:`khorosjx.users.__get_followed` function to be
+  :py:func:`khorosjx.users._get_followed` instead. (Single underscore prefix)
+* Updated the :py:func:`khorosjx.users._validate_lookup_type` function call in
+  the following functions to use the new function name:
+    * :py:func:`khorosjx.users.get_user_id`
+    * :py:func:`khorosjx.users.get_username`
+    * :py:func:`khorosjx.users.get_primary_email`
+* Updated the :py:func:`khorosjx.users._get_paginated_content_count` function call in
+  :py:func:`khorosjx.users.get_user_content_count` to use the new function name.
 
 Fixed
 =====
@@ -54,8 +71,11 @@ Fixes in the :doc:`primary modules <primary-modules>`.
     * :py:func:`khorosjx.core.set_credentials`
     * :py:func:`khorosjx.groups.check_user_membership`
     * :py:func:`khorosjx.groups.add_user_to_group`
+    * :py:func:`khorosjx.users._get_followed`
 * Refactored the :py:func:`khorosjx.core.get_base_url` function to properly utilize
   the ``base_url`` global variable.
+* Removed a hardcoded URL in the :py:func:`khorosjx.users.get_profile_url` with the
+  interpolated ``base_url`` variable.
 
 |
 

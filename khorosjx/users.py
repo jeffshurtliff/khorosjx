@@ -6,7 +6,7 @@
 :Example:        ``user_info = khorosjx.users.get_people_followed(user_id)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  24 Mar 2020
+:Modified Date:  21 Sep 2021
 """
 
 import json
@@ -17,18 +17,22 @@ from .utils import core_utils
 from .utils.classes import Users
 from .utils.core_utils import eprint
 
+# Define global variables
+base_url, api_credentials = None, None
 
+
+# Define function to verify the connection in the core module
 def verify_core_connection():
     """This function verifies that the core connection information (Base URL and API credentials) has been defined.
 
+    .. versionchanged:: 3.1.0
+       Refactored the function to be more pythonic and to avoid depending on a try/except block.
+
     :returns: None
-    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+    :raises: :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
              :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    try:
-        base_url
-        api_credentials
-    except NameError:
+    if not base_url or not api_credentials:
         retrieve_connection_info()
     return
 
@@ -36,15 +40,16 @@ def verify_core_connection():
 def retrieve_connection_info():
     """This function initializes and defines the global variables for the connection information.
 
+    .. versionchanged:: 3.1.0
+       Refactored the function to be more efficient.
+
     :returns: None
-    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+    :raises: :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
              :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    # Initialize global variables
+    # Define the global variables at this module level
     global base_url
     global api_credentials
-
-    # Define the global variables at this module level
     base_url, api_credentials = core.get_connection_info()
     return
 
@@ -53,27 +58,29 @@ def retrieve_connection_info():
 def get_json_field(json_data, field_names):
     """This function retrieves a value for a specific field from the JSON data for a user.
 
+    .. versionchanged:: 3.1.0
+       Refactored the function to be more efficient.
+
     :param json_data: The JSON data from which the field value must be retrieved
-    :type json_data: json
+    :type json_data: dict
     :param field_names: The field name along with any parent field paths
     :type field_names: tuple, list
     :returns: The value for the specific field in its original format
     :raises: :py:exc:`ValueError`, :py:exc:`TypeError`, :py:exc:`KeyError`
     """
-    if type(field_names) == str:
-        field_value = json_data[field_names]
-    elif (type(field_names) == tuple) or (type(field_names) == list):
+    field_value = None
+    if isinstance(field_names, str):
+        field_value = json_data.get(field_names)
+    elif isinstance(field_names, tuple) or isinstance(field_names, list):
         if len(field_names) == 2:
             field_one, field_two = field_names
-            field_value = json_data[field_one][field_two]
+            field_value = json_data.get(field_one).get(field_two)
         elif len(field_names) == 3:
             field_one, field_two, field_three = field_names
-            field_value = json_data[field_one][field_two][field_three]
+            field_value = json_data.get(field_one).get(field_two).get(field_three)
         elif len(field_names) == 4:
             field_one, field_two, field_three, field_four = field_names
-            field_value = json_data[field_one][field_two][field_three][field_four]
-    else:
-        field_value = None
+            field_value = json_data.get(field_one).get(field_two).get(field_three).get(field_four)
     return field_value
 
 
@@ -81,8 +88,11 @@ def get_json_field(json_data, field_names):
 def parse_user_fields(json_data):
     """This function populates a dictionary with the user information retrieved from the API response.
 
+    .. versionchanged:: 3.1.0
+       Refactored the function to be more efficient.
+
     :param json_data: The user data retrieved from the API in JSON format
-    :type json_data: json
+    :type json_data: dict
     :returns: Dictionary of user information that has been validated and normalized
     """
     # Populate the fields
@@ -99,12 +109,12 @@ def parse_user_fields(json_data):
                 user_info[db_field] = ', '.join(user_info.get(db_field))
             elif db_field == 'user_profile':
                 profile = user_info[db_field]
-                for idx in range(0, len(profile)):
+                for idx in range(len(profile)):
                     if profile[idx]['jive_label'] in Users.UserJSON.profile_fields:
                         profile_field_name = Users.UserJSON.profile_fields.get(profile[idx]['jive_label'])
                         user_info[profile_field_name] = profile[idx]['value']
                 del user_info['user_profile']
-        except (KeyError, IndexError, AttributeError) as e:
+        except (KeyError, IndexError, AttributeError):
             # Continue on to the next field
             continue
     # Return the user information
@@ -115,15 +125,18 @@ def parse_user_fields(json_data):
 def get_user_id(lookup_value, lookup_type='email'):
     """This function obtains the User ID for a user by querying the API against the user's email address or username.
 
+    .. versionchanged:: 3.1.0
+       Updated the :py:func:`khorosjx.users._validate_lookup_type` function call to use the new function name.
+
     :param lookup_value: Email address or username of the user
     :type lookup_value: str
     :param lookup_type: Determines if the lookup value is an ``email`` or ``username`` (Default: ``email``)
     :type lookup_type: str
-    :returns: User ID for the user
+    :returns: The User ID for the user
     :raises: :py:exc:`khorosjx.errors.exceptions.InvalidLookupTypeError`,
              :py:exc:`khorosjx.errors.exceptions.GETRequestError`
     """
-    lookup_type = __validate_lookup_type(lookup_type)
+    lookup_type = _validate_lookup_type(lookup_type)
     if '@' not in lookup_value:
         exception_msg = f"The lookup type is 'email' but '{lookup_value}' is not a valid email address."
         raise errors.exceptions.LookupMismatchError(exception_msg)
@@ -133,8 +146,11 @@ def get_user_id(lookup_value, lookup_type='email'):
 
 
 # Define internal function to validate the lookup type for a GET request function call
-def __validate_lookup_type(_lookup_type, _retrieval_value='id'):
+def _validate_lookup_type(_lookup_type, _retrieval_value='id'):
     """This function validates a lookup type to ensure that it is acceptable to the primary function call.
+
+    .. versionchanged:: 3.1.0
+       Renamed the function to only have a single underscore prefix and added parenthesis to the exceptions.
 
     :param _lookup_type: The lookup type that will be used in the primary function call
     :type _lookup_type: str
@@ -150,7 +166,7 @@ def __validate_lookup_type(_lookup_type, _retrieval_value='id'):
     }
     if _retrieval_value == "id":
         if _lookup_type not in _accepted_lookup_values.get(_retrieval_value):
-            raise errors.exceptions.InvalidLookupTypeError
+            raise errors.exceptions.InvalidLookupTypeError()
     else:
         _warn_msg = f"The lookup type {_lookup_type} is not recognized. The function will " + \
                     "default to treating the lookup value as"
@@ -161,13 +177,16 @@ def __validate_lookup_type(_lookup_type, _retrieval_value='id'):
             eprint(f"{_warn_msg} an email address.")
             _lookup_type = "email"
         elif _lookup_type not in _accepted_lookup_values:
-            raise errors.exceptions.InvalidLookupTypeError
+            raise errors.exceptions.InvalidLookupTypeError()
     return _lookup_type
 
 
 # Define function to get the primary email address of a user
 def get_primary_email(lookup_value, lookup_type="id"):
     """This function obtains the primary email address for a user by looking up their User ID or username.
+
+    .. versionchanged:: 3.1.0
+       Updated the :py:func:`khorosjx.users._validate_lookup_type` function call to use the new function name.
 
     :param lookup_value: The User ID or username for which to look up the user
     :type lookup_value: str
@@ -176,7 +195,7 @@ def get_primary_email(lookup_value, lookup_type="id"):
     :returns: The primary email address for the user
     :raises: :py:exc:`khorosjx.errors.exceptions.InvalidLookupTypeError`
     """
-    lookup_type = __validate_lookup_type(lookup_type, 'email')
+    lookup_type = _validate_lookup_type(lookup_type, 'email')
     user_data = core.get_data('people', lookup_value, lookup_type, return_json=True)
     primary_email = user_data['emails'][0]['value']
     return primary_email
@@ -186,13 +205,16 @@ def get_primary_email(lookup_value, lookup_type="id"):
 def get_username(lookup_value, lookup_type="id"):
     """This function obtains the username for a user by looking up their User ID or email address.
 
+    .. versionchanged:: 3.1.0
+       Updated the :py:func:`khorosjx.users._validate_lookup_type` function call to use the new function name.
+
     :param lookup_value: The User ID or email address for which to look up the user
     :type lookup_value: str
     :param lookup_type: Determines if the User ID or email address should be used to find the user (Default: ``id``)
     :type lookup_type: str
     :returns: The username for the user
     """
-    lookup_type = __validate_lookup_type(lookup_type, 'username')
+    lookup_type = _validate_lookup_type(lookup_type, 'username')
     user_data = core.get_data('people', lookup_value, lookup_type, return_json=True)
     username = user_data['jive']['username']
     return username
@@ -201,6 +223,9 @@ def get_username(lookup_value, lookup_type="id"):
 # Define function to get a user's profile URL using their email address or user ID (default)
 def get_profile_url(lookup_value, lookup_type="id"):
     """This function constructs the URL to a user's profile.
+
+    .. versionchanged:: 3.1.0
+       Removed a hardcoded URL with the interpolated ``base_url`` variable.
 
     :param lookup_value: The lookup value to locate the user
     :type lookup_value: str
@@ -212,12 +237,15 @@ def get_profile_url(lookup_value, lookup_type="id"):
         username = lookup_value
     else:
         username = get_username(lookup_value, lookup_type)
-    profile_url = f"https://community.rsa.com/people/{username}"
+    profile_url = f"{base_url}/people/{username}"
     return profile_url
 
 
-def __get_paginated_content_count(_user_uri, _start_index, _count=100):
+def _get_paginated_content_count(_user_uri, _start_index, _count=100):
     """This function identifies the content count for an individual REST API call.
+
+    .. versionchanged:: 3.1.0
+       Renamed the function to only have a single underscore prefix.
 
     :param _user_uri: The URI for the user using the ``people`` API endpoint
     :type _user_uri: str
@@ -231,7 +259,7 @@ def __get_paginated_content_count(_user_uri, _start_index, _count=100):
     _response = core.get_request_with_retries(_content_uri)
     if _response.status_code == 200:
         _response_json = _response.json()
-        _content_count = len(_response_json['list'])
+        _content_count = len(_response_json.get('list'))
     else:
         _content_count = 0
     return _content_count
@@ -240,6 +268,9 @@ def __get_paginated_content_count(_user_uri, _start_index, _count=100):
 # Define function to get the count of content created by a user
 def get_user_content_count(user_id, start_index=0):
     """This function obtains the number of content items created by a particular user.
+
+    .. versionchanged:: 3.1.0
+       Updated the :py:func:`khorosjx.users._get_paginated_content_count` function call to use the new function name.
 
     :param user_id: The User ID of the user
     :type user_id: int
@@ -252,13 +283,13 @@ def get_user_content_count(user_id, start_index=0):
     user_uri = f"{base_url}/people/{user_id}"
 
     # Get the content count for the first 100 results and increment the total count accordingly
-    content_count = __get_paginated_content_count(user_uri, start_index)
+    content_count = _get_paginated_content_count(user_uri, start_index)
     total_count += content_count
 
     # Continue rolling through the user content until all assets have been identified
     while content_count > 0:
         start_index += 100
-        content_count = __get_paginated_content_count(user_uri, start_index)
+        content_count = _get_paginated_content_count(user_uri, start_index)
         total_count += content_count
     return total_count
 
@@ -277,8 +308,12 @@ def get_people_followed(user_id, ignore_exceptions=False, return_type=list, star
     :type start_index: int
     :returns: The User IDs of all people followed by the queried user
     """
-    def __get_followed(_user_id, _ignore_exceptions=False, _start_index=0, _count=100):
+    def _get_followed(_user_id, _ignore_exceptions=False, _start_index=0, _count=100):
         """This function performs the API call to get the users followed from a single GET request.
+
+        .. versionchanged:: 3.1.0
+           Renamed the function to only have a single underscore prefix and added parenthesis to the exception
+           classes.
 
         :param _user_id: The User ID for the user against which to check
         :type _user_id: int
@@ -289,6 +324,8 @@ def get_people_followed(user_id, ignore_exceptions=False, return_type=list, star
         :param _count: The maximum number of results to return in the API call (Default: ``100``)
         :type _count: int
         :returns: The data from the @following sub-endpoint in JSON format
+        :raises: :py:exc:`khorosjx.errors.exceptions.UserQueryError`,
+                 :py:exc:`khorosjx.errors.exceptions.UserNotFoundError`,
         """
         _following_url = f"{base_url}/people/{_user_id}/@following?count={_count}" + \
                          f"&startIndex={_start_index}"
@@ -301,9 +338,9 @@ def get_people_followed(user_id, ignore_exceptions=False, return_type=list, star
                 _following_data = core_utils.convert_dict_to_json(_empty_response)
             else:
                 if _response.status_code == 404:
-                    raise errors.exceptions.UserNotFoundError
+                    raise errors.exceptions.UserNotFoundError()
                 else:
-                    raise errors.exceptions.UserQueryError
+                    raise errors.exceptions.UserQueryError()
         return _following_data
 
     # Verify that the core connection has been established
@@ -311,17 +348,17 @@ def get_people_followed(user_id, ignore_exceptions=False, return_type=list, star
 
     # Perform the initial API call
     people_followed = []
-    following_data = __get_followed(user_id, ignore_exceptions)
+    following_data = _get_followed(user_id, ignore_exceptions)
 
     # Continue looping through the data from subsequent calls until an empty list is found in the JSON response
-    while len(following_data['list']) > 0:
-        for user_followed in following_data['list']:
+    while following_data.get('list'):
+        for user_followed in following_data.get('list'):
             # Append reach User ID to the list
-            people_followed.append(user_followed['id'])
+            people_followed.append(user_followed.get('id'))
 
         # Perform the next API call for the next 100 users
         start_index += 100
-        following_data = __get_followed(user_id, ignore_exceptions, start_index)
+        following_data = _get_followed(user_id, ignore_exceptions, start_index)
 
     # Convert the list to a comma-separated string and return the value
     if return_type == str:
@@ -338,7 +375,7 @@ def get_recent_logins(count=100, start_index=0):
     :param count: The maximum number of results to return in the given GET request (Default: ``100``)
     :param start_index: The ``startIndex`` value in the GET request (Default: ``0``)
     :returns: The login data in JSON format
-    :raises: UserQueryError
+    :raises: :py:exc:`khorosjx.errors.exceptions.UserQueryError`
     """
     # Verify that the core connection has been established
     verify_core_connection()
@@ -353,5 +390,5 @@ def get_recent_logins(count=100, start_index=0):
         raise errors.exceptions.UserQueryError(error_msg)
     else:
         response_json = response.json()
-        login_data = response_json['list']
+        login_data = response_json.get('list')
     return login_data
