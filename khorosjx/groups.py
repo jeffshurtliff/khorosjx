@@ -152,7 +152,7 @@ def get_all_groups(return_fields=None, return_type='list', ignore_exceptions=Fal
     all_groups = core_utils.add_to_master_list(groups, all_groups)
 
     # Continue querying for groups until none are returned
-    while len(groups) > 0:
+    while groups:
         start_index += 100
         groups = _get_paginated_groups(return_fields, ignore_exceptions, start_index)
         all_groups = core_utils.add_to_master_list(groups, all_groups)
@@ -166,6 +166,9 @@ def get_all_groups(return_fields=None, return_type='list', ignore_exceptions=Fal
 # Define function to obtain and return a list of the security group memberships for a user
 def get_user_memberships(user_lookup, return_values='name', ignore_exceptions=False):
     """This function returns the security group memberships for a given user.
+
+    .. versionchanged:: 3.1.0
+       Refactored the function to be more efficient.
 
     :param user_lookup: A User ID or email address that can be used to identify the user
     :type user_lookup: int,str
@@ -183,7 +186,7 @@ def get_user_memberships(user_lookup, return_values='name', ignore_exceptions=Fa
     memberships = []
 
     # Get the User ID if the user lookup value is an email address
-    if (type(user_lookup) != int) and (user_lookup.isdigit() is False):
+    if not isinstance(user_lookup, int) and user_lookup.isdigit() is False:
         if '@' in user_lookup:
             user_lookup = users.get_user_id(user_lookup)
         else:
@@ -207,7 +210,7 @@ def get_user_memberships(user_lookup, return_values='name', ignore_exceptions=Fa
             raise errors.exceptions.UserQueryError(error_msg)
 
     else:
-        groups = (response.json())['list']
+        groups = (response.json()).get('list')
 
         # Report a warning if 100+ groups are found since function doesn't currently look through multiple API responses
         if len(groups) >= 100:
@@ -218,7 +221,7 @@ def get_user_memberships(user_lookup, return_values='name', ignore_exceptions=Fa
         # Add the group names to the memberships list
         for group in groups:
             if return_values == "name":
-                memberships.append(group['name'])
+                memberships.append(group.get('name'))
             # TODO: Allow the Group ID to be specified as the return_values option and returned
 
     # Return the memberships list whether populated or empty
@@ -229,7 +232,7 @@ def check_user_membership(user_memberships, groups_to_check, scope='any', ignore
     """This function checks if a user belongs to one or more security groups.
 
     .. versionchanged:: 3.1.0
-       Parenthesis were added to the exception classes.
+       Parenthesis were added to the exception classes and the function was refactored to be more efficient.
 
     :param user_memberships: A list of security groups to which the user belongs
     :type user_memberships: list, tuple
@@ -243,7 +246,7 @@ def check_user_membership(user_memberships, groups_to_check, scope='any', ignore
     :raises: :py:exc:`khorosjx.errors.exceptions.InvalidScopeError`
     """
     # Convert the groups_to_check argument to a tuple if a string was provided
-    if type(groups_to_check) == str:
+    if isinstance(groups_to_check, str):
         # Check for a comma-separated string
         if ',' in groups_to_check:
             if ', ' in groups_to_check:
@@ -264,8 +267,7 @@ def check_user_membership(user_memberships, groups_to_check, scope='any', ignore
             raise errors.exceptions.InvalidScopeError()
 
     # Check the groups supplied against the list of memberships
-    groups_found = []
-    all_results = []
+    groups_found, all_results = [], []
     for group in groups_to_check:
         if group in user_memberships:
             groups_found.append(group)
@@ -276,20 +278,21 @@ def check_user_membership(user_memberships, groups_to_check, scope='any', ignore
     # Define and return the Boolean response based on the scope
     result = False
     if scope == "any":
-        if len(groups_found) > 0:
-            result = True
+        result = True if groups_found else False
     elif scope == "all":
-        if len(groups_found) == len(groups_to_check):
-            result = True
+        result = True if len(groups_found) == len(groups_to_check) else False
     elif scope == "each":
         result = all_results
     return result
 
 
 # Define function to add a user to a security group
-def add_user_to_group(group_id, user_value, lookup_type="id", return_mode="none",
-                      print_results=True, ignore_exceptions=True):
+def add_user_to_group(group_id, user_value, lookup_type="id", return_mode="none", print_results=True,
+                      ignore_exceptions=True):
     """This function adds a user to a security group.
+
+    .. versionchanged:: 3.1.0
+       Parenthesis were added to the exception classes and the function was refactored to be more efficient.
 
     :param group_id: The Group ID of the security group to which the user should be added
     :type group_id: int, str
@@ -317,7 +320,7 @@ def add_user_to_group(group_id, user_value, lookup_type="id", return_mode="none"
                         "lookup types include 'id' and 'email')"
             eprint(error_msg)
         else:
-            raise errors.exceptions.InvalidLookupTypeError
+            raise errors.exceptions.InvalidLookupTypeError()
     if lookup_type == "email":
         user_value = users.get_user_id(user_value)
 
@@ -336,9 +339,8 @@ def add_user_to_group(group_id, user_value, lookup_type="id", return_mode="none"
             success_msg = f"The user (User ID {user_value}) has been added successfully to Group ID {group_id}."
             print(success_msg)
     else:
-        fail_msg = f"The user (User ID {user_value}) failed to be added to Group ID " + \
-                   f"{group_id} with a {response.status_code}" + \
-                   f" status code and the following message: {response.text}"
+        fail_msg = f"The user (User ID {user_value}) failed to be added to Group ID {group_id} with a " \
+                   f"{response.status_code} status code and the following message: {response.text}"
         eprint(fail_msg)
 
     # Define what is returned at the end of the function

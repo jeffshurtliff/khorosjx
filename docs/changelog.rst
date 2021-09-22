@@ -28,6 +28,8 @@ Changes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khorosjx.core.get_query_url`
     * :py:func:`khorosjx.core.get_request_with_retries`
     * :py:func:`khorosjx.core.get_api_version`
+    * :py:func:`khorosjx.groups.check_user_membership`
+    * :py:func:`khorosjx.groups.add_user_to_group`
 * Changed the default ``return_fields`` value to ``None`` and made related adjustments in
   the following functions:
     * :py:func:`khorosjx.core.get_fields_from_api_response`
@@ -51,6 +53,7 @@ Fixes in the :doc:`primary modules <primary-modules>`.
 * Added parenthesis to the exception classes in the following functions:
     * :py:func:`khorosjx.core.set_credentials`
     * :py:func:`khorosjx.groups.check_user_membership`
+    * :py:func:`khorosjx.groups.add_user_to_group`
 * Refactored the :py:func:`khorosjx.core.get_base_url` function to properly utilize
   the ``base_url`` global variable.
 
