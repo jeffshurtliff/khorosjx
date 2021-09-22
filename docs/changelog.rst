@@ -21,10 +21,14 @@ Changes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khorosjx.admin.verify_connection`
     * :py:func:`khorosjx.groups.verify_connection`
     * :py:func:`khorosjx.users.verify_connection`
+    * :py:func:`khorosjx.content.base.verify_connection`
+    * :py:func:`khorosjx.content.docs.verify_connection`
 * Refactored the following functions to be more efficient and removed one of the
   exception references in the docstring:
     * :py:func:`khorosjx.admin.retrieve_connection_info`
     * :py:func:`khorosjx.groups.retrieve_connection_info`
+    * :py:func:`khorosjx.content.base.retrieve_connection_info`
+    * :py:func:`khorosjx.content.docs.retrieve_connection_info`
 * Refactored the following functions to be more efficient:
     * :py:func:`khorosjx.core.get_query_url`
     * :py:func:`khorosjx.core.get_request_with_retries`
@@ -40,6 +44,10 @@ Changes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khorosjx.core.get_paginated_results`
     * :py:func:`khorosjx.groups.get_group_info`
     * :py:func:`khorosjx.groups.get_all_groups`
+    * :py:func:`khorosjx.content.base.get_paginated_content`
+    * :py:func:`khorosjx.content.base.get_document_info`
+* Changed the default ``categories`` and ``tags`` values to ``None`` in the
+  :py:func:`khorosjx.content.docs.create_document` and adjusted the function accordingly.
 * The name of the raised exception was added to the error message in the
   :py:func:`khorosjx.core._api_request_with_payload` function.
 * Renamed the :py:func:`khorosjx.users.__validate_lookup_type` function to be
@@ -55,6 +63,8 @@ Changes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khorosjx.users.get_primary_email`
 * Updated the :py:func:`khorosjx.users._get_paginated_content_count` function call in
   :py:func:`khorosjx.users.get_user_content_count` to use the new function name.
+* Added a ``TODO`` to the :py:func:`khorosjx.content.base.__convert_lookup_value` and
+  :py:func:`khorosjx.content.base.__trim_attachments_info` functions.
 
 Fixed
 =====
@@ -65,17 +75,22 @@ Fixes in the :doc:`primary modules <primary-modules>`.
 
 * Fixed how the ``query_url`` variable is defined in the :py:func:`khorosjx.core.get_data`
   function to proactively avoid raising any :py:exc:`NameError` exceptions.
-* Adjusted a dictionary lookup in the :py:func:`khorosjx.groups._get_paginated_groups`
-  function to proactively avoid raising a :py:exc:`KeyError` exception.
+* Adjusted a dictionary lookup in the following functions to proactively avoid raising
+  a :py:exc:`KeyError` exception:
+    * :py:func:`khorosjx.groups._get_paginated_groups`
+    * :py:func:`khorosjx.content.docs.get_document_attachments`
 * Added parenthesis to the exception classes in the following functions:
     * :py:func:`khorosjx.core.set_credentials`
     * :py:func:`khorosjx.groups.check_user_membership`
     * :py:func:`khorosjx.groups.add_user_to_group`
     * :py:func:`khorosjx.users._get_followed`
+    * :py:func:`khorosjx.content.docs.delete_document`
 * Refactored the :py:func:`khorosjx.core.get_base_url` function to properly utilize
   the ``base_url`` global variable.
 * Removed a hardcoded URL in the :py:func:`khorosjx.users.get_profile_url` with the
   interpolated ``base_url`` variable.
+* Made some minor syntax improvements in the :py:func:`khorosjx.content.base.get_content_id`
+  function.
 
 |
 

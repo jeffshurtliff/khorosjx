@@ -6,7 +6,7 @@
 :Example:        ``content_id = docs.get_content_id(url)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  28 May 2020
+:Modified Date:  22 Sep 2021
 """
 
 import pandas as pd
@@ -16,19 +16,22 @@ from . import base
 from ..utils import core_utils
 from ..places import base as places_core
 
+# Define global variables
+base_url, api_credentials = '', None
+
 
 # Define function to verify the connection in the core module
 def verify_core_connection():
     """This function verifies that the core connection information (Base URL and API credentials) has been defined.
 
+    .. versionchanged:: 3.1.0
+       Refactored the function to be more pythonic and to avoid depending on a try/except block.
+
     :returns: None
-    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+    :raises: :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
              :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    try:
-        base_url
-        api_credentials
-    except NameError:
+    if not base_url or not api_credentials:
         retrieve_connection_info()
     return
 
@@ -36,15 +39,16 @@ def verify_core_connection():
 def retrieve_connection_info():
     """This function initializes and defines the global variables for the connection information.
 
+    .. versionchanged:: 3.1.0
+       Refactored the function to be more efficient.
+
     :returns: None
-    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+    :raises: :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
              :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    # Initialize global variables
+    # Define the global variables at this module level
     global base_url
     global api_credentials
-
-    # Define the global variables at this module level
     base_url, api_credentials = core.get_connection_info()
     return
 
@@ -89,8 +93,11 @@ def get_url_for_id(doc_id):
     return url
 
 
-def create_document(subject, body, place_id, categories=[], tags=[], verify_ssl=True):
+def create_document(subject, body, place_id, categories=None, tags=None, verify_ssl=True):
     """This function creates a new document.
+
+    .. versionchanged:: 3.1.0
+       Changed the default ``categories`` and ``tags`` values to ``None`` and adjusted the function accordingly.
 
     .. versionchanged:: 2.6.0
        Added the ``verify_ssl`` argument.
@@ -102,9 +109,9 @@ def create_document(subject, body, place_id, categories=[], tags=[], verify_ssl=
     :param place_id: The Place ID (aka Browse ID) of the space where the document should reside
     :type place_id: int, str
     :param categories: Any categories associated with the document (none by default)
-    :type categories: list
+    :type categories: list, None
     :param tags: Any tags associated with the document (none by default)
-    :type tags: list
+    :type tags: list, None
     :param verify_ssl: Determines if API calls should verify SSL certificates (``True`` by default)
     :type verify_ssl: bool
     :returns: The API response from the POST request for the document creation
@@ -112,6 +119,8 @@ def create_document(subject, body, place_id, categories=[], tags=[], verify_ssl=
     """
     # TODO: Allow the author to be specified
     verify_core_connection()
+    categories = [] if not categories else categories
+    tags = [] if not tags else tags
     place_uri = places_core.get_uri_for_id(place_id)
     content_dict = {
         "type": "text/html",
@@ -124,9 +133,9 @@ def create_document(subject, body, place_id, categories=[], tags=[], verify_ssl=
         "type": "document"
     }
     if len(categories) > 0:
-        full_dict["categories"] = categories
+        full_dict['categories'] = categories
     if len(tags) > 0:
-        full_dict["tags"] = tags
+        full_dict['tags'] = tags
     payload = core_utils.convert_dict_to_json(full_dict)
     content_uri = f"{base_url}/contents"
     response = core.post_request_with_retries(content_uri, payload, verify_ssl)
@@ -220,7 +229,7 @@ def _perform_overwrite_operation(_url, _body_html, _minor_edit, _ignore_exceptio
 
 
 # Define function to get basic group information for a particular Group ID
-def get_document_info(lookup_value, lookup_type='doc_id', return_fields=[], ignore_exceptions=False, verify_ssl=True):
+def get_document_info(lookup_value, lookup_type='doc_id', return_fields=None, ignore_exceptions=False, verify_ssl=True):
     """This function obtains the group information for a given document.
 
     .. versionchanged:: 2.6.0
@@ -231,7 +240,7 @@ def get_document_info(lookup_value, lookup_type='doc_id', return_fields=[], igno
     :param lookup_type: Identifies the type of lookup value that has been provided (Default: ``doc_id``)
     :type lookup_type: str
     :param return_fields: Specific fields to return if not all of the default fields are needed (Optional)
-    :type return_fields: list
+    :type return_fields: list, None
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :param verify_ssl: Determines if API calls should verify SSL certificates (``True`` by default)
@@ -288,7 +297,7 @@ def get_document_attachments(lookup_value, lookup_type='doc_id', return_datafram
     # Get the attachments data from the API
     try:
         attachment_info = get_document_info(lookup_value, lookup_type, ['attachments'])
-        attachment_info = attachment_info['attachments']
+        attachment_info = attachment_info.get('attachments')
         attachment_info = base.__trim_attachments_info(attachment_info)
 
         # Convert the data to a dataframe if indicated
@@ -314,6 +323,9 @@ def get_document_attachments(lookup_value, lookup_type='doc_id', return_datafram
 def delete_document(lookup_value, lookup_type='content_id', return_json=False):
     """This function deletes a document.
 
+    .. versionchanged:: 3.1.0
+       Parenthesis were added to the exception classes and the function was refactored to be more efficient.
+
     :param lookup_value: THe value with which to identify the document.
     :type lookup_value: str, int
     :param lookup_type: Identifies the value as a ``content_id`` (default), ``doc_id`` or ``url``
@@ -325,7 +337,7 @@ def delete_document(lookup_value, lookup_type='content_id', return_json=False):
     """
     accepted_types = ['content_id', 'doc_id', 'url']
     if lookup_type not in accepted_types:
-        raise errors.exceptions.InvalidLookupTypeError
+        raise errors.exceptions.InvalidLookupTypeError()
     if lookup_type == "url":
         lookup_value = base.get_content_id(lookup_value)
     elif lookup_value == "doc_id":

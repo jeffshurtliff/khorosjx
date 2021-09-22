@@ -6,7 +6,7 @@
 :Example:           ``content_id = content_core.get_content_id(url, 'document')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     28 May 2020
+:Modified Date:     22 Sep 2021
 """
 
 import re
@@ -15,19 +15,22 @@ from .. import core, errors
 from ..utils import core_utils
 from ..utils.classes import Content
 
+# Define global variables
+base_url, api_credentials = '', None
+
 
 # Define function to verify the connection in the core module
 def verify_core_connection():
     """This function verifies that the core connection information (Base URL and API credentials) has been defined.
 
+    .. versionchanged:: 3.1.0
+       Refactored the function to be more pythonic and to avoid depending on a try/except block.
+
     :returns: None
-    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+    :raises: :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
              :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    try:
-        base_url
-        api_credentials
-    except NameError:
+    if not base_url or not api_credentials:
         retrieve_connection_info()
     return
 
@@ -35,15 +38,16 @@ def verify_core_connection():
 def retrieve_connection_info():
     """This function initializes and defines the global variables for the connection information.
 
+    .. versionchanged:: 3.1.0
+       Refactored the function to be more efficient.
+
     :returns: None
-    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+    :raises: :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
              :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    # Initialize global variables
+    # Define the global variables at this module level
     global base_url
     global api_credentials
-
-    # Define the global variables at this module level
     base_url, api_credentials = core.get_connection_info()
     return
 
@@ -51,6 +55,9 @@ def retrieve_connection_info():
 # Define function to get the content ID from a URL
 def get_content_id(url, content_type="document", verify_ssl=True):
     """This function obtains the Content ID for a particular content asset. (Supports all but blog posts)
+
+    .. versionchanged:: 3.1.0
+       Made some minor syntax improvements.
 
     .. versionchanged:: 2.6.0
        Added the ``verify_ssl`` argument.
@@ -80,7 +87,7 @@ def get_content_id(url, content_type="document", verify_ssl=True):
     if content_type == "document":
         item_id = url.split('DOC-')[1]
     elif content_type == "blog post":
-        raise ValueError(f"The get_content_id function does not currently support blog posts.")
+        raise ValueError("The get_content_id function does not currently support blog posts.")
     else:
         item_id = re.sub(r'^.*/', '', url)
 
@@ -90,7 +97,7 @@ def get_content_id(url, content_type="document", verify_ssl=True):
         query_url = f"{platform_url}/api/core/v3/contents?filter=entityDescriptor({content_type_id},{item_id})&count=1"
     else:
         error_msg = f"The content type {content_type} is unrecognized. Unable to perform the function."
-        raise ValueError(f"{error_msg}")
+        raise ValueError(error_msg)
 
     # Query the API to get the content ID
     try:
@@ -117,6 +124,7 @@ def __convert_lookup_value(_lookup_value, _lookup_type, _content_type="document"
              :py:exc:`khorosjx.errors.exceptions.InvalidLookupTypeError`,
              :py:exc:`khorosjx.errors.exceptions.CurrentlyUnsupportedError`
     """
+    # TODO: Rename this function to only have one underscore prefix
     # Verify that the core connection has been established
     verify_core_connection()
 
@@ -149,7 +157,8 @@ def __trim_attachments_info(_attachment_info):
     :type _attachment_info: list
     :returns: The trimmed list of dictionaries
     """
-    for _idx in range(0, len(_attachment_info)):
+    # TODO: Rename this function to only have one underscore prefix
+    for _idx in range(len(_attachment_info)):
         _fields_to_ignore = ['resources', 'doUpload']
         for _ignored_field in _fields_to_ignore:
             if _ignored_field in _attachment_info[_idx].keys():
@@ -157,9 +166,12 @@ def __trim_attachments_info(_attachment_info):
     return _attachment_info
 
 
-def get_paginated_content(endpoint, query_string="", start_index=0, dataset="", all_fields=False,
-                          return_fields=[], ignore_exceptions=False):
+def get_paginated_content(endpoint, query_string="", start_index=0, dataset="", all_fields=False, return_fields=None,
+                          ignore_exceptions=False):
     """This function returns paginated content information. (Up to 100 records at a time)
+
+    .. versionchanged:: 3.1.0
+       Changed the default ``return_fields`` value to ``None`` and adjusted the function accordingly.
 
     :param endpoint: The full endpoint without preceding slash (e.g. ``securityGroups``, ``people/email/user_email``)
     :type endpoint: str
@@ -172,7 +184,7 @@ def get_paginated_content(endpoint, query_string="", start_index=0, dataset="", 
     :param all_fields: Determines if the ``fields=@all`` parameter should be passed in the query
     :type all_fields: bool
     :param return_fields: Specific fields to return if not all of the default fields are needed (Optional)
-    :type return_fields: list
+    :type return_fields: list, None
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A list of dictionaries containing information for each group in the paginated query
@@ -182,8 +194,7 @@ def get_paginated_content(endpoint, query_string="", start_index=0, dataset="", 
 
     # Identify if all fields should be captured
     all_fields_options = {True: 'fields=@all&', False: ''}
-    if 'fields=@all' in query_string:
-        all_fields = False
+    all_fields = False if 'fields=@all' in query_string else all_fields
     all_fields = all_fields_options.get(all_fields)
 
     # Construct the API query
@@ -202,7 +213,7 @@ def get_paginated_content(endpoint, query_string="", start_index=0, dataset="", 
     if successful_response:
         # Get the response data in JSON format
         paginated_data = response.json()
-        for content_data in paginated_data['list']:
+        for content_data in paginated_data.get('list'):
             if dataset == "" or dataset not in Content.datasets:
                 dataset = core_utils.identify_dataset(query_uri)
             parsed_data = core.get_fields_from_api_response(content_data, dataset, return_fields)
