@@ -20,16 +20,22 @@ Changes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khorosjx.core.verify_connection`
     * :py:func:`khorosjx.admin.verify_connection`
     * :py:func:`khorosjx.groups.verify_connection`
-* Refactored the following functions  to be more efficient and removed one of the
+* Refactored the following functions to be more efficient and removed one of the
   exception references in the docstring:
     * :py:func:`khorosjx.admin.retrieve_connection_info`
     * :py:func:`khorosjx.groups.retrieve_connection_info`
+* Refactored the following functions to be more efficient:
+    * :py:func:`khorosjx.core.get_query_url`
+    * :py:func:`khorosjx.core.get_request_with_retries`
+    * :py:func:`khorosjx.core.get_api_version`
 * Changed the default ``return_fields`` value to ``None`` and made related adjustments in
   the following functions:
     * :py:func:`khorosjx.core.get_fields_from_api_response`
     * :py:func:`khorosjx.core.get_paginated_results`
     * :py:func:`khorosjx.groups.get_group_info`
     * :py:func:`khorosjx.groups.get_all_groups`
+* The name of the raised exception was added to the error message in the
+  :py:func:`khorosjx.core._api_request_with_payload` function.
 
 Fixed
 =====
@@ -45,6 +51,8 @@ Fixes in the :doc:`primary modules <primary-modules>`.
 * Added parenthesis to the exception classes in the following functions:
     * :py:func:`khorosjx.core.set_credentials`
     * :py:func:`khorosjx.groups.check_user_membership`
+* Refactored the :py:func:`khorosjx.core.get_base_url` function to properly utilize
+  the ``base_url`` global variable.
 
 |
 

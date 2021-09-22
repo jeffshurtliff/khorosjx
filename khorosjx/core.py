@@ -61,7 +61,7 @@ def set_credentials(credentials):
     """This function defines the Core API credentials as global variables and validates them.
 
     .. versionchanged:: 3.1.0
-       Parenthesis were added to the exception classes.
+       Parenthesis were added to the exception classes and utilized the :py:func:`isinstsance` builtin.
 
     :param credentials: The username and password for the account that will be utilizing the Core API
     :type credentials: tuple
@@ -79,7 +79,7 @@ def set_credentials(credentials):
             raise errors.exceptions.IncompleteCredentialsError()
         else:
             raise errors.exceptions.CredentialsUnpackingError()
-    elif (type(credentials[0]) != str) or (type(credentials[1]) != str):
+    elif not isinstance(credentials[0], str) or not isinstance(credentials[1], str):
         raise errors.exceptions.WrongCredentialTypeError()
     api_credentials = credentials
     return
@@ -174,6 +174,9 @@ def get_api_info(api_filter="none", verify_ssl=True):
 def get_api_version(api_name="v3", verify_ssl=True):
     """This function obtains, parses and returns the current version of one of the Jive Core APIs.
 
+    .. versionchanged:: 3.1.0
+       Refactored the function to be more efficient.
+
     .. versionchanged:: 2.6.0
        Added the ``verify_ssl`` argument.
 
@@ -197,7 +200,7 @@ def get_api_version(api_name="v3", verify_ssl=True):
     api_data = get_api_info(api_name, verify_ssl)
 
     # Parse and return the API version number
-    api_version = f"{api_data['version']}.{api_data['revision']}"
+    api_version = f"{api_data.get('version')}.{api_data.get('revision')}"
     return api_version
 
 
@@ -222,6 +225,9 @@ def get_platform_version(verify_ssl=True):
 def get_request_with_retries(query_url, return_json=False, verify_ssl=True):
     """This function performs a GET request with a total of 5 retries in case of timeouts or connection issues.
 
+    .. versionchanged:: 3.1.0
+       Refactored the function to be more efficient.
+
     .. versionchanged:: 2.6.0
        Added the ``verify_ssl`` argument.
 
@@ -238,7 +244,7 @@ def get_request_with_retries(query_url, return_json=False, verify_ssl=True):
     verify_connection()
 
     # Perform the GET request
-    retries = 0
+    retries, response = 0, None
     while retries <= 5:
         try:
             response = requests.get(query_url, auth=api_credentials, verify=verify_ssl)
@@ -248,34 +254,39 @@ def get_request_with_retries(query_url, return_json=False, verify_ssl=True):
             error_msg = f"The GET request failed with the exception below. {current_attempt}"
             print(f"{error_msg}\n{e}\n")
             retries += 1
-            pass
     if retries == 6:
         failure_msg = "The API call was unable to complete successfully after five consecutive API timeouts " + \
                       "and/or failures. Please call the function again or contact Khoros Support."
         raise errors.exceptions.APIConnectionError(failure_msg)
 
     # Convert to JSON if specified
-    if return_json:
-        response = response.json()
+    response = response.json() if return_json else response
     return response
 
 
 def get_base_url(api_base=True):
     """This function returns the base URL of the environment with or without the ``/api/core/v3/`` path appended.
 
+    .. versionchanged:: 3.1.0
+       Refactored the function to properly utilize the ``base_url`` global variable.
+
     :param api_base: Determines if the ``/api/core/v3/`` path should be appended (``True`` by default)
     :type api_base: bool
     :returns: The base URL for the Khoros JX or Jive-n environment
     """
     verify_connection()
-    url = base_url
+    global base_url
+    base_url = '' if not base_url else base_url
     if not api_base:
-        url = url.split('/api')[0]
-    return url
+        base_url = base_url.split('/api')[0]
+    return base_url
 
 
 def get_query_url(pre_endpoint, asset_id="", post_endpoint=""):
     """This function constructs an API query URL excluding any query strings.
+
+    .. versionchanged:: 3.1.0
+       Refactored the function to be more efficient.
 
     :param pre_endpoint: The endpoint portion of the URL preceding any ID numbers (e.g. ``places``)
     :type pre_endpoint: str
@@ -293,13 +304,13 @@ def get_query_url(pre_endpoint, asset_id="", post_endpoint=""):
         pre_endpoint = pre_endpoint[:-1]
     query_url = f"{base_url}/{pre_endpoint}"
     for section in (asset_id, post_endpoint):
-        if type(section) != str:
+        if not isinstance(section, str):
             section = str(section)
-        if len(section) > 0:
+        if section:
             if section[-1:] == '/':
                 section = section[:1]
             section = f"/{section}"
-        query_url = f"{query_url}{section}"
+        query_url += section
     return query_url
 
 
@@ -393,6 +404,9 @@ def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_
 def _api_request_with_payload(_url, _json_payload, _request_type, _verify_ssl=True):
     """This function performs an API request while supplying a JSON payload.
 
+    .. versionchanged:: 3.1.0
+       Included the name of the raised exception in the error message.
+
     .. versionchanged:: 2.6.0
        Added the ``_verify_ssl`` argument.
 
@@ -422,9 +436,10 @@ def _api_request_with_payload(_url, _json_payload, _request_type, _verify_ssl=Tr
                 raise errors.exceptions.InvalidRequestTypeError()
             break
         except Exception as _api_exception:
+            _exc_type = type(_api_exception).__name__
             _current_attempt = f"(Attempt {_retries} of 5)"
             _error_msg = f"The {_request_type.upper()} request has failed with the following exception: " + \
-                         f"{_api_exception} {_current_attempt}"
+                         f"{_exc_type} - {_api_exception} {_current_attempt}"
             print(_error_msg)
             _retries += 1
             pass
