@@ -6,7 +6,7 @@ This page documents the additions, changes, fixes, deprecations and removals mad
 ******
 v3.1.0
 ******
-**Release Date: TBD**
+**Release Date: 2021-09-22**
 
 Added
 =====
@@ -16,6 +16,7 @@ Primary Modules
 Additions to the :doc:`primary modules <primary-modules>`.
 
 * Added the :py:func:`khorosjx.places.base.retrieve_connection_info` function.
+* Added the :py:func:`khorosjx.places.blogs.retrieve_connection_info` function.
 
 Changed
 =======
@@ -35,7 +36,10 @@ Changes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khorosjx.content.threads.verify_core_connection`
     * :py:func:`khorosjx.content.videos.verify_core_connection`
     * :py:func:`khorosjx.groups.verify_core_connection`
+    * :py:func:`khorosjx.news.verify_core_connection`
     * :py:func:`khorosjx.places.base.verify_core_connection`
+    * :py:func:`khorosjx.places.blogs.verify_core_connection`
+    * :py:func:`khorosjx.places.spaces.verify_core_connection`
     * :py:func:`khorosjx.users.verify_core_connection`
 * Refactored the following functions to be more efficient and removed one of the
   exception references in the docstring:
@@ -47,6 +51,7 @@ Changes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khorosjx.content.threads.retrieve_connection_info`
     * :py:func:`khorosjx.content.videos.retrieve_connection_info`
     * :py:func:`khorosjx.groups.retrieve_connection_info`
+    * :py:func:`khorosjx.news.retrieve_connection_info`
     * :py:func:`khorosjx.users.retrieve_connection_info`
 * Refactored the following functions to be more efficient:
     * :py:func:`khorosjx.core.get_query_url`
@@ -54,6 +59,7 @@ Changes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khorosjx.core.get_api_version`
     * :py:func:`khorosjx.groups.check_user_membership`
     * :py:func:`khorosjx.groups.add_user_to_group`
+    * :py:func:`khorosjx.news.get_subscriber_groups`
     * :py:func:`khorosjx.places.base.get_places_list_from_file`
     * :py:func:`khorosjx.users.get_json_field`
     * :py:func:`khorosjx.users.parse_user_fields`
@@ -65,7 +71,12 @@ Changes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khorosjx.content.base.get_document_info`
     * :py:func:`khorosjx.groups.get_group_info`
     * :py:func:`khorosjx.groups.get_all_groups`
+    * :py:func:`khorosjx.news.get_all_publications`
+    * :py:func:`khorosjx.news.get_publication`
+    * :py:func:`khorosjx.news.get_stream`
+    * :py:func:`khorosjx.news.get_subscribers`
     * :py:func:`khorosjx.places.base.get_place_info`
+    * :py:func:`khorosjx.places.spaces.get_space_info`
 * Changed the default ``categories`` and ``tags`` values to ``None`` in the
   :py:func:`khorosjx.content.docs.create_document` and adjusted the function accordingly.
 * The name of the raised exception was added to the error message in the
@@ -88,6 +99,13 @@ Changes to the :doc:`primary modules <primary-modules>`.
     * :py:func:`khorosjx.content.base.__trim_attachments_info`
     * :py:func:`khorosjx.places.base.__verify_browse_id`
 
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Moved the function :py:func:`khoros.errors.handlers._raise_exception_for_status_code` function
+  out to the module level from within :py:func:`khoros.errors.handlers.check_api_response`.
+
 Fixed
 =====
 
@@ -103,10 +121,11 @@ Fixes in the :doc:`primary modules <primary-modules>`.
     * :py:func:`khorosjx.content.docs.get_document_attachments`
 * Added parenthesis to the exception classes in the following functions:
     * :py:func:`khorosjx.core.set_credentials`
+    * :py:func:`khorosjx.content.docs.delete_document`
     * :py:func:`khorosjx.groups.check_user_membership`
     * :py:func:`khorosjx.groups.add_user_to_group`
+    * :py:func:`khorosjx.news.filter_subscriptions_by_id`
     * :py:func:`khorosjx.users._get_followed`
-    * :py:func:`khorosjx.content.docs.delete_document`
 * Refactored the :py:func:`khorosjx.core.get_base_url` function to properly utilize
   the ``base_url`` global variable.
 * Removed a hardcoded URL in the :py:func:`khorosjx.users.get_profile_url` with the
@@ -115,6 +134,13 @@ Fixes in the :doc:`primary modules <primary-modules>`.
   function.
 * Made improvements to the :py:func:`khoros.places.base.get_place_id` function to proactively
   avoid raising any :py:exc:`NameError` exceptions.
+
+Supporting Modules
+------------------
+Changes to the :doc:`supporting modules <supporting-modules>`.
+
+* Added parenthesis to the exception classes in the following functions:
+    * :py:func:`khorosjx.errors.handlers.check_json_for_error`
 
 |
 

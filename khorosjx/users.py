@@ -6,7 +6,7 @@
 :Example:        ``user_info = khorosjx.users.get_people_followed(user_id)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  21 Sep 2021
+:Modified Date:  22 Sep 2021
 """
 
 import json
@@ -18,7 +18,7 @@ from .utils.classes import Users
 from .utils.core_utils import eprint
 
 # Define global variables
-base_url, api_credentials = None, None
+base_url, api_credentials = '', None
 
 
 # Define function to verify the connection in the core module

@@ -6,7 +6,7 @@
 :Example:           ``space_info = khorosjx.places.spaces.get_space_info(browse_id)``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     29 Apr 2020
+:Modified Date:     22 Sep 2021
 """
 
 import warnings
@@ -15,18 +15,22 @@ from .. import core, errors
 from . import base as places_core
 from ..utils import core_utils, df_utils
 
+# Define global variables
+base_url, api_credentials = '', None
 
+
+# Define function to verify the connection in the core module
 def verify_core_connection():
     """This function verifies that the core connection information (Base URL and API credentials) has been defined.
 
+    .. versionchanged:: 3.1.0
+       Refactored the function to be more pythonic and to avoid depending on a try/except block.
+
     :returns: None
-    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+    :raises: :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
              :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    try:
-        base_url
-        api_credentials
-    except NameError:
+    if not base_url or not api_credentials:
         retrieve_connection_info()
     return
 
@@ -34,25 +38,31 @@ def verify_core_connection():
 def retrieve_connection_info():
     """This function initializes and defines the global variables for the connection information.
 
+    .. versionchanged:: 3.1.0
+       Refactored the function to be more efficient.
+
     :returns: None
+    :raises: :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+             :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    # Initialize global variables
+    # Define the global variables at this module level
     global base_url
     global api_credentials
-
-    # Define the global variables at this module level
     base_url, api_credentials = core.get_connection_info()
     return
 
 
 # Define function to get space info
-def get_space_info(place_id, return_fields=[], ignore_exceptions=False):
+def get_space_info(place_id, return_fields=None, ignore_exceptions=False):
     """This function obtains the space information for a given Place ID. (aka Browse ID)
+
+    .. versionchanged:: 3.1.0
+       Changed the default ``return_fields`` value to ``None`` and adjusted the function accordingly.
 
     :param place_id: The Place ID (aka Browse ID) of the space whose information will be requested
     :type place_id: int, str
     :param return_fields: Specific fields to return if not all of the default fields are needed (Optional)
-    :type return_fields: list
+    :type return_fields: list, None
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A dictionary with the space information

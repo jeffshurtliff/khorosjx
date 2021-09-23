@@ -6,24 +6,28 @@
 :Example:        ``all_publication = khorosjx.news.get_all_publications()``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  29 Apr 2020
+:Modified Date:  22 Sep 2021
 """
 
 from . import core, errors
 from .utils import core_utils, df_utils
 
+# Define global variables
+base_url, api_credentials = '', None
 
+
+# Define function to verify the connection in the core module
 def verify_core_connection():
     """This function verifies that the core connection information (Base URL and API credentials) has been defined.
 
+    .. versionchanged:: 3.1.0
+       Refactored the function to be more pythonic and to avoid depending on a try/except block.
+
     :returns: None
-    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+    :raises: :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
              :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    try:
-        base_url
-        api_credentials
-    except NameError:
+    if not base_url or not api_credentials:
         retrieve_connection_info()
     return
 
@@ -31,24 +35,28 @@ def verify_core_connection():
 def retrieve_connection_info():
     """This function initializes and defines the global variables for the connection information.
 
+    .. versionchanged:: 3.1.0
+       Refactored the function to be more efficient.
+
     :returns: None
-    :raises: :py:exc:`NameError`, :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
+    :raises: :py:exc:`khorosjx.errors.exceptions.KhorosJXError`,
              :py:exc:`khorosjx.errors.exceptions.NoCredentialsError`
     """
-    # Initialize global variables
+    # Define the global variables at this module level
     global base_url
     global api_credentials
-
-    # Define the global variables at this module level
     base_url, api_credentials = core.get_connection_info()
     return
 
 
-def get_all_publications(return_fields=[], return_type='list', ignore_exceptions=False):
+def get_all_publications(return_fields=None, return_type='list', ignore_exceptions=False):
     """This function retrieves all publications within an environment.
-    
+
+    .. versionchanged:: 3.1.0
+       Changed the default ``return_fields`` value to ``None`` and adjusted the function accordingly.
+
     :param return_fields: Specific fields to return if not all of the default fields are needed (Optional)
-    :type return_fields: list
+    :type return_fields: list, None
     :param return_type: Determines if the data should be returned in a list or a pandas dataframe (Default: ``list``)
     :type return_type: str
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
@@ -70,7 +78,7 @@ def get_all_publications(return_fields=[], return_type='list', ignore_exceptions
     all_publications = core_utils.add_to_master_list(publications, all_publications)
 
     # Continue querying for groups until none are returned
-    while len(publications) > 0:
+    while publications:
         start_index += 100
         publications = core.get_paginated_results(query, 'publication', start_index, return_fields=return_fields,
                                                   ignore_exceptions=ignore_exceptions)
@@ -82,13 +90,16 @@ def get_all_publications(return_fields=[], return_type='list', ignore_exceptions
     return all_publications
 
 
-def get_publication(pub_id, return_fields=[], ignore_exceptions=False):
+def get_publication(pub_id, return_fields=None, ignore_exceptions=False):
     """This function retrieves the information on a single publication when supplied its ID.
+
+    .. versionchanged:: 3.1.0
+       Changed the default ``return_fields`` value to ``None`` and adjusted the function accordingly.
 
     :param pub_id: The ID of the publication
     :type pub_id: int, str
     :param return_fields: Specific fields to return if not all of the default fields are needed (Optional)
-    :type return_fields: list
+    :type return_fields: list, None
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A dictionary with the data for the publication
@@ -162,6 +173,9 @@ def get_subscription_ids(pub_id, return_type='str'):
 def filter_subscriptions_by_id(sub_id, subscriptions):
     """This function filters the returned IDs by a supplied subscription ID when applicable.
 
+    .. versionchanged:: 3.1.0
+       Parenthesis were added to the exception classes and the function was refactored to be more efficient.
+
     :param sub_id: The subscription ID to use as the filter
     :type sub_id: str
     :param subscriptions: A list of subscriptions
@@ -172,11 +186,14 @@ def filter_subscriptions_by_id(sub_id, subscriptions):
     for subscription in subscriptions:
         if subscription['id'] == sub_id:
             return subscription
-    raise errors.exceptions.SubscriptionNotFoundError
+    raise errors.exceptions.SubscriptionNotFoundError()
 
 
 def get_subscriber_groups(publication_id, subscription_id='', full_uri=False):
     """This function identifies the subscriber groups for one or more subscriptions within a publication.
+
+    .. versionchanged:: 3.1.0
+       Refactored the function to be more efficient.
 
     :param publication_id: The ID of the publication
     :type publication_id: int, str
@@ -194,17 +211,17 @@ def get_subscriber_groups(publication_id, subscription_id='', full_uri=False):
     subscriptions = get_subscription_data(publication_id)
 
     # Filter for a specific subscription if an ID is provided
-    if subscription_id != '':
+    if subscription_id:
         subscriptions = filter_subscriptions_by_id(subscription_id, subscriptions)
 
     # Capture the subscriber groups
     subscriber_groups = {}
     for subscription in subscriptions:
         if full_uri:
-            subscriber_groups[subscription['id']] = subscription['subscribers']
+            subscriber_groups[subscription['id']] = subscription.get('subscribers')
         else:
             subscribers = []
-            for subscriber in subscription['subscribers']:
+            for subscriber in subscription.get('subscribers'):
                 subscribers.append(subscriber.split('securityGroups/')[1])
             subscriber_groups[subscription['id']] = subscribers
     return subscriber_groups
@@ -223,9 +240,12 @@ def get_subscriber_ids(subscribers):
     return subscriber_ids
 
 
-def get_subscribers(publication_id, subscription_id, return_type='list', only_id=True, return_fields=[],
+def get_subscribers(publication_id, subscription_id, return_type='list', only_id=True, return_fields=None,
                     ignore_exceptions=False):
     """This function retrieves the individual subscribers (i.e. users) for a given subscription within a publication.
+
+    .. versionchanged:: 3.1.0
+       Changed the default ``return_fields`` value to ``None`` and adjusted the function accordingly.
 
     :param publication_id: The ID of the publication where the subscription resides
     :type publication_id: int, str
@@ -236,7 +256,7 @@ def get_subscribers(publication_id, subscription_id, return_type='list', only_id
     :param only_id: Determines if only the ID of each user should be returned (default) or a dict with all user data
     :type only_id: bool
     :param return_fields: Specific fields to return if not all of the default fields are needed (Optional)
-    :type return_fields: list
+    :type return_fields: list, None
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A list or pandas dataframe with the subscriber information
@@ -261,7 +281,7 @@ def get_subscribers(publication_id, subscription_id, return_type='list', only_id
     all_subscribers = core_utils.add_to_master_list(subscribers, all_subscribers)
 
     # Continue querying for groups until none are returned
-    while len(subscribers) > 0:
+    while subscribers:
         start_index += 100
         subscribers = core.get_paginated_results(query, 'people', start_index, return_fields=return_fields,
                                                  ignore_exceptions=ignore_exceptions)
@@ -312,13 +332,16 @@ def update_publication(publication_id, payload):
     return response
 
 
-def get_stream(stream_id, return_fields=[], ignore_exceptions=False):
+def get_stream(stream_id, return_fields=None, ignore_exceptions=False):
     """This function retrieves the information on a single publication when supplied its ID.
+
+    .. versionchanged:: 3.1.0
+       Changed the default ``return_fields`` value to ``None`` and adjusted the function accordingly.
 
     :param stream_id: The ID of the stream to retrieve
     :type stream_id: int, str
     :param return_fields: Specific fields to return if not all of the default fields are needed (Optional)
-    :type return_fields: list
+    :type return_fields: list, None
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A dictionary with the data for the publication

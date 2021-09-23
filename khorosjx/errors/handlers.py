@@ -6,10 +6,8 @@
 :Example:        ``successful_response = check_api_response(response)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  23 Nov 2019
+:Modified Date:  22 Sep 2021
 """
-
-import warnings
 
 from . import exceptions
 from ..utils.core_utils import eprint
@@ -26,18 +24,11 @@ def check_api_response(response, request_type='get', ignore_exceptions=False):
     :param ignore_exceptions: Determines whether or not exceptions should be ignored and not raised (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A Boolean value indicating whether or not the API request was deemed successful
-    :raises: GETRequestError, POSTRequestError, PUTRequestError, BadCredentialsError
+    :raises: :py:exc:`khorosjx.errors.exceptions.BadCredentialsError`,
+             :py:exc:`khorosjx.errors.exceptions.GETRequestError`,
+             :py:exc:`khorosjx.errors.exceptions.POSTRequestError`,
+             :py:exc:`khorosjx.errors.exceptions.PUTRequestError`
     """
-    def __raise_exception_for_status_code(_status_code, _request_type, _result_msg=""):
-        if _status_code == 401:
-            raise exceptions.BadCredentialsError
-        if _request_type.lower() == "put":
-            raise exceptions.PUTRequestError(_result_msg)
-        elif _request_type.lower() == "post":
-            raise exceptions.POSTRequestError(_result_msg)
-        else:
-            raise exceptions.GETRequestError(_result_msg)
-
     # Define the default return status
     successful_response = True
 
@@ -56,23 +47,49 @@ def check_api_response(response, request_type='get', ignore_exceptions=False):
         if ignore_exceptions:
             eprint(result_msg)
         else:
-            __raise_exception_for_status_code(status_code, request_type, result_msg)
+            _raise_exception_for_status_code(status_code, request_type, result_msg)
         successful_response = False
     return successful_response
 
 
+def _raise_exception_for_status_code(_status_code, _request_type, _result_msg=""):
+    """This function raises an exception for a specific status code depending on the API request type.
+
+    .. versionchanged:: 3.1.0
+       Moved this function to the module level from within :py:func:`khoros.errors.handlers.check_api_response`.
+
+    :raises: :py:exc:`khorosjx.errors.exceptions.BadCredentialsError`,
+             :py:exc:`khorosjx.errors.exceptions.GETRequestError`,
+             :py:exc:`khorosjx.errors.exceptions.POSTRequestError`,
+             :py:exc:`khorosjx.errors.exceptions.PUTRequestError`
+    """
+    if _status_code == 401:
+        raise exceptions.BadCredentialsError()
+    if _request_type.lower() == "put":
+        raise exceptions.PUTRequestError(_result_msg)
+    elif _request_type.lower() == "post":
+        raise exceptions.POSTRequestError(_result_msg)
+    else:
+        raise exceptions.GETRequestError(_result_msg)
+
+
 def check_json_for_error(json_data, data_type='space'):
     """This function checks to see if JSON from an API response contains an error.
+
+    .. versionchanged:: 3.1.0
+       Parenthesis were added to the exception classes and the function was refactored to be more efficient.
 
     :param json_data: The API response data in JSON format
     :type json_data: dict
     :param data_type: Determines what type of data was being queried (Default: ``space``)
     :type data_type: str
     :returns: None
-    :raises: SpaceNotFoundError, NotFoundResponseError, GETRequestError
+    :raises: :py:exc:`khorosjx.errors.exceptions.GETRequestError`
+             :py:exc:`khorosjx.errors.exceptions.SpaceNotFoundError`,
+             :py:exc:`khorosjx.errors.exceptions.NotFoundResponseError`
     """
     not_found_exceptions = {
-        'space': exceptions.SpaceNotFoundError
+        'space': exceptions.SpaceNotFoundError()
     }
     try:
         error_status_code = json_data['error']['status']
@@ -81,7 +98,7 @@ def check_json_for_error(json_data, data_type='space'):
             if data_type in not_found_exceptions:
                 raise not_found_exceptions.get(data_type)
             else:
-                raise exceptions.NotFoundResponseError
+                raise exceptions.NotFoundResponseError()
         else:
             exception_msg = f"The API request failed with a {error_status_code} status code and the " + \
                             f"following error: {json_data['error']['message']}"

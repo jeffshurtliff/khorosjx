@@ -6,7 +6,7 @@
 :Example:           ``user_info = khorosjx.core.get_data('people', 'john.doe@example.com', 'email')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     21 Sep 2021
+:Modified Date:     22 Sep 2021
 """
 
 import re
@@ -19,7 +19,7 @@ from .utils.core_utils import eprint, convert_dict_to_json
 from .utils.classes import Platform, Content
 
 # Define global variables
-base_url, api_credentials = None, None
+base_url, api_credentials = '', None
 
 
 def set_base_url(domain_url, version=3, protocol='https'):

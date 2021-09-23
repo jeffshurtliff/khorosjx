@@ -48,13 +48,16 @@ def retrieve_connection_info():
 
 
 # Define function to get space info
-def get_blog_info(place_id, return_fields=[], ignore_exceptions=False):
+def get_blog_info(place_id, return_fields=None, ignore_exceptions=False):
     """This function obtains the blog information for a given Place ID. (aka Browse ID)
+
+    .. versionchanged:: 3.1.0
+       Changed the default ``return_fields`` value to ``None`` and adjusted the function accordingly.
 
     :param place_id: The Place ID (aka Browse ID) of the blog whose information will be requested
     :type place_id: int, str
     :param return_fields: Specific fields to return if not all of the default fields are needed (Optional)
-    :type return_fields: list
+    :type return_fields: list, None
     :param ignore_exceptions: Determines whether nor not exceptions should be ignored (Default: ``False``)
     :type ignore_exceptions: bool
     :returns: A dictionary with the blog information

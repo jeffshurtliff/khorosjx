@@ -6,7 +6,7 @@
 :Example:        ``group_info = groups.get_group_info(1051)``
 :Created By:     Jeff Shurtliff
 :Last Modified:  Jeff Shurtliff
-:Modified Date:  21 Sep 2021
+:Modified Date:  22 Sep 2021
 """
 
 import requests
@@ -17,7 +17,7 @@ from .utils.core_utils import eprint
 from .utils import core_utils, df_utils
 
 # Define global variables
-base_url, api_credentials = None, None
+base_url, api_credentials = '', None
 
 
 # Define function to verify the connection in the core module
