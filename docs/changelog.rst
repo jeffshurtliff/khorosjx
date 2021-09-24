@@ -3,6 +3,45 @@ Change Log
 ##########
 This page documents the additions, changes, fixes, deprecations and removals made in each release.
 
+*********
+v3.2.0rc1
+*********
+**Release Date: 2021-09-23**
+
+Added
+=====
+
+Primary Modules
+---------------
+Additions to the :doc:`primary modules <primary-modules>`.
+
+* Added the :py:func:`khorosjx.core.ensure_absolute_url` function.
+
+Supporting Modules
+------------------
+Additions to the :doc:`supporting modules <supporting-modules>`.
+
+* Added the :py:exc:`khorosjx.errors.exceptions.MissingBaseUrlError` exception class.
+
+Changed
+=======
+
+Primary Modules
+---------------
+Changes to the :doc:`primary modules <primary-modules>`.
+
+* Added the ``return_url`` parameter to the :py:func:`khorosjx.core.set_base_url`
+  function to determine if the base URL should be returned by the function.
+* The following functions were updated to leverage the
+  :py:func:`khorosjx.core.ensure_absolute_url` function:
+    * :py:func:`khorosjx.core.get_request_with_retries`
+    * :py:func:`khorosjx.core._api_request_with_payload`
+    * :py:func:`khorosjx.core.post_request_with_retries`
+    * :py:func:`khorosjx.core.put_request_with_retries`
+    * :py:func:`khorosjx.core.delete`
+
+|
+
 ******
 v3.1.0
 ******

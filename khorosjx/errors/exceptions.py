@@ -6,7 +6,7 @@
 :Example:       ``raise khorosjx.errors.exceptions.BadCredentialsError``
 :Created By:    Jeff Shurtliff
 :Last Modified: Jeff Shurtliff
-:Modified Date: 22 Jan 2020
+:Modified Date: 23 Sep 2021
 """
 
 
@@ -184,6 +184,15 @@ class InvalidEndpointError(KhorosJXError):
     def __init__(self, *args, **kwargs):
         default_msg = "The supplied endpoint for the API is not recognized. (Examples of valid " + \
                       "lookup types include 'people' and 'contents')"
+        if not (args or kwargs):
+            args = (default_msg,)
+        super().__init__(*args)
+
+
+class MissingBaseUrlError(KhorosJXError):
+    """This exception is used when a valid base URL has not been defined."""
+    def __init__(self, *args, **kwargs):
+        default_msg = "A valid base URL has not been defined and API requests cannot be made."
         if not (args or kwargs):
             args = (default_msg,)
         super().__init__(*args)

@@ -13,7 +13,7 @@ import warnings
 
 import requests
 
-__version__ = "3.2.0"
+__version__ = "3.2.0rc1"
 
 
 def get_full_version():

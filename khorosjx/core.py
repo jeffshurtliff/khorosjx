@@ -6,7 +6,7 @@
 :Example:           ``user_info = khorosjx.core.get_data('people', 'john.doe@example.com', 'email')``
 :Created By:        Jeff Shurtliff
 :Last Modified:     Jeff Shurtliff
-:Modified Date:     22 Sep 2021
+:Modified Date:     23 Sep 2021
 """
 
 import re
@@ -22,8 +22,11 @@ from .utils.classes import Platform, Content
 base_url, api_credentials = '', None
 
 
-def set_base_url(domain_url, version=3, protocol='https'):
+def set_base_url(domain_url, version=3, protocol='https', return_url=True):
     """This function gets the base URL for API calls when supplied with a domain URL. (e.g. ``community.example.com``)
+
+    .. versionchanged:: 3.2.0
+       Added the ``return_url`` parameter to determine if the base URL should be returned by the function.
 
     :param domain_url: The domain URL of the environment, with or without the http/https prefix
     :type domain_url: str
@@ -31,6 +34,8 @@ def set_base_url(domain_url, version=3, protocol='https'):
     :type version: int
     :param protocol: The protocol to leverage for the domain prefix if not already supplied (Default: ``https``)
     :type protocol: str
+    :param return_url: Determines if the base URL should be returned by the function (``True`` by default)
+    :type return_url: bool
     :returns: The base URL for API calls in string format (e.g. ``https://community.example.com/api/core/v3``)
     :raises: :py:exc:`TypeError`, :py:exc:`ValueError`
     """
@@ -54,7 +59,9 @@ def set_base_url(domain_url, version=3, protocol='https'):
     # Append the appropriate API path to the URL and return the bse URL
     domain_url = re.sub('/$', '', domain_url)
     base_url = f"{domain_url}{versions.get(version)}"
-    return base_url
+    if return_url:
+        return base_url
+    return
 
 
 def set_credentials(credentials):
@@ -222,8 +229,28 @@ def get_platform_version(verify_ssl=True):
     return platform_version
 
 
+def ensure_absolute_url(query_url):
+    """This function adds the base URL to the beginning of a query URL if not already present.
+
+    .. versionadded:: 3.2.0
+
+    :param query_url: The query URL that will be utilized in an API request
+    :type query_url: str
+    :returns: The query URL that includes a top-level domain
+    :raises: :py:exc:`TypeError`
+    """
+    if not base_url:
+        raise errors.exceptions.MissingBaseUrlError()
+    if query_url and not query_url.startswith('http'):
+        query_url = f"{base_url}{query_url}" if query_url.startswith('/') else f"{base_url}/{query_url}"
+    return query_url
+
+
 def get_request_with_retries(query_url, return_json=False, verify_ssl=True):
     """This function performs a GET request with a total of 5 retries in case of timeouts or connection issues.
+
+    .. versionchanged:: 3.2.0
+       The query URL is now made into an absolute URL as necessary before performing the API request.
 
     .. versionchanged:: 3.1.0
        Refactored the function to be more efficient.
@@ -242,6 +269,9 @@ def get_request_with_retries(query_url, return_json=False, verify_ssl=True):
     """
     # Verify that the connection has been established
     verify_connection()
+
+    # Prepare the query URL
+    query_url = ensure_absolute_url(query_url)
 
     # Perform the GET request
     retries, response = 0, None
@@ -296,6 +326,7 @@ def get_query_url(pre_endpoint, asset_id="", post_endpoint=""):
     :type post_endpoint: str
     :returns: The fully structured query URL
     """
+    # TODO: Include parameter to make the query URL absolute
     # Verify that the connection has been established
     verify_connection()
 
@@ -404,6 +435,9 @@ def get_data(endpoint, lookup_value, identifier='id', return_json=False, ignore_
 def _api_request_with_payload(_url, _json_payload, _request_type, _verify_ssl=True):
     """This function performs an API request while supplying a JSON payload.
 
+    .. versionchanged:: 3.2.0
+       The query URL is now made into an absolute URL as necessary before performing the API request.
+
     .. versionchanged:: 3.1.0
        Included the name of the raised exception in the error message.
 
@@ -422,6 +456,10 @@ def _api_request_with_payload(_url, _json_payload, _request_type, _verify_ssl=Tr
     :raises: :py:exc:`khorosjx.errors.exceptions.InvalidRequestTypeError`,
              :py:exc:`khorosjx.errors.exceptions.APIConnectionError`
     """
+    # Prepare the query URL
+    _url = ensure_absolute_url(_url)
+
+    # Perform the API request
     _retries, _response = 0, None
     while _retries <= 5:
         try:
@@ -453,6 +491,9 @@ def _api_request_with_payload(_url, _json_payload, _request_type, _verify_ssl=Tr
 def post_request_with_retries(url, json_payload, verify_ssl=True):
     """This function performs a POST request with a total of 5 retries in case of timeouts or connection issues.
 
+    .. versionchanged:: 3.2.0
+       The query URL is now made into an absolute URL as necessary before performing the API request.
+
     .. versionchanged:: 2.6.0
        Added the ``verify_ssl`` argument.
 
@@ -466,12 +507,16 @@ def post_request_with_retries(url, json_payload, verify_ssl=True):
     :raises: :py:exc:`ValueError`, :py:exc:`khorosjx.errors.exceptions.APIConnectionError`,
              :py:exc:`khorosjx.errors.exceptions.POSTRequestError`
     """
+    url = ensure_absolute_url(url)
     response = _api_request_with_payload(url, json_payload, 'post', verify_ssl)
     return response
 
 
 def put_request_with_retries(url, json_payload, verify_ssl=True):
     """This function performs a PUT request with a total of 5 retries in case of timeouts or connection issues.
+
+    .. versionchanged:: 3.2.0
+       The query URL is now made into an absolute URL as necessary before performing the API request.
 
     .. versionchanged:: 2.6.0
        Added the ``verify_ssl`` argument.
@@ -486,12 +531,16 @@ def put_request_with_retries(url, json_payload, verify_ssl=True):
     :raises: :py:exc:`ValueError`, :py:exc:`khorosjx.errors.exceptions.APIConnectionError`,
              :py:exc:`khorosjx.errors.exceptions.PUTRequestError`
     """
+    url = ensure_absolute_url(url)
     response = _api_request_with_payload(url, json_payload, 'put', verify_ssl)
     return response
 
 
 def delete(uri, return_json=False, verify_ssl=True):
     """This function performs a DELETE request against the Core API.
+
+    .. versionchanged:: 3.2.0
+       The query URL is now made into an absolute URL as necessary before performing the API request.
 
     .. versionchanged:: 2.6.0
        Added the ``verify_ssl`` argument.
@@ -504,6 +553,7 @@ def delete(uri, return_json=False, verify_ssl=True):
     :type verify_ssl: bool
     :returns: The API response from the DELETE request (optionally in JSON format)
     """
+    uri = ensure_absolute_url(uri)
     response = requests.delete(uri, auth=api_credentials, verify=verify_ssl)
     if return_json:
         response = response.json()
